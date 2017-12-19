@@ -9,6 +9,7 @@ use Craft\Commerce_OrderAdjustmentModel;
 use Craft\Commerce_OrderModel;
 use Craft\DateTime;
 use Craft\GiftVoucher_CodeModel;
+use Craft\GiftVoucherHelper;
 
 class GiftVoucher_DiscountAdjuster implements Commerce_AdjusterInterface
 {
@@ -33,32 +34,33 @@ class GiftVoucher_DiscountAdjuster implements Commerce_AdjusterInterface
             return [];
         }
 
-        $voucherCode = craft()->giftVoucher_codes->getCodeByCodeKey($code);
+        $voucherCode = GiftVoucherHelper::getCodesService()->getCodeByCodeKey($code);
 
         if (!$voucherCode) {
             return [];
         }
 
-        return array(
-            $this->_getAdjustment($order, $voucherCode)
-        );
+        return [
+            $this->_getAdjustment($order, $voucherCode, $code),
+        ];
     }
 
     /**
      * @param Commerce_OrderModel   $order
      * @param GiftVoucher_CodeModel $voucherCode
+     * @param string                $code
      *
      * @return Commerce_OrderAdjustmentModel|false
      */
-    private function _getAdjustment(Commerce_OrderModel $order, GiftVoucher_CodeModel $voucherCode)
+    private function _getAdjustment(Commerce_OrderModel $order, GiftVoucher_CodeModel $voucherCode, $code)
     {
         //preparing model
         $adjustment = new Commerce_OrderAdjustmentModel;
         $adjustment->type = self::ADJUSTMENT_TYPE;
-        $adjustment->name = $voucherCode->getVoucherName();
+        $adjustment->name = $voucherCode->getVoucher()->title;
         $adjustment->orderId = $order->id;
         $adjustment->description = $voucherCode->getVoucher()->getDescription() ?: $voucherCode->amount;
-        $adjustment->optionsJson = array('lineItemsAffected' => null);
+        $adjustment->optionsJson = ['lineItemsAffected' => null, 'code' => $code];
         $adjustment->included = false;
 
 
@@ -73,7 +75,16 @@ class GiftVoucher_DiscountAdjuster implements Commerce_AdjusterInterface
             return false;
         }
 
-        $adjustment->amount = (float)$voucherCode->amount * -1;
+        $orderTotal = $order->itemTotal;
+        $orderTotal += $order->getTotalTax();
+        $orderTotal += $order->getTotalShippingCost();
+
+        if ($orderTotal < $voucherCode->amount) {
+            $adjustment->amount = $orderTotal * -1;
+        } else {
+            $adjustment->amount = (float)$voucherCode->amount * -1;
+        }
+
         $order->baseDiscount += $adjustment->amount;
 
         return $adjustment;
