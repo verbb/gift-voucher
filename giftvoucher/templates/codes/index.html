@@ -32,9 +32,9 @@
     			<th scope="col">{{ "Voucher" | t }}</th>
     			<th scope="col">{{ "Voucher Type" | t }}</th>
     			<th scope="col">{{ "Order" | t }}</th>
-    			<th scope="col">{{ "Amount" | t }}</th>
+    			<th scope="col">{{ "Origin Amount" | t }}</th>
+    			<th scope="col">{{ "Current Amount" | t }}</th>
     			<th scope="col">{{ "Expiry Date" | t }}</th>
-    			<th scope="col">{{ "Redeemed" | t }}</th>
 			</thead>
 			<tbody>
             {% for voucherCode in voucherCodes %}
@@ -53,15 +53,16 @@
 	                    {% endif %}
 					</td>
 
-					<td data-title="{{ 'Amount' | t }}"><code>{{ voucherCode.amount }}</code></td>
+					<td data-title="{{ 'Origin Amount' | t }}">{{ voucherCode.originAmount }}</td>
+					<td data-title="{{ 'Current Amount' | t }}">{{ voucherCode.currentAmount }}</td>
 					<td data-title="{{ 'Expiry Date' | t }}"><code>{{ voucherCode.expiryDate }}</code></td>
-					<td data-title="{{ 'Redeemed' | t }}">
-                        {% if voucherCode.redeemed %}
-                            <span class="status on"></span>
-                        {% else %}
-                            <span class="status"></span>
-                        {% endif %}
-                    </td>
+					{#<td data-title="{{ 'Redeemed' | t }}">#}
+                        {#{% if voucherCode.redeemed %}#}
+                            {#<span class="status on"></span>#}
+                        {#{% else %}#}
+                            {#<span class="status"></span>#}
+                        {#{% endif %}#}
+                    {#</td>#}
 
 					<td data-title="{{ 'Delete' | t }}">
                         {% if voucherCode.manually %}

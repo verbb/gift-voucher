@@ -8,9 +8,9 @@ namespace Craft;
  * @property int      orderId
  * @property int      lineItemId
  * @property string   codeKey
- * @property float    amount
+ * @property float    originAmount
+ * @property float    currentAmount
  * @property DateTime expiryDate
- * @property bool     redeemed
  * @property bool     manually
  */
 class GiftVoucher_CodeRecord extends BaseRecord
@@ -81,11 +81,11 @@ class GiftVoucher_CodeRecord extends BaseRecord
     protected function defineAttributes()
     {
         return [
-            'codeKey'    => [AttributeType::String, 'required' => true],
-            'amount'     => [AttributeType::Number, 'decimals' => 2, 'required' => true],
-            'expiryDate' => [AttributeType::DateTime, 'required' => false],
-            'redeemed'   => [AttributeType::Bool, 'default' => false],
-            'manually'   => [AttributeType::Bool, 'default' => false],
+            'codeKey'       => [AttributeType::String, 'required' => true],
+            'originAmount'  => [AttributeType::Number, 'decimals' => 2, 'required' => true],
+            'currentAmount' => [AttributeType::Number, 'decimals' => 2, 'required' => true],
+            'expiryDate'    => [AttributeType::DateTime, 'required' => false],
+            'manually'      => [AttributeType::Bool, 'default' => false],
         ];
     }
 }

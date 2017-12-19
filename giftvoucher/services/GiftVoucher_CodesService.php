@@ -61,7 +61,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
      *
      * @return GiftVoucher_CodeModel[]
      */
-    public function getCodes(array $attributes = array(), array $options = array())
+    public function getCodes(array $attributes = [], array $options = [])
     {
         $codeRecords = GiftVoucher_CodeRecord::model()->findAllByAttributes($attributes, $options);
         $codeModels = [];
@@ -85,8 +85,8 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
     public function getCodesForLineItem(Commerce_LineItemModel $lineItem)
     {
         $codeRecords = GiftVoucher_CodeRecord::model()->findAllByAttributes([
-            'orderId' => $lineItem->order->id,
-            'lineItemId' => $lineItem->id
+            'orderId'    => $lineItem->order->id,
+            'lineItemId' => $lineItem->id,
         ]);
 
         if (!$codeRecords) {
@@ -128,6 +128,14 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
             }
         }
 
+        // Validate model
+        $code->validate();
+
+        // See if we got some issues with provided data.
+        if ($code->hasErrors()) {
+            return false;
+        }
+
         $voucher = GiftVoucherHelper::getVouchersService()->getVoucherById($code->voucherId);
 
         if (!$voucher) {
@@ -142,22 +150,13 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
 
 
         $record->id = $code->id;
-        $record->amount = $code->amount;
+        $record->currentAmount = $code->currentAmount;
         $record->expiryDate = $code->expiryDate;
-        $record->redeemed = $code->redeemed;
         $record->voucherId = $code->voucherId;
         $record->manually = $code->manually;
 
         if (empty($code->voucherId)) {
             $code->addError('voucherId', Craft::t('{attribute} cannot be blank.', ['attribute' => 'Voucher']));
-        }
-
-        // Validate model
-        $code->validate();
-
-        // See if we got some issues with provided data.
-        if ($code->hasErrors()) {
-            return false;
         }
 
         if (!$record->id) {
@@ -168,13 +167,16 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
 
             $modifiedCodeKey = craft()->plugins->callFirst('giftVoucher_modifyCodeKey', [
                 $codeKey,
-                $code
+                $code,
             ], true);
 
             // Use the plugin-modified name, if anyone was up to the task.
             $codeKey = $modifiedCodeKey ?: $codeKey;
 
             $record->codeKey = $codeKey;
+
+            // Set origin amount
+            $record->originAmount = $code->originAmount;
         }
 
         $record->validate();
@@ -198,11 +200,8 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
     /**
      * Check for two options:
      *
-     * 1. Sort trough the ordered items and check if a Voucher item was
-     *    purchased, then generate Codes for this Voucher.
-     *
-     * 2. If a Voucher Code was used, set it as redeemed and remove the voucher
-     *    Code from the session.
+     * 1. Sort trough the ordered items and check if a voucher item was purchased, then generate Codes for that voucher.
+     * 2. If a voucher code was used, update the current amount of that code and remove the code from the session.
      *
      * @param Event $event
      *
@@ -228,7 +227,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
 
             if ($element->getElementType() == "GiftVoucher_Voucher") {
                 for ($i = 0; $i < $quantity; $i++) {
-                    craft()->giftVoucher_codes->codeVoucherByOrder($element, $lineItem);
+                    GiftVoucherHelper::getCodesService()->codeVoucherByOrder($element, $lineItem);
                 }
             }
         }
@@ -240,25 +239,25 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
             $voucherCode = GiftVoucherHelper::getCodesService()->getCodeByCodeKey($code);
 
             if ($voucherCode) {
-                $reducedAmount = $voucherCode->amount;
+                $reducedAmount = $voucherCode->currentAmount;
 
                 // If the voucher discount is higher then the order total price
                 // (total price is then calculated to 0), reduce the voucher amount
                 // of the item total, tax and shipping costs.
-                // Otherwise set the voucher as redeemed
+                // Otherwise set the voucher current amount to 0
                 if ($order->totalPrice == 0) {
                     $reducedAmount = 0;
                     $reducedAmount += $order->itemTotal;
                     $reducedAmount += $order->getTotalTax();
                     $reducedAmount += $order->getTotalShippingCost();
 
-                    if($reducedAmount > 0) {
-                        $voucherCode->amount -= $reducedAmount;
+                    if ($reducedAmount > 0) {
+                        $voucherCode->currentAmount -= $reducedAmount;
                     } else {
-                        $voucherCode->redeemed = true;
+                        $voucherCode->currentAmount = 0;
                     }
                 } else {
-                    $voucherCode->redeemed = true;
+                    $voucherCode->currentAmount = 0;
                 }
 
                 GiftVoucherHelper::getCodesService()->saveCode($voucherCode);
@@ -291,10 +290,12 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
         $code = new GiftVoucher_CodeModel();
         $code->voucherId = $voucher->id;
 
-        // Set code discount amount from voucher price
-        $code->amount = $voucher->getPrice();
+        // Set code amount from line item price. This makes sure, that vouchers
+        // with custom amounts get the right amount.
+        $code->originAmount = $lineItem->price;
+        $code->currentAmount = $lineItem->price;
 
-        $settingExpiry = craft()->giftVoucher->getSettings()->expiry;
+        $settingExpiry = GiftVoucherHelper::getPlugin()->getSettings()->expiry;
 
         if ($settingExpiry == 0) {
             $code->expiryDate = 0;
@@ -311,13 +312,12 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
         $codeId = $this->saveCode($code);
 
         if ($codeId !== false) {
-            return (bool)craft()->db->createCommand()->update(
-                'giftvoucher_codes',
-                array(
-                    'orderId' => $lineItem->order->id,
-                    'lineItemId' => $lineItem->id,
-                ),
-                ['id' => $codeId]);
+            return (bool)craft()->db->createCommand()->update('giftvoucher_codes', [
+                'orderId'    => $lineItem->order->id,
+                'lineItemId' => $lineItem->id,
+            ], [
+                'id' => $codeId,
+            ]);
         }
 
         return false;
@@ -331,7 +331,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
     public function generateCodeKey()
     {
         $codeAlphabet = self::CODE_KEY_CHARACTERS;
-        $keyLength = craft()->giftVoucher->getSettings()->codeKeyLength;
+        $keyLength = GiftVoucherHelper::getPlugin()->getSettings()->codeKeyLength;
 
         $codeKey = '';
 
@@ -345,11 +345,11 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
     /**
      * Match Voucher Code and check if
      * - is valid
-     * - not redeemed
+     * - has an amount left
      * - not expired
      *
-     * @param string $code
-     * @param string $error
+     * @param string      $code
+     * @param string|null $error
      *
      * @return bool
      */
@@ -360,12 +360,14 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
         // Check if valid
         if (!$voucherCode) {
             $error = Craft::t('Voucher code is not valid');
+
             return false;
         }
 
-        // Check if not redeemed yet
-        if ($voucherCode->redeemed) {
-            $error = Craft::t('Voucher code is already redeemed');
+        // Check if has an amount left
+        if ($voucherCode->currentAmount <= 0) {
+            $error = Craft::t('Voucher code has no amount left');
+
             return false;
         }
 
@@ -373,6 +375,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
         $today = new DateTime();
         if ($voucherCode->expiryDate && $voucherCode->expiryDate->format('Ymd') < $today->format('Ymd')) {
             $error = Craft::t('Voucher code is out of date');
+
             return false;
         }
 

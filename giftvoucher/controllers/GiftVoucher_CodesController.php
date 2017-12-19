@@ -36,7 +36,7 @@ class GiftVoucher_CodesController extends BaseController
 
         if ($variables['voucherCode']->voucherId) {
             $variables['voucher'] = GiftVoucherHelper::getVouchersService()->getVouchers([
-                'id' => $variables['voucherCode']->voucherId
+                'id' => $variables['voucherCode']->voucherId,
             ]);
         }
 
@@ -56,9 +56,14 @@ class GiftVoucher_CodesController extends BaseController
         $voucherCode = New GiftVoucher_CodeModel();
 
         $voucherCode->id = craft()->request->getPost('codeId');
-        $voucherCode->amount = craft()->request->getPost('amount');
+        $voucherCode->currentAmount = craft()->request->getPost('currentAmount');
+        $voucherCode->originAmount = craft()->request->getPost('originAmount');
+
+        if (!$voucherCode->originAmount) {
+            $voucherCode->originAmount = $voucherCode->currentAmount;
+        }
+
         $voucherCode->expiryDate = craft()->request->getPost('expiryDate');
-        $voucherCode->redeemed = craft()->request->getPost('redeemed');
         $voucherId = craft()->request->getPost('voucherId');
 
         if (\is_array($voucherId)) {
@@ -83,7 +88,7 @@ class GiftVoucher_CodesController extends BaseController
 
         // Send the code back to the template
         craft()->urlManager->setRouteVariables([
-            'voucherCode' => $voucherCode
+            'voucherCode' => $voucherCode,
         ]);
     }
 

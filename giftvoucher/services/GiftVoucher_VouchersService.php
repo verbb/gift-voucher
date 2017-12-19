@@ -26,6 +26,7 @@ class GiftVoucher_VouchersService extends BaseApplicationComponent
      * @param array|ElementCriteriaModel $criteria
      *
      * @return GiftVoucher_VoucherModel[]
+     * @throws Exception
      */
     public function getVouchers($criteria = [])
     {
@@ -89,7 +90,7 @@ class GiftVoucher_VouchersService extends BaseApplicationComponent
             'taxCategoryId',
             'shippingCategoryId',
             'price',
-            'customAmount'
+            'customAmount',
         ];
 
         foreach ($fields as $field) {
@@ -98,7 +99,7 @@ class GiftVoucher_VouchersService extends BaseApplicationComponent
 
 //        $record->allProductTypes = $voucher->allProductTypes = empty($productTypes);
 //        $record->allProducts = $voucher->allProducts = empty($products);
-        
+
         $record->validate();
         $voucher->addErrors($record->getErrors());
 
@@ -112,7 +113,7 @@ class GiftVoucher_VouchersService extends BaseApplicationComponent
             $event = new Event($this, ['voucher' => $voucher, 'isNewVoucher' => !$voucher->id]);
 
             $success = false;
-            
+
             if ($event->performAction) {
                 $success = craft()->commerce_purchasables->saveElement($voucher);
             }
@@ -146,7 +147,6 @@ class GiftVoucher_VouchersService extends BaseApplicationComponent
             if ($transaction !== null) {
                 $transaction->commit();
             }
-
         } catch (\Exception $e) {
             if ($transaction !== null) {
                 $transaction->rollback();

@@ -63,14 +63,33 @@
 					<input type="hidden" name="voucherId" value="{{ voucherCode.getVoucher().id }}">
 				{% endif %}
 
+                {% if not voucherCode.id %}
+					{% set amountLabel = "Amount" | t %}
+					{% set amountInstruction = "Define an amount for the value of the voucher code." | t %}
+				{% else %}
+					{% set amountLabel = "Current Amount" | t %}
+					{% set amountInstruction = "The current value of the voucher code, adjustable." | t %}
+
+                    {{ forms.textField({
+                        label: "Origin Amount",
+                        instructions: "The origin value of the voucher code." | t,
+                        id: 'originAmount',
+                        name: 'originAmount',
+                        value: voucherCode.originAmount,
+                        disabled: true,
+                    }) }}
+
+					<input type="hidden" name="originAmount" value="{{ voucherCode.originAmount }}">
+				{% endif %}
+
                 {{ forms.textField({
-                    label: "Amount" | t,
-                    instructions: "Define an amount for the value of the voucher code." | t,
-                    id: 'amount',
-                    name: 'amount',
-                    value: voucherCode.amount,
+                    label: amountLabel,
+                    instructions: amountInstruction | t,
+                    id: 'currentAmount',
+                    name: 'currentAmount',
+                    value: voucherCode.currentAmount,
                     required: true,
-                    errors: voucherCode.getErrors('amount')
+                    errors: voucherCode.getErrors('currentAmount')
                 }) }}
 
                 {{ forms.dateField({
@@ -80,23 +99,6 @@
                     name: 'expiryDate',
                     value: voucherCode.expiryDate,
                 }) }}
-
-                {% set redeemedOptions = [
-					{ label: "No" | t, value: 0 },
-					{ label: "Yes" | t, value: 1 }
-				] %}
-
-    			{% if voucherCode.id %}
-					{{ forms.selectField({
-						label: "Redeemed?" | t,
-						instructions: "This shows if the voucher code has been used (redeemed). If redeemed, you can reactivate it here." | t,
-						name: 'redeemed',
-						value: voucherCode.redeemed,
-						options: redeemedOptions
-					}) }}
-				{% else %}
-					<input type="hidden" name="redeemed" value="0">
-                {% endif %}
 			</div>
 
 			{% if voucherCode.getRedemptions() %}

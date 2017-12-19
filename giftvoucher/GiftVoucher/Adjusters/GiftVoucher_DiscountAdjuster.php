@@ -64,8 +64,8 @@ class GiftVoucher_DiscountAdjuster implements Commerce_AdjusterInterface
         $adjustment->included = false;
 
 
-        // Check if not redeemed yet
-        if ($voucherCode->redeemed) {
+        // Check if there is a amount left
+        if ($voucherCode->currentAmount <= 0) {
             return false;
         }
 
@@ -79,10 +79,10 @@ class GiftVoucher_DiscountAdjuster implements Commerce_AdjusterInterface
         $orderTotal += $order->getTotalTax();
         $orderTotal += $order->getTotalShippingCost();
 
-        if ($orderTotal < $voucherCode->amount) {
+        if ($orderTotal < $voucherCode->currentAmount) {
             $adjustment->amount = $orderTotal * -1;
         } else {
-            $adjustment->amount = (float)$voucherCode->amount * -1;
+            $adjustment->amount = (float)$voucherCode->currentAmount * -1;
         }
 
         $order->baseDiscount += $adjustment->amount;
