@@ -1,0 +1,35 @@
+{% extends 'giftVoucher/_layouts' %}
+
+{% set title = craft.giftVoucher.getPluginName() ~ " Settings" | t %}
+
+{% set crumbs = [
+    { label: craft.giftVoucher.getPluginName() | t, url: url('giftvoucher') },
+    { label: "Settings" | t, url: url('giftvoucher/settings') },
+] %}
+
+{% set selectedTab = 'settings' %}
+{% set selectedItem = craft.request.getSegment(3) %}
+{% set selectedSubnavItem = "settings" %}
+
+{% set navItems = {
+    'license': { title: "License" | t },
+    'general-heading': { heading: "Settings" | t },
+    'general': { title: "General Settings" | t },
+} %}
+
+{% set selectedItem = craft.request.getSegment(3) %}
+{% set docTitle = navItems[selectedItem].title ~ ' - ' ~ title %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for id, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li><a href="{{ url('giftvoucher/settings/' ~ id) }}"{% if id == selectedItem %} class="sel"{% endif %}>{{ item.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

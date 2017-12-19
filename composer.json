@@ -1,0 +1,22 @@
+{
+  "name": "verbb/GiftVoucher",
+  "description": "Plugin for Craft Commerce implementing gift vouchers.",
+  "type": "craft-plugin",
+  "authors": [
+    {
+      "name": "Verbb",
+      "homepage": "http://verbb.io/"
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0"
+  },
+  "config": {
+    "vendor-dir": "giftvoucher/vendor"
+  },
+  "autoload": {
+    "psr-4": {
+      "GiftVoucher\\": "giftvoucher/GiftVoucher"
+    }
+  }
+}

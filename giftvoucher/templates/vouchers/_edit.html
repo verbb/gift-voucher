@@ -1,0 +1,149 @@
+{% extends "_layouts/cp" %}
+{% hook 'giftVoucher.prepCpTemplate' %}
+{% set bodyClass = (bodyClass is defined ? bodyClass~' ' : '') ~ "commerce" %}
+
+{% set selectedSubnavItem = "vouchers" %}
+{% set docTitle = title ~' - ' ~ craft.giftVoucher.getPluginName %}
+
+{% set crumbs = [
+	{ label: "Gift Voucher" | t, url: url('giftvoucher/index') },
+	{ label: voucherType.name|t, url: url('giftvoucher/vouchers/'~voucherType.handle) },
+] %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = continueEditingUrl %}
+
+{% import "_includes/forms" as forms %}
+{% import "commerce/_includes/forms/commerceForms" as commerceForms %}
+{% import "giftVoucher/vouchers/_fields" as voucherFields %}
+
+{% set voucherClasses = "" %}
+{% if (voucher.getErrors('name')) %}
+    {% set voucherClasses = "error" %}
+{% endif %}
+
+{% set conditionsClasses = "" %}
+{% if(voucher.getErrors('productTypes')) %}
+    {% set conditionsClasses = "error" %}
+{% endif %}
+
+{% block saveButton %}
+    {% if not craft.giftVoucher.isLicensed() %}
+		<div class="buttons">
+			<input type="button" class="btn submit disabled" value="{{ 'Save' | t }}">
+			<span class="license-error">{{ "Please enter your license key first" | t }}</span>
+		</div>
+    {% else %}
+		<div class="btngroup">
+			<input type="submit" class="btn submit" value="{{ 'Save' | t }}">
+			<div class="btn submit menubtn"></div>
+			<div class="menu">
+				<ul>
+					<li>
+						<a class="formsubmit" data-redirect="{{ continueEditingUrl }}">
+							{{ "Save and continue editing" | t }}
+							{{ forms.optionShortcutLabel('S') }}
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% block main %}
+    {% if craft.giftVoucher.isLicensed %}
+		<input type="hidden" name="action" value="giftVoucher/vouchers/save">
+    {% endif %}
+	<input type="hidden" name="redirect" value="giftvoucher/vouchers">
+	<input type="hidden" name="typeId" value="{{ voucherType.id }}">
+	{% if craft.isLocalized() %}<input type="hidden" name="locale" value="{{ voucher.locale }}">{% endif %}
+	{{ getCsrfInput() }}
+	{% if voucher.id %}<input type="hidden" name="voucherId" value="{{ voucher.id }}">{% endif %}
+
+	<div class="grid first" data-max-cols="3">
+		<div class="item" data-position="left" data-colspan="2">
+
+			<div id="fields" class="pane">
+				{% include "_includes/tabs" %}
+
+				{{ voucherFields.titleField(voucher) }}
+
+				<div>
+					{% set allVoucherTab = voucherType.asa('voucherFieldLayout').getFieldLayout().getTabs() %}
+
+					{% for tab in allVoucherTab %}
+						<div id="tab{{ loop.index }}" {% if not loop.first %} class="hidden" {% endif %}>
+							{% include "_includes/fields" with {
+							fields: tab.getFields(),
+							element: voucher,
+							} only %}
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		<div id="meta-pane" class="item" data-position="right">
+
+            {% if showPreviewBtn %}
+                {% include "_includes/previewbtns" %}
+            {% endif %}
+
+			{% if craft.isLocalized() %}
+				<ul id="locales" class="pane">
+					{% for localeId in localeIds %}
+						{% set localeName = craft.i18n.getLocaleById(localeId).name %}
+						<li{% if localeId == voucher.locale %} class="sel"{% endif %}>
+							{%- if localeId == voucher.locale -%}
+								{{ localeName }}
+								{{ forms.lightswitch({
+									name: 'localeEnabled',
+									on:   voucher.localeEnabled,
+									small: true
+								}) }}
+							{%- else -%}
+								{% set localeUrl = url(
+									'giftvoucher/vouchers/'~voucherType.handle~'/'~craft.request.getSegment(4)~'/'~localeId
+								) -%}
+								<a href="{{ localeUrl }}">{{ localeName }}</a>
+								<div class="status {{ localeId in enabledLocales ? 'enabled' : 'disabled' }}"></div>
+							{%- endif -%}
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+
+			<div class="pane meta">
+                {{ voucherFields.enabledFields(voucher) }}
+				{{ voucherFields.generalMetaFields(voucher) }}
+			</div>
+
+			<div class="pane meta">
+				{{ voucherFields.behavioralMetaFields(voucher) }}
+			</div>
+
+			<div class="pane meta">
+				{{ voucherFields.generalFields(voucher) }}
+				{{ voucherFields.pricingFields(voucher) }}
+			</div>
+
+		</div>
+	</div>
+
+	{% if not voucher.slug %}
+		{% includejs %}
+			window.slugGenerator = new Craft.SlugGenerator('#title', '#slug');
+		{% endincludejs %}
+	{% endif %}
+
+{% endblock %}
+
+{% includejs %}
+	$(function() {
+		$('#productTypes').selectize({
+			plugins: ['remove_button'],
+			dropdownParent: 'body'
+		});
+	});
+{% endincludejs %}

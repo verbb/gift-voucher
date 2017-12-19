@@ -1,0 +1,189 @@
+{% extends "_layouts/cp" %}
+{% hook 'giftVoucher.prepCpTemplate' %}
+
+{% set selectedSubnavItem = "voucherCodes" %}
+{% set docTitle = title ~' - ' ~ craft.giftVoucher.getPluginName %}
+
+{% set crumbs = [
+	{ label: "Voucher Codes" | t, url: url('giftvoucher/codes') },
+] %}
+
+{% set fullPageForm = true %}
+
+{% block saveButton %}
+    {% if not craft.giftVoucher.isLicensed %}
+		<div class="buttons">
+			<input type="button" class="btn submit disabled" value="{{ 'Save' | t }}">
+			<span class="license-error">{{ "Please enter your license key first" | t }}</span>
+		</div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% import "_includes/forms" as forms %}
+
+{% block main %}
+    {% if craft.giftVoucher.isLicensed %}
+		<input type="hidden" name="action" value="giftVoucher/codes/save">
+	{% endif %}
+	<input type="hidden" name="redirect" value="giftvoucher/codes">
+	{% if voucherCode.id %}<input type="hidden" name="codeId" value="{{ voucherCode.id }}">{% endif %}
+
+	<div class="grid first" data-max-cols="3">
+		<div class="item" data-position="left" data-colspan="2">
+			<div id="fields" class="pane">
+
+				{{ forms.textAreaField({
+					label: "Voucher Code" | t,
+					instructions: "The actual code for the voucher. This is generated automatically." | t,
+					id: 'codeKey',
+					class: 'disabled code',
+					name: 'codeKey',
+					disabled: true,
+					value: voucherCode.codeKey,
+				}) }}
+
+				<input type="hidden" name="manually" value="{{ voucherCode.manually }}">
+
+				{% if not voucherCode.id or voucherCode.manually %}
+					{{ forms.elementSelectField({
+						elements: voucher,
+						id: 'voucherId',
+						name: 'voucherId',
+						label: 'Voucher' | t,
+						instructions: 'Select a voucher to be associated with this voucher code.' | t,
+						elementType: craft.elements.getElementType('GiftVoucher_Voucher'),
+						addButtonLabel: 'Select a Voucher' |t,
+						limit: 1,
+						required: true,
+                        errors: voucherCode.getErrors('voucherId')
+					}) }}
+				{% elseif voucherCode.getVoucher() %}
+					<input type="hidden" name="voucherId" value="{{ voucherCode.getVoucher().id }}">
+				{% endif %}
+
+                {{ forms.textField({
+                    label: "Amount" | t,
+                    instructions: "Define an amount for the value of the voucher code." | t,
+                    id: 'amount',
+                    name: 'amount',
+                    value: voucherCode.amount,
+                    required: true,
+                    errors: voucherCode.getErrors('amount')
+                }) }}
+
+                {{ forms.dateField({
+                    label: 'Expiry Date' | t,
+                    instructions: "Provide a date for this voucher code to be valid until." | t,
+                    id: 'expiryDate',
+                    name: 'expiryDate',
+                    value: voucherCode.expiryDate,
+                }) }}
+
+                {% set redeemedOptions = [
+					{ label: "No" | t, value: 0 },
+					{ label: "Yes" | t, value: 1 }
+				] %}
+
+    			{% if voucherCode.id %}
+					{{ forms.selectField({
+						label: "Redeemed?" | t,
+						instructions: "This shows if the voucher code has been used (redeemed). If redeemed, you can reactivate it here." | t,
+						name: 'redeemed',
+						value: voucherCode.redeemed,
+						options: redeemedOptions
+					}) }}
+				{% else %}
+					<input type="hidden" name="redeemed" value="0">
+                {% endif %}
+			</div>
+
+			{% if voucherCode.getRedemptions() %}
+				<div id="fields" class="pane">
+
+					<h2>{{ "Redemptions" | t }}</h2>
+
+                    <p>{{ "Below is the list of all the times this voucher code has been used (redeemed)." | t }}</p>
+
+					<table id="fields" class="data fullwidth collapsible">
+
+						<thead>
+						<tr>
+							<th scope="col">{{ "Order" | t }}</th>
+							<th scope="col">{{ "Date" | t }}</th>
+							<th scope="col">{{ "Amount Redeemed" | t }}</th>
+						</tr>
+						</thead>
+
+						<tbody id="shippingMethods">
+
+                        {% for redemption in voucherCode.getRedemptions() %}
+
+							<tr>
+								<td>
+									{{ redemption.getOrder().getLink() }}
+								</td>
+								<td>
+									{{ redemption.getOrder().dateOrdered | date("Y-m-d H:i:s") }}
+								</td>
+								<td class="nowrap" width="10%">
+									${{ redemption.amount }}
+								</td>
+							</tr>
+                        {% endfor %}
+
+						</tbody>
+
+					</table>
+				</div>
+			{% endif %}
+		</div>
+
+        <div id="meta-pane" class="item" data-position="right">
+            <div class="pane meta">
+                {% if voucherCode.getVoucher() %}
+                    {% set voucherInput %}
+                        <a href="{{ voucherCode.getVoucher().getCpEditUrl() }}">{{ voucherCode.getVoucher().title }}</a>
+                    {% endset %}
+                {% else %}
+                    {% set voucherInput %}
+                        {{ "No voucher associated" | t }}
+                    {% endset %}
+                {% endif %}
+
+                {{ forms.field({
+                    label: "Voucher" | t
+                }, voucherInput) }}
+
+                {% if voucherCode.getVoucherType() %}
+                    {% set voucherTypeInput %}
+                        <a href="{{ voucherCode.getVoucherType().getCpEditUrl() }}">{{ voucherCode.getVoucherType().name }}</a>
+                    {% endset %}
+                {% else %}
+                    {% set voucherTypeInput %}
+                        {{ "No voucher type associated" | t }}
+                    {% endset %}
+                {% endif %}
+
+                {{ forms.field({
+                    label: "Voucher Type" | t
+                }, voucherTypeInput) }}
+
+                {% if voucherCode.orderId %}
+                    {% set productInput %}
+                        <a href="{{ voucherCode.getOrderEditUrl() }}">{{ voucherCode.getOrder() }}</a>
+                    {% endset %}
+                {% else %}
+                    {% set productInput %}
+                        {{ "No order associated" | t }}
+                    {% endset %}
+                {% endif %}
+
+                {{ forms.field({
+                    label: "Order" | t
+                }, productInput) }}
+            </div>
+        </div>
+	</div>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "_layouts/cp" %}
+{% hook 'giftVoucher.prepCpTemplate' %}
+
+{% set selectedSubnavItem = "voucherTypes" %}
+{% set docTitle = title ~' - ' ~ craft.giftVoucher.getPluginName %}
+
+{% set tabs = {
+	voucherTypeSettings: { label: "Settings" | t, url: '#voucher-type-settings' },
+	voucherFields:       { label: "Voucher Fields" | t, url: '#voucher-fields' },
+} %}
+
+{% set crumbs = [
+	{ label: "Voucher Types" | t, url: url('giftvoucher/vouchertypes') },
+] %}
+
+{% set fullPageForm = true %}
+
+{% block saveButton %}
+    {% if not craft.giftVoucher.isLicensed %}
+		<div class="buttons">
+			<input type="button" class="btn submit disabled" value="{{ 'Save' | t }}">
+			<span class="license-error">{{ "Please enter your license key first" | t }}</span>
+		</div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% set selectedTab = 'settings' %}
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+    {% if craft.giftVoucher.isLicensed %}
+		<input type="hidden" name="action" value="giftVoucher/voucherTypes/save">
+    {% endif %}
+	<input type="hidden" name="redirect" value="giftvoucher/vouchertypes">
+	{% if voucherType.id %}<input type="hidden" name="voucherTypeId" value="{{ voucherType.id }}">{% endif %}
+
+	<div id="voucher-type-settings">
+		{{ forms.textField({
+			first: true,
+			label: "Name" | t,
+			instructions: "What this voucher type will be called in the CP." | t,
+			id: 'name',
+			name: 'name',
+			value: voucherType.name,
+			errors: voucherType.getErrors('name'),
+			autofocus: true,
+			required: true,
+			translatable: true
+		}) }}
+
+		{{ forms.textField({
+			label: "Handle" | t,
+			instructions: "How you’ll refer to this voucher type in the templates." | t,
+			id: 'handle',
+			class: 'code',
+			name: 'handle',
+			value: voucherType.handle,
+			errors: voucherType.getErrors('handle'),
+			required: true
+		}) }}
+
+		{{ forms.textField({
+			label: "Automatic SKU Format" | t,
+			instructions: "What the unique auto-generated SKUs should look like, when a SKU field is submitted without a value. You can include tags that output properties, such as {ex1} or {ex2}" | t({ ex1: '<code>{slug}</code>', ex2: '<code>{myCustomField}</code>' }),
+			id: 'skuFormat',
+			class: 'ltr',
+			name: 'skuFormat',
+			value: voucherType.skuFormat,
+			errors: voucherType.getErrors('skuFormat')
+		}) }}
+
+		{% macro hasUrlsField(voucherType) %}
+			{% from "_includes/forms" import checkboxField %}
+
+			{{ checkboxField({
+				label: "Vouchers of this type have their own URLs" | t,
+				id: 'hasUrls',
+				name: 'hasUrls',
+				checked: voucherType.hasUrls,
+				toggle: 'url-settings'
+			}) }}
+		{% endmacro %}
+
+		{% macro templateField(voucherType) %}
+			{% from "_includes/forms" import textField %}
+
+			{{ textField({
+				label: "Voucher Template" | t,
+				instructions: "The template to use when a voucher’s URL is requested." | t,
+				id: 'template',
+				class: 'ltr',
+				name: 'template',
+				value: voucherType.template,
+				errors: voucherType.getErrors('template')
+			}) }}
+		{% endmacro %}
+
+		{% from _self import hasUrlsField, templateField %}
+
+		{{ hasUrlsField(voucherType) }}
+
+
+		<div id="url-settings" class="nested-fields{% if not voucherType.hasUrls %} hidden{% endif %}">
+
+			{% macro urlFormatText(locale, voucherType, name, value) %}
+				{% from "_includes/forms" import text, errorList %}
+				{% set errors = voucherType.getErrors(name~'-'~locale.id) %}
+
+				<div class="input{% if errors %} errors{% endif %}">
+					{{ text({
+						id: name~'-'~locale.id,
+						class: 'code ltr',
+						name: name~'['~locale.id~']',
+						value: (value != '__home__' ? value : null),
+						errors: errors
+					}) }}
+				</div>
+
+				{{ errorList(errors) }}
+			{% endmacro %}
+
+			{% set urlFormatInput %}
+				{% if craft.isLocalized() %}
+					<table class="data fullwidth">
+						<tbody>
+							{% for locale in craft.i18n.getSiteLocales() %}
+								<tr>
+									{% if craft.isLocalized() %}
+										<th class="thin nowrap">{{ locale.id }}</th>
+									{% endif %}
+									<td class="topalign">
+										{% set value = (voucherType.locales[locale.id] is defined ? voucherType.locales[locale.id].urlFormat : null) %}
+										{{ _self.urlFormatText(locale, voucherType, 'urlFormat', value) }}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					{% set locale = craft.i18n.getPrimarySiteLocale() %}
+					{% set value = (voucherType.locales[locale.id] is defined ? voucherType.locales[locale.id].urlFormat : null) %}
+					{{ _self.urlFormatText(locale, voucherType, 'urlFormat', value) }}
+				{% endif %}
+			{% endset %}
+
+			{{ forms.field({
+				label: "Voucher URL Format" | t,
+				instructions: "What the voucher URLs should look like. You can include tags that output voucher properties, such as such as {ex1} or {ex2}." | t({ ex1: '<code>{slug}</code>', ex2: '<code>{publishDate|date(\"Y\")}</code>' }),
+			}, urlFormatInput) }}
+
+			{{ forms.textField({
+				label: "Voucher Template" | t,
+				instructions: "The template to use when a voucher’s URL is requested." | t,
+				id: 'template',
+				class: 'ltr',
+				name: 'template',
+				value: voucherType.template,
+				errors: voucherType.getErrors('template')
+			}) }}
+		</div>
+
+	</div>
+
+	<div id="voucher-fields" class="hidden">
+
+		{% include "_includes/fieldlayoutdesigner" with {
+			fieldLayout: voucherType.asa('voucherFieldLayout').getFieldLayout(),
+		} only %}
+
+	</div>
+
+{% endblock %}
+
+{% includejs %}
+    {% if not voucherType.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
+    {% for locale in craft.i18n.getSiteLocales() %}
+		{% if voucherType.locales[locale.id] is not defined or not voucherType.locales[locale.id].urlFormat %}
+			new Craft.EntryUrlFormatGenerator('#name', '#urlFormat-{{ locale.id }}', { suffix: '/{slug}' });
+		{% endif %}
+	{% endfor %}
+
+	$('#hasVariants').on('change', function() {
+		if ($(this).prop('checked')) {
+			$('#tab-variantFields').removeClass('hidden');
+		} else {
+			$('#tab-variantFields').addClass('hidden');
+		}
+	});
+{% endincludejs %}

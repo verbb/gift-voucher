@@ -1,0 +1,57 @@
+{% extends "_layouts/cp" %}
+{% hook 'giftVoucher.prepCpTemplate' %}
+
+{% set title = "Voucher Types" | t %}
+{% set selectedSubnavItem = "voucherTypes" %}
+
+{% set docTitle = title ~' - ' ~ craft.giftVoucher.getPluginName %}
+
+{% set extraPageHeaderHtml %}
+    {% if craft.giftVoucher.isLicensed %}
+		<div id="newVoucherType" class="buttons">
+			<a href="{{ url('giftvoucher/vouchertypes/new') }}" class="btn submit add icon">{{ "New voucher type" | t }}</a>
+		</div>
+    {% else %}
+		<div id="newVoucherType" class="buttons">
+			<a href="#" class="btn submit add icon disabled">{{ "New voucher type" | t }}</a>
+			<span class="license-error">{{ "Please enter your license key first" | t }}</span>
+		</div>
+    {% endif %}
+{% endset %}
+
+{% set voucherTypes = craft.giftVoucher.getAllVoucherTypes() %}
+{% set content %}
+	<div id="noVoucherTypes"{% if voucherTypes %} class="hidden"{% endif %}>
+		<p>{{ "No voucher types exist yet." | t }}</p>
+	</div>
+
+	{% if voucherTypes|length %}
+		<table id="voucherTypes" class="data fullwidth collapsible">
+			<thead>
+			<th scope="col">{{ "Name" | t }}</th>
+			<th scope="col">{{ "Handle" | t }}</th>
+			<td class="thin"></td>
+			</thead>
+			<tbody>
+			{% for voucherType in voucherTypes %}
+				<tr data-id="{{ voucherType.id }}" data-name="{{ voucherType.name|t }}">
+					<th scope="row" data-title="{{ 'Name' | t }}"><a href="{{ url('giftvoucher/vouchertypes/' ~ voucherType.id) }}">{{ voucherType.name|t }}</a></th>
+					<td data-title="{{ 'Handle' | t }}"><code>{{ voucherType.handle }}</code></td>
+					<td class="thin"><a class="delete icon" title="{{ 'Delete' | t }}" role="button"></a></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
+{% endset %}
+
+{% set js %}
+	var adminTable = new Craft.AdminTable({
+		tableSelector: '#voucherTypes',
+		noObjectsSelector: '#noVoucherTypes',
+		newObjectBtnSelector: '#newVoucherType',
+		deleteAction: 'giftVoucher/voucherTypes/delete',
+		confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}” and all its vouchers?" | t }}'
+	});
+{% endset %}
+{% includeJs js %}

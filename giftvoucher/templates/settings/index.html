@@ -1,0 +1,5 @@
+{% if craft.giftvoucher.isLicensed %}
+    {% redirect 'giftvoucher/settings/general' %}
+{% else %}
+    {% redirect 'giftvoucher/settings/license' %}
+{% endif %}
