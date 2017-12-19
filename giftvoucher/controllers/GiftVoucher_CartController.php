@@ -12,11 +12,14 @@ class GiftVoucher_CartController extends BaseController
     /**
      * Frontend controller for matching the voucher code and store it in a
      * session so that our discount adjuster can deal with it
+     *
+     * @throws HttpException
      */
     public function actionCode()
     {
         $this->requirePostRequest();
 
+        /** @var Commerce_OrderModel $cart */
         $cart = craft()->commerce_cart->getCart();
 
         $voucherCode = craft()->request->getPost('giftVoucherCode');
@@ -24,7 +27,7 @@ class GiftVoucher_CartController extends BaseController
         $error = '';
 
         if ($voucherCode != null) {
-            craft()->giftVoucher_codes->matchCode($voucherCode, $error);
+            GiftVoucherHelper::getCodesService()->matchCode($voucherCode, $error);
         }
 
         if ($error !== '') {

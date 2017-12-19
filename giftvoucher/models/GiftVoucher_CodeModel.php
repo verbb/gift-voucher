@@ -8,7 +8,7 @@ namespace Craft;
  * @property int      orderId
  * @property int      lineItemId
  * @property string   codeKey
- * @property float    originAmount
+ * @property float    originalAmount
  * @property float    currentAmount
  * @property DateTime expiryDate
  * @property bool     manually
@@ -19,17 +19,17 @@ class GiftVoucher_CodeModel extends BaseModel
     /**
      * @var GiftVoucher_VoucherModel
      */
-    private $_voucher = null;
+    private $_voucher;
 
     /**
      * @var Commerce_OrderModel
      */
-    private $_order = null;
+    private $_order;
 
     /**
      * @var Commerce_LineItemModel
      */
-    private $_lineItem = null;
+    private $_lineItem;
 
 
     // Public Methods
@@ -54,7 +54,7 @@ class GiftVoucher_CodeModel extends BaseModel
             return $this->_voucher;
         }
 
-        return $this->_voucher = craft()->giftVoucher_vouchers->getVoucherById($this->voucherId);
+        return $this->_voucher = GiftVoucherHelper::getVouchersService()->getVoucherById($this->voucherId);
     }
 
     /**
@@ -177,15 +177,15 @@ class GiftVoucher_CodeModel extends BaseModel
     protected function defineAttributes()
     {
         return array_merge(parent::defineAttributes(), [
-            'id'            => AttributeType::Number,
-            'voucherId'     => AttributeType::Number,
-            'orderId'       => AttributeType::Number,
-            'lineItemId'    => AttributeType::Number,
-            'codeKey'       => AttributeType::String,
-            'originAmount'  => [AttributeType::Number, 'decimals' => 2, 'required' => true],
-            'currentAmount' => [AttributeType::Number, 'decimals' => 2, 'required' => true],
-            'expiryDate'    => AttributeType::DateTime,
-            'manually'      => AttributeType::Bool,
+            'id'             => AttributeType::Number,
+            'voucherId'      => AttributeType::Number,
+            'orderId'        => AttributeType::Number,
+            'lineItemId'     => AttributeType::Number,
+            'codeKey'        => AttributeType::String,
+            'originalAmount' => [AttributeType::Number, 'decimals' => 2, 'required' => true],
+            'currentAmount'  => [AttributeType::Number, 'decimals' => 2, 'required' => true],
+            'expiryDate'     => AttributeType::DateTime,
+            'manually'       => AttributeType::Bool,
         ]);
     }
 }

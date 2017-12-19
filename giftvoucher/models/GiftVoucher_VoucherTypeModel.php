@@ -50,7 +50,7 @@ class GiftVoucher_VoucherTypeModel extends BaseModel
     {
         if (!isset($this->_locales)) {
             if ($this->id) {
-                $this->_locales = craft()->giftVoucher_voucherTypes->getVoucherTypeLocales($this->id, 'locale');
+                $this->_locales = GiftVoucherHelper::getVoucherTypesService()->getVoucherTypeLocales($this->id, 'locale');
             } else {
                 $this->_locales = [];
             }

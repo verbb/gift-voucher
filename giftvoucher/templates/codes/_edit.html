@@ -71,15 +71,15 @@
 					{% set amountInstruction = "The current value of the voucher code, adjustable." | t %}
 
                     {{ forms.textField({
-                        label: "Origin Amount",
-                        instructions: "The origin value of the voucher code." | t,
-                        id: 'originAmount',
-                        name: 'originAmount',
-                        value: voucherCode.originAmount,
+                        label: "Original Amount",
+                        instructions: "The original value of the voucher code." | t,
+                        id: 'originalAmount',
+                        name: 'originalAmount',
+                        value: voucherCode.originalAmount,
                         disabled: true,
                     }) }}
 
-					<input type="hidden" name="originAmount" value="{{ voucherCode.originAmount }}">
+					<input type="hidden" name="originalAmount" value="{{ voucherCode.originalAmount }}">
 				{% endif %}
 
                 {{ forms.textField({

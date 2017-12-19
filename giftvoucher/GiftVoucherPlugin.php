@@ -60,7 +60,7 @@ class GiftVoucherPlugin extends BasePlugin
      */
     public function onAfterInstall()
     {
-        $dependencies = craft()->giftVoucher_plugin->checkRequirements();
+        $dependencies = GiftVoucherHelper::getPluginService()->checkRequirements();
 
         if ($dependencies) {
             craft()->runController('giftVoucher/plugin/checkRequirements');
@@ -88,7 +88,7 @@ class GiftVoucherPlugin extends BasePlugin
 
     public function getSettingsUrl()
     {
-        if (!craft()->giftVoucher_license->isLicensed()) {
+        if (!GiftVoucherHelper::getLicenseService()->isLicensed()) {
             return 'giftvoucher/settings/license';
         }
 
@@ -98,7 +98,7 @@ class GiftVoucherPlugin extends BasePlugin
     public function init()
     {
         if (craft()->request->isCpRequest()) {
-            craft()->giftVoucher_license->ping();
+            GiftVoucherHelper::getLicenseService()->ping();
             craft()->templates->hook('giftVoucher.prepCpTemplate', [
                 $this,
                 'prepCpTemplate',
@@ -150,7 +150,7 @@ class GiftVoucherPlugin extends BasePlugin
             'url'   => 'giftvoucher/codes',
         ];
 
-        $settingsUrl = craft()->giftVoucher_license->isLicensed() ? 'general' : 'license';
+        $settingsUrl = GiftVoucherHelper::getLicenseService()->isLicensed() ? 'general' : 'license';
         $context['subnav']['settings'] = [
             'label' => Craft::t('Settings'),
             'url'   => 'giftvoucher/settings/' . $settingsUrl,
@@ -179,7 +179,7 @@ class GiftVoucherPlugin extends BasePlugin
      */
     public function getCpAlerts($path, $fetch)
     {
-        if ($path !== 'giftvoucher/settings/license' && !craft()->giftVoucher_license->isLicensed()) {
+        if ($path !== 'giftvoucher/settings/license' && !GiftVoucherHelper::getLicenseService()->isLicensed()) {
             $alert = 'You haven’t entered your Gift Voucher license key yet.';
             $alert .= '<a class="go" href="' . UrlHelper::getCpUrl('giftvoucher/settings/license') . '">Resolve</a>';
 

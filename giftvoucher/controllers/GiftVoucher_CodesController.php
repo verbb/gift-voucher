@@ -57,10 +57,10 @@ class GiftVoucher_CodesController extends BaseController
 
         $voucherCode->id = craft()->request->getPost('codeId');
         $voucherCode->currentAmount = craft()->request->getPost('currentAmount');
-        $voucherCode->originAmount = craft()->request->getPost('originAmount');
+        $voucherCode->originalAmount = craft()->request->getPost('originalAmount');
 
-        if (!$voucherCode->originAmount) {
-            $voucherCode->originAmount = $voucherCode->currentAmount;
+        if (!$voucherCode->originalAmount) {
+            $voucherCode->originalAmount = $voucherCode->currentAmount;
         }
 
         $voucherCode->expiryDate = craft()->request->getPost('expiryDate');

@@ -439,7 +439,7 @@ class GiftVoucher_VoucherTypesService extends BaseApplicationComponent
             $vouchers = $criteria->find();
 
             foreach ($vouchers as $voucher) {
-                craft()->giftVoucher_vouchers->deleteVoucher($voucher);
+                GiftVoucherHelper::getVouchersService()->deleteVoucher($voucher);
             }
 
             $fieldLayoutId = $voucherType->asa('voucherFieldLayout')->getFieldLayout()->id;

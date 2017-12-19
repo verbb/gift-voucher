@@ -48,7 +48,7 @@ class GiftVoucher_VoucherModel extends BasePurchasable
      */
     public function isEditable()
     {
-        return craft()->giftVoucher_license->isLicensed();
+        return GiftVoucherHelper::getLicenseService()->isLicensed();
     }
 
     /**
@@ -130,7 +130,7 @@ class GiftVoucher_VoucherModel extends BasePurchasable
             return $this->_voucherType;
         }
 
-        return $this->_voucherType = craft()->giftVoucher_voucherTypes->getVoucherTypeById($this->typeId);
+        return $this->_voucherType = GiftVoucherHelper::getVoucherTypesService()->getVoucherTypeById($this->typeId);
     }
 
     /**
@@ -172,11 +172,12 @@ class GiftVoucher_VoucherModel extends BasePurchasable
      *
      * @param Commerce_LineItemModel $lineItem
      *
-     * @return array[]
+     * @return GiftVoucher_CodeModel[]
+     * @throws Exception
      */
     public function getCodesForLineItem(Commerce_LineItemModel $lineItem)
     {
-        return craft()->giftVoucher_codes->getCodesForLineItem($lineItem);
+        return GiftVoucherHelper::getCodesService()->getCodesForLineItem($lineItem);
     }
 
     /**

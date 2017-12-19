@@ -66,10 +66,10 @@ class GiftVoucher_VoucherElementType extends BaseElementType
     public function getSources($context = null)
     {
         if ($context == 'index') {
-            $voucherTypes = craft()->giftVoucher_voucherTypes->getEditableVoucherTypes();
+            $voucherTypes = GiftVoucherHelper::getVoucherTypesService()->getEditableVoucherTypes();
             $editable = true;
         } else {
-            $voucherTypes = craft()->giftVoucher_voucherTypes->getAllVoucherTypes();
+            $voucherTypes = GiftVoucherHelper::getVoucherTypesService()->getAllVoucherTypes();
             $editable = false;
         }
 
@@ -81,37 +81,37 @@ class GiftVoucher_VoucherElementType extends BaseElementType
 
         $sources = [
             '*' => [
-                'label' => Craft::t('All vouchers'),
+                'label'    => Craft::t('All vouchers'),
                 'criteria' => [
-                    'typeId' => $voucherTypeIds,
-                    'editable' => $editable
+                    'typeId'   => $voucherTypeIds,
+                    'editable' => $editable,
                 ],
-            ]
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('Voucher Types')];
 
         foreach ($voucherTypes as $voucherType) {
-            $key = 'voucherType:'.$voucherType->id;
+            $key = 'voucherType:' . $voucherType->id;
             $canEditVouchers = true;
 
             $sources[$key] = [
-                'label' => $voucherType->name,
-                'data' => [
-                    'handle' => $voucherType->handle,
-                    'editable' => $canEditVouchers
+                'label'    => $voucherType->name,
+                'data'     => [
+                    'handle'   => $voucherType->handle,
+                    'editable' => $canEditVouchers,
                 ],
                 'criteria' => [
-                    'typeId' => $voucherType->id,
-                    'editable' => $editable
-                ]
+                    'typeId'   => $voucherType->id,
+                    'editable' => $editable,
+                ],
             ];
         }
 
         // Allow plugins to modify the sources
         craft()->plugins->call('giftVoucher_modifyVoucherSources', [
             &$sources,
-            $context
+            $context,
         ]);
 
         return $sources;
@@ -125,18 +125,18 @@ class GiftVoucher_VoucherElementType extends BaseElementType
     public function defineAvailableTableAttributes()
     {
         $attributes = [
-            'title' => ['label' => Craft::t('Title')],
-            'type' => ['label' => Craft::t('Type')],
-            'slug' => ['label' => Craft::t('Slug')],
-            'sku' => ['label' => Craft::t('SKU')],
-            'price' => ['label' => Craft::t('Price')],
-            'expiry' => ['label' => Craft::t('Expiry')],
-            'purchaseTotal' => ['label' => Craft::t('Purchase Total')],
-            'purchaseQty' => ['label' => Craft::t('Minimum Purchase Quantity')],
-            'maxPurchaseQty' => ['label' => Craft::t('Maximum Purchase Quantity')],
-            'excludeOnSale' => ['label' => Craft::t('Exclude On Sale')],
-            'freeShipping' => ['label' => Craft::t('Free Shipping')],
-            'allProducts' => ['label' => Craft::t('All Products')],
+            'title'           => ['label' => Craft::t('Title')],
+            'type'            => ['label' => Craft::t('Type')],
+            'slug'            => ['label' => Craft::t('Slug')],
+            'sku'             => ['label' => Craft::t('SKU')],
+            'price'           => ['label' => Craft::t('Price')],
+            'expiry'          => ['label' => Craft::t('Expiry')],
+            'purchaseTotal'   => ['label' => Craft::t('Purchase Total')],
+            'purchaseQty'     => ['label' => Craft::t('Minimum Purchase Quantity')],
+            'maxPurchaseQty'  => ['label' => Craft::t('Maximum Purchase Quantity')],
+            'excludeOnSale'   => ['label' => Craft::t('Exclude On Sale')],
+            'freeShipping'    => ['label' => Craft::t('Free Shipping')],
+            'allProducts'     => ['label' => Craft::t('All Products')],
             'allProductTypes' => ['label' => Craft::t('All Product Types')],
         ];
 
@@ -192,7 +192,7 @@ class GiftVoucher_VoucherElementType extends BaseElementType
         // First give plugins a chance to set this
         $pluginAttributeHtml = craft()->plugins->callFirst('giftVoucher_getVoucherTableAttributeHtml', [
             $element,
-            $attribute
+            $attribute,
         ], true);
 
         if ($pluginAttributeHtml !== null) {
@@ -203,32 +203,38 @@ class GiftVoucher_VoucherElementType extends BaseElementType
         $voucherType = $element->getVoucherType();
 
         switch ($attribute) {
-            case 'type': {
-                return ($voucherType ? Craft::t($voucherType->name) : '');
-            }
+            case 'type':
+                {
+                    return ($voucherType ? Craft::t($voucherType->name) : '');
+                }
 
-            case 'taxCategory': {
-                $taxCategory = $element->getTaxCategory();
+            case 'taxCategory':
+                {
+                    $taxCategory = $element->getTaxCategory();
 
-                return ($taxCategory ? Craft::t($taxCategory->name) : '');
-            }
-            case 'shippingCategory': {
-                $shippingCategory = $element->getShippingCategory();
+                    return ($taxCategory ? Craft::t($taxCategory->name) : '');
+                }
+            case 'shippingCategory':
+                {
+                    $shippingCategory = $element->getShippingCategory();
 
-                return ($shippingCategory ? Craft::t($shippingCategory->name) : '');
-            }
-            case 'defaultPrice': {
-                $code = craft()->commerce_paymentCurrencies->getPrimaryPaymentCurrencyIso();
+                    return ($shippingCategory ? Craft::t($shippingCategory->name) : '');
+                }
+            case 'defaultPrice':
+                {
+                    $code = craft()->commerce_paymentCurrencies->getPrimaryPaymentCurrencyIso();
 
-                return craft()->numberFormatter->formatCurrency($element->$attribute, strtoupper($code));
-            }
+                    return craft()->numberFormatter->formatCurrency($element->$attribute, strtoupper($code));
+                }
 
-            case 'promotable': {
-                return ($element->$attribute ? '<span data-icon="check" title="'.Craft::t('Yes').'"></span>' : '');
-            }
-            default: {
-                return parent::getTableAttributeHtml($element, $attribute);
-            }
+            case 'promotable':
+                {
+                    return ($element->$attribute ? '<span data-icon="check" title="' . Craft::t('Yes') . '"></span>' : '');
+                }
+            default:
+                {
+                    return parent::getTableAttributeHtml($element, $attribute);
+                }
         }
     }
 
@@ -259,46 +265,46 @@ class GiftVoucher_VoucherElementType extends BaseElementType
     public function defineCriteriaAttributes()
     {
         return [
-            'typeId' => AttributeType::Mixed,
-            'type' => AttributeType::Mixed,
+            'typeId'   => AttributeType::Mixed,
+            'type'     => AttributeType::Mixed,
             'editable' => AttributeType::Bool,
 
-            'description' => AttributeType::Mixed,
-            'expiry' => AttributeType::Number,
-            'purchaseTotal' => [
+            'description'     => AttributeType::Mixed,
+            'expiry'          => AttributeType::Number,
+            'purchaseTotal'   => [
                 AttributeType::Number,
                 'required' => true,
-                'default' => 0
+                'default'  => 0,
             ],
-            'purchaseQty' => [
+            'purchaseQty'     => [
                 AttributeType::Number,
                 'required' => true,
-                'default' => 0
+                'default'  => 0,
             ],
-            'maxPurchaseQty' => [
+            'maxPurchaseQty'  => [
                 AttributeType::Number,
                 'required' => true,
-                'default' => 0
+                'default'  => 0,
             ],
-            'excludeOnSale' => [
+            'excludeOnSale'   => [
                 AttributeType::Bool,
                 'required' => true,
-                'default' => 0
+                'default'  => 0,
             ],
-            'freeShipping' => [
+            'freeShipping'    => [
                 AttributeType::Bool,
                 'required' => true,
-                'default' => 0
+                'default'  => 0,
             ],
-            'allProducts' => [
+            'allProducts'     => [
                 AttributeType::Bool,
                 'required' => true,
-                'default' => 0
+                'default'  => 0,
             ],
             'allProductTypes' => [
                 AttributeType::Bool,
                 'required' => true,
-                'default' => 0
+                'default'  => 0,
             ],
         ];
     }
@@ -306,7 +312,7 @@ class GiftVoucher_VoucherElementType extends BaseElementType
     /**
      * @inheritDoc BaseElementType::modifyElementsQuery()
      *
-     * @param DbCommand $query
+     * @param DbCommand            $query
      * @param ElementCriteriaModel $criteria
      *
      * @return void
@@ -343,8 +349,8 @@ class GiftVoucher_VoucherElementType extends BaseElementType
             }
 
             // Limit the query to only the sections the user has permission to edit
-//            $editableVoucherTypeIds = craft()->giftVoucher_voucherTypes->getEditableVoucherTypeIds();
-            $editableVoucherTypeIds = craft()->giftVoucher_voucherTypes->getAllVoucherTypeIds();
+//            $editableVoucherTypeIds = GiftVoucherHelper::getVoucherTypesService()->getEditableVoucherTypeIds();
+            $editableVoucherTypeIds = GiftVoucherHelper::getVoucherTypesService()->getAllVoucherTypeIds();
 
             if (!$editableVoucherTypeIds) {
                 return;
@@ -353,7 +359,7 @@ class GiftVoucher_VoucherElementType extends BaseElementType
             $query->andWhere([
                 'in',
                 'vouchers.typeId',
-                $editableVoucherTypeIds
+                $editableVoucherTypeIds,
             ]);
         }
     }
@@ -396,21 +402,27 @@ class GiftVoucher_VoucherElementType extends BaseElementType
     /**
      * @inheritdoc BaseElementType::saveElement()
      *
+     * @param BaseElementModel|GiftVoucher_VoucherModel $element
+     * @param array                                     $params
+     *
      * @return bool
+     * @throws Exception
+     * @throws \Exception
      */
     public function saveElement(BaseElementModel $element, $params)
     {
+        /** @var GiftVoucher_VoucherModel $element */
         $element->enabled = $params['enabled'] ? $params['enabled'] : null;
 
         $element->slug = $params['slug'] ? $params['slug'] : $element->slug;
 
-        if($params['taxCategoryId']) {
+        if ($params['taxCategoryId']) {
             $element->taxCategoryId = $params['taxCategoryId'];
         } elseif (!$element->taxCategoryId) {
             $element->taxCategoryId = craft()->commerce_taxCategories->getDefaultTaxCategory()->id;
         }
 
-        if($params['shippingCategoryId']) {
+        if ($params['shippingCategoryId']) {
             $element->shippingCategoryId = $params['shippingCategoryId'];
         } elseif (!$element->shippingCategoryId) {
             $element->shippingCategoryId = craft()->commerce_shippingCategories->getDefaultShippingCategory()->id;
@@ -418,13 +430,15 @@ class GiftVoucher_VoucherElementType extends BaseElementType
 
         $element->sku = $params['sku'] ? $params['sku'] : $element->sku;
 
+        $element->customAmount = $params['customAmount'] ? $params['customAmount'] : $element->customAmount;
+
         if ($element->customAmount) {
             $element->price = 0.00;
         } else {
             $element->price = $params['price'] ? (float)$params['price'] : $element->price;
         }
 
-        return craft()->giftVoucher_vouchers->saveVoucher($element);
+        return GiftVoucherHelper::getVouchersService()->saveVoucher($element);
     }
 
     /**
@@ -443,15 +457,15 @@ class GiftVoucher_VoucherElementType extends BaseElementType
             return [
                 'action' => 'templates/render',
                 'params' => [
-                    'template' => $voucherType->template,
+                    'template'  => $voucherType->template,
                     'variables' => [
                         'voucher' => $element,
 
                         // Provide the same element as `product` for easy implementation
                         // when using the demo Craft templates - it'll expect a `product` variable 
                         'product' => $element,
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 

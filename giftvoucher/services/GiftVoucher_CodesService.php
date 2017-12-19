@@ -79,7 +79,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
      *
      * @param Commerce_LineItemModel $lineItem
      *
-     * @return array
+     * @return GiftVoucher_CodeModel[]
      * @throws Exception
      */
     public function getCodesForLineItem(Commerce_LineItemModel $lineItem)
@@ -175,8 +175,8 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
 
             $record->codeKey = $codeKey;
 
-            // Set origin amount
-            $record->originAmount = $code->originAmount;
+            // Set original amount
+            $record->originalAmount = $code->originalAmount;
         }
 
         $record->validate();
@@ -292,7 +292,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
 
         // Set code amount from line item price. This makes sure, that vouchers
         // with custom amounts get the right amount.
-        $code->originAmount = $lineItem->price;
+        $code->originalAmount = $lineItem->price;
         $code->currentAmount = $lineItem->price;
 
         $settingExpiry = GiftVoucherHelper::getPlugin()->getSettings()->expiry;
