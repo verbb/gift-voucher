@@ -28,41 +28,60 @@ class GiftVoucher_DiscountAdjuster implements Commerce_AdjusterInterface
         }
 
         // Get code by session
-        $code = craft()->httpSession->get('giftVoucher.giftVoucherCode');
-
-        if (!$code) {
+        $giftVoucherCodes = craft()->httpSession->get('giftVoucher.giftVoucherCodes');
+        
+        if (!$giftVoucherCodes || count($giftVoucherCodes) == 0) {
             return [];
         }
 
-        $voucherCode = GiftVoucherHelper::getCodesService()->getCodeByCodeKey($code);
+        $adjuster = [];
 
-        if (!$voucherCode) {
-            return [];
+        foreach ($giftVoucherCodes as $giftVoucherCode) {
+            $voucherCode = GiftVoucherHelper::getCodesService()->getCodeByCodeKey($giftVoucherCode);
+
+            if ($voucherCode) {
+                $adjuster[] = $this->_getAdjustment($order, $voucherCode);
+            }
         }
 
-        return [
-            $this->_getAdjustment($order, $voucherCode, $code),
-        ];
+        return $adjuster;
     }
 
     /**
      * @param Commerce_OrderModel   $order
      * @param GiftVoucher_CodeModel $voucherCode
-     * @param string                $code
      *
      * @return Commerce_OrderAdjustmentModel|false
      */
-    private function _getAdjustment(Commerce_OrderModel $order, GiftVoucher_CodeModel $voucherCode, $code)
+    private function _getAdjustment(Commerce_OrderModel $order, GiftVoucher_CodeModel $voucherCode)
     {
         //preparing model
         $adjustment = new Commerce_OrderAdjustmentModel;
         $adjustment->type = self::ADJUSTMENT_TYPE;
         $adjustment->name = $voucherCode->getVoucher()->title;
         $adjustment->orderId = $order->id;
-        $adjustment->description = $voucherCode->getVoucher()->getDescription() ?: $voucherCode->amount;
-        $adjustment->optionsJson = ['lineItemsAffected' => null, 'code' => $code];
-        $adjustment->included = false;
+        $adjustment->description = 'GiftVoucher discount using code ' . $voucherCode->codeKey;
 
+        $lineItemsAffected = [];
+        foreach ($order->getLineItems() as $lineItem) {
+            $lineItemsAffected[] = $lineItem->id;
+        }
+
+        // Set adjustment options
+        $options = [
+            'lineItemsAffected' => $lineItemsAffected,
+            'type' => 'GiftVoucher',
+            'id' => $voucherCode->id,
+            'name' => $adjustment->name,
+            'description' => $adjustment->description,
+            'code' => $voucherCode->codeKey,
+            'originalAmount' => $voucherCode->originalAmount,
+            'currentAmount' => $voucherCode->currentAmount,
+            'expiryDate' => $voucherCode->expiryDate,
+            'manually' => $voucherCode->manually,
+        ];
+        $adjustment->optionsJson = $options;
+        $adjustment->included = false;
 
         // Check if there is a amount left
         if ($voucherCode->currentAmount <= 0) {
@@ -78,6 +97,7 @@ class GiftVoucher_DiscountAdjuster implements Commerce_AdjusterInterface
         $orderTotal = $order->itemTotal;
         $orderTotal += $order->getTotalTax();
         $orderTotal += $order->getTotalShippingCost();
+        $orderTotal += $order->getTotalDiscount();
 
         if ($orderTotal < $voucherCode->currentAmount) {
             $adjustment->amount = $orderTotal * -1;

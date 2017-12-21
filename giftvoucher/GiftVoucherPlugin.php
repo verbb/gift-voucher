@@ -242,6 +242,7 @@ class GiftVoucherPlugin extends BasePlugin
     private function _registerEventHandlers()
     {
         craft()->on('commerce_orders.onOrderComplete', [
+//        craft()->on('commerce_orders.onBeforeOrderComplete', [
             GiftVoucherHelper::getCodesService(),
             'onOrderCompleteHandler',
         ]);

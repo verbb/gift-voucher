@@ -2,6 +2,8 @@
 
 namespace Craft;
 
+use GiftVoucher\Adjusters\GiftVoucher_DiscountAdjuster;
+
 class GiftVoucher_CodesService extends BaseApplicationComponent
 {
     // Properties
@@ -214,64 +216,52 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
             return;
         }
 
-        // Check every single line item
-        /**
-         * @var Commerce_OrderModel $order
-         */
+        /**@var Commerce_OrderModel $order */
         $order = $event->params['order'];
 
+        // Check every single line item
         foreach ($order->getLineItems() as $lineItem) {
             $itemId = $lineItem->purchasableId;
             $element = craft()->elements->getElementById($itemId);
             $quantity = $lineItem->qty;
 
-            if ($element->getElementType() == "GiftVoucher_Voucher") {
+            if ($element->getElementType() == 'GiftVoucher_Voucher') {
                 for ($i = 0; $i < $quantity; $i++) {
                     GiftVoucherHelper::getCodesService()->codeVoucherByOrder($element, $lineItem);
                 }
             }
         }
 
-        // Check if a voucher code was used
-        $code = craft()->httpSession->get('giftVoucher.giftVoucherCode');
+        // Check if one (ore more) voucher codes were used
+        $giftVoucherCodes = craft()->httpSession->get('giftVoucher.giftVoucherCodes');
 
-        if ($code != '') {
-            $voucherCode = GiftVoucherHelper::getCodesService()->getCodeByCodeKey($code);
+        if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
 
-            if ($voucherCode) {
-                $reducedAmount = $voucherCode->currentAmount;
+            foreach ($order->getAdjustments() as $adjustment) {
+                if ($adjustment->type == GiftVoucher_DiscountAdjuster::ADJUSTMENT_TYPE) {
+                    $voucherCode = null;
 
-                // If the voucher discount is higher then the order total price
-                // (total price is then calculated to 0), reduce the voucher amount
-                // of the item total, tax and shipping costs.
-                // Otherwise set the voucher current amount to 0
-                if ($order->totalPrice == 0) {
-                    $reducedAmount = 0;
-                    $reducedAmount += $order->itemTotal;
-                    $reducedAmount += $order->getTotalTax();
-                    $reducedAmount += $order->getTotalShippingCost();
-
-                    if ($reducedAmount > 0) {
-                        $voucherCode->currentAmount -= $reducedAmount;
-                    } else {
-                        $voucherCode->currentAmount = 0;
+                    if (isset($adjustment->optionsJson['code'])) {
+                        $codeKey = $adjustment->optionsJson['code'];
+                        $voucherCode = GiftVoucherHelper::getCodesService()->getCodeByCodeKey($codeKey);
                     }
-                } else {
-                    $voucherCode->currentAmount = 0;
+
+                    if ($voucherCode) {
+                        $voucherCode->currentAmount += $adjustment->amount;
+                        GiftVoucherHelper::getCodesService()->saveCode($voucherCode);
+
+                        // Track code redemption
+                        $redemption = new GiftVoucher_RedemptionModel();
+                        $redemption->codeId = $voucherCode->id;
+                        $redemption->orderId = $order->id;
+                        $redemption->amount = (float)$adjustment->amount * -1;
+                        GiftVoucherHelper::getRedemptionService()->saveRedemption($redemption);
+                    }
                 }
-
-                GiftVoucherHelper::getCodesService()->saveCode($voucherCode);
-
-                // Track code redemption
-                $redemption = new GiftVoucher_RedemptionModel();
-                $redemption->codeId = $voucherCode->id;
-                $redemption->orderId = $order->id;
-                $redemption->amount = $reducedAmount;
-                GiftVoucherHelper::getRedemptionService()->saveRedemption($redemption);
-
-                // delete session code 'giftVoucher.code'
-                craft()->httpSession->add('giftVoucher.giftVoucherCode', '');
             }
+
+            // Delete session code 'giftVoucher.giftVoucherCode'
+            craft()->httpSession->add('giftVoucher.giftVoucherCodes', null);
         }
     }
 

@@ -2,6 +2,9 @@
 
 namespace Craft;
 
+use Commerce\Adjusters\Commerce_DiscountAdjuster;
+use GiftVoucher\Adjusters\GiftVoucher_DiscountAdjuster;
+
 class GiftVoucherVariable
 {
     /**
@@ -143,12 +146,24 @@ class GiftVoucherVariable
     /**
      * Checks if the line item is a voucher
      *
-     * @param $lineItem
+     * @param Commerce_LineItemModel $lineItem
      *
      * @return bool
      */
-    public function isVoucher($lineItem)
+    public function isVoucher(Commerce_LineItemModel $lineItem)
     {
         return ($lineItem->purchasable->elementType == 'GiftVoucher_Voucher');
+    }
+
+    /**
+     * Checks if the order adjustment is a voucher
+     *
+     * @param Commerce_OrderAdjustmentModel $adjuster
+     *
+     * @return bool
+     */
+    public function isVoucherAdjustment(Commerce_OrderAdjustmentModel $adjuster)
+    {
+        return (isset($adjuster->optionsJson['type']) && $adjuster->optionsJson['type'] == 'GiftVoucher');
     }
 }
