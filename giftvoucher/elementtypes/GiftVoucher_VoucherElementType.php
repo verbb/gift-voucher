@@ -453,7 +453,7 @@ class GiftVoucher_VoucherElementType extends BaseElementType
         /** @var Giftvoucher_VoucherModel $element */
         $voucherType = $element->getVoucherType();
 
-        if ($voucherType->hasUrls) {
+        if ($voucherType && $voucherType->hasUrls) {
             return [
                 'action' => 'templates/render',
                 'params' => [

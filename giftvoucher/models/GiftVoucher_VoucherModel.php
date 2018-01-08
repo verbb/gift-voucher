@@ -122,7 +122,7 @@ class GiftVoucher_VoucherModel extends BasePurchasable
     /**
      * Returns the voucher's voucher type model.
      *
-     * @return GiftVoucher_VoucherTypeModel
+     * @return GiftVoucher_VoucherTypeModel|null
      */
     public function getVoucherType()
     {
