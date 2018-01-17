@@ -50,6 +50,8 @@
 					<td scope="row" data-title="{{ 'Order' | t }}">
                         {% if voucherCode.getOrder() %}
 							<a href="{{ voucherCode.getOrderEditUrl() }}">{{ voucherCode.getOrder() }}</a>
+                        {% else %}
+							Order deleted
 	                    {% endif %}
 					</td>
 
