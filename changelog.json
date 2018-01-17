@@ -1,5 +1,16 @@
 [
     {
+        "version": "1.0.1",
+        "downloadUrl": "https://github.com/verbb/gift-voucher/archive/1.0.1.zip",
+        "date": "2017-01-18T00:00:00+10:00",
+        "notes": [
+            "[Added] Redeeming multiple vouchers.",
+            "[Added] Added possibility to return ajax in frontend controller.",
+            "[Improved] Redeemed code managing.",
+            "[Fixed] Adjuster showing proper discount amount."
+        ]
+    },
+    {
         "version": "1.0.0",
         "downloadUrl": "https://github.com/verbb/gift-voucher/archive/1.0.0.zip",
         "date": "2017-12-19T00:00:00+10:00",
