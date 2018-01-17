@@ -7,7 +7,8 @@ class GiftVoucher_PdfService extends BaseApplicationComponent
     /**
      * Get the URL to the voucher codes’s PDF file.
      *
-     * @param string $orderNumber
+     * @param string   $orderNumber
+     * @param int|null $lineItemId
      *
      * @return null|string
      * @throws Exception
@@ -27,7 +28,7 @@ class GiftVoucher_PdfService extends BaseApplicationComponent
         $order = craft()->commerce_orders->getOrderByNumber($orderNumber);
 
         $attributes = [
-            'orderId' => $order->id
+            'orderId' => $order->id,
         ];
 
         if ($lineItemId) {

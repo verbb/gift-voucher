@@ -2,10 +2,8 @@
 
 namespace Craft;
 
-class GiftVoucher_CartController extends BaseController
+class GiftVoucher_CartController extends Commerce_BaseFrontEndController
 {
-    protected $allowAnonymous = true;
-
     // Public Methods
     // =========================================================================
 
@@ -33,16 +31,6 @@ class GiftVoucher_CartController extends BaseController
                 $updateErrors['voucherCode'] = $error;
 
                 $cart->addErrors($updateErrors);
-
-                // Delete voucher code in session
-    //            craft()->httpSession->add('giftVoucher.giftVoucherCode', '');
-    //            $giftVoucherCodes = craft()->httpSession->get('giftVoucher.giftVoucherCodes');
-    //            if(count($giftVoucherCodes) > 0) {
-    //                foreach ($giftVoucherCodes as $codes) {
-    //                    if ($codes == )
-    //                }
-    //            }
-
             } else {
 
                 // Get already stored voucher codes
@@ -58,8 +46,14 @@ class GiftVoucher_CartController extends BaseController
                     craft()->httpSession->add('giftVoucher.giftVoucherCodes', $giftVoucherCodes);
                 }
 
-                craft()->userSession->setNotice(Craft::t('Cart updated.'));
                 craft()->commerce_orders->saveOrder($cart);
+
+                // Return ajax
+                if (craft()->request->isAjaxRequest) {
+                    $this->returnJson(['success' => true, 'cart' => $this->cartArray($cart)]);
+                }
+
+                craft()->userSession->setNotice(Craft::t('Cart updated.'));
                 $this->redirectToPostedUrl();
             }
         }
@@ -93,16 +87,14 @@ class GiftVoucher_CartController extends BaseController
         // Store the updated session array
         craft()->httpSession->add('giftVoucher.giftVoucherCodes', $giftVoucherCodes);
 
-        craft()->userSession->setNotice(Craft::t('Cart updated.'));
         craft()->commerce_orders->saveOrder($cart);
-        $this->redirectToPostedUrl();
 
-//        if(count($giftVoucherCodes) > 0) {
-//            foreach ($giftVoucherCodes as $giftVoucherCode) {
-//                if ($giftVoucherCode == $voucherCode) {
-//
-//                }
-//            }
-//        }
+        // Return ajax
+        if (craft()->request->isAjaxRequest) {
+            $this->returnJson(['success' => true, 'cart' => $this->cartArray($cart)]);
+        }
+
+        craft()->userSession->setNotice(Craft::t('Cart updated.'));
+        $this->redirectToPostedUrl();
     }
 }
