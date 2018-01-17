@@ -165,7 +165,7 @@ class GiftVoucherPlugin extends BasePlugin
     public function commerce_registerOrderAdjusters()
     {
         return [
-            401 => new GiftVoucher_DiscountAdjuster(),
+            700 => new GiftVoucher_DiscountAdjuster(),
         ];
     }
 
