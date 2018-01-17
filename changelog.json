@@ -7,6 +7,7 @@
             "[Added] Redeeming multiple vouchers.",
             "[Added] Added possibility to return ajax in frontend controller.",
             "[Improved] Redeemed code managing.",
+            "[Improved] Change DiscountAdjuster order to apply after tax discount.",
             "[Fixed] Adjuster showing proper discount amount."
         ]
     },
