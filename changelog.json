@@ -5,7 +5,7 @@
         "date": "2017-01-18T00:00:00+10:00",
         "notes": [
             "[Added] Redeeming multiple vouchers.",
-            "[Added] Added possibility to return ajax in frontend controller.",
+            "[Added] Added possibility to return Ajax in frontend controller.",
             "[Improved] Redeemed code managing.",
             "[Improved] Change DiscountAdjuster order to apply after tax discount.",
             "[Fixed] Adjuster showing proper discount amount."
