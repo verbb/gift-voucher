@@ -3,10 +3,10 @@
 namespace Craft;
 
 /**
- * @property int id
- * @property int codeId
- * @property int orderId
- * @property int amount
+ * @property int   id
+ * @property int   codeId
+ * @property int   orderId
+ * @property float amount
  */
 class GiftVoucher_RedemptionModel extends BaseModel
 {

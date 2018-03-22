@@ -19,12 +19,12 @@ class GiftVoucherPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '1.0.0';
+        return '1.0.1';
     }
 
     public function getSchemaVersion()
     {
-        return '1.0.0';
+        return '1.0.1';
     }
 
     public function getDeveloper()
@@ -165,7 +165,7 @@ class GiftVoucherPlugin extends BasePlugin
     public function commerce_registerOrderAdjusters()
     {
         return [
-            401 => new GiftVoucher_DiscountAdjuster(),
+            700 => new GiftVoucher_DiscountAdjuster(),
         ];
     }
 
@@ -245,6 +245,7 @@ class GiftVoucherPlugin extends BasePlugin
     private function _registerEventHandlers()
     {
         craft()->on('commerce_orders.onOrderComplete', [
+//        craft()->on('commerce_orders.onBeforeOrderComplete', [
             GiftVoucherHelper::getCodesService(),
             'onOrderCompleteHandler',
         ]);
