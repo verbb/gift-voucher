@@ -51,8 +51,12 @@
                         {% if voucherCode.getOrder() %}
 							<a href="{{ voucherCode.getOrderEditUrl() }}">{{ voucherCode.getOrder() }}</a>
                         {% else %}
-							Order deleted
-	                    {% endif %}
+                            {% if voucherCode.manually %}
+    							Manually Created
+                            {% else %}
+                                Order deleted
+                            {% endif %}
+                        {% endif %}
 					</td>
 
 					<td data-title="{{ 'Original Amount' | t }}">{{ voucherCode.originalAmount }}</td>
