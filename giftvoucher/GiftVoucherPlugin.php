@@ -216,7 +216,10 @@ class GiftVoucherPlugin extends BasePlugin
                 'required' => true,
                 'default'  => 'Voucher-{number}',
             ],
-            'edition'                       => [AttributeType::Mixed],
+            'edition'                       => [
+                AttributeType::Mixed,
+                'default'  => -1,
+            ],
         ];
     }
 
