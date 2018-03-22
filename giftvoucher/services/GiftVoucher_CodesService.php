@@ -175,6 +175,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
             // Use the plugin-modified name, if anyone was up to the task.
             $codeKey = $modifiedCodeKey ?: $codeKey;
 
+            $code->codeKey = $codeKey;
             $record->codeKey = $codeKey;
 
             // Set original amount
