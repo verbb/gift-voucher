@@ -7,7 +7,7 @@ class GiftVoucher_CodesService extends BaseApplicationComponent
     // Properties
     // =========================================================================
 
-    const CODE_KEY_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const CODE_KEY_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 
     // Public Methods
