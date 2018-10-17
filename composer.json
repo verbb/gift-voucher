@@ -1,22 +1,44 @@
 {
-  "name": "verbb/GiftVoucher",
-  "description": "Plugin for Craft Commerce implementing gift vouchers.",
-  "type": "craft-plugin",
-  "authors": [
-    {
-      "name": "Verbb",
-      "homepage": "http://verbb.io/"
+    "name": "verbb/gift-voucher",
+    "description": "Plugin for Craft Commerce implementing gift vouchers.",
+    "type": "craft-plugin",
+    "version": "2.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "gift voucher"
+    ],
+    "support": {
+        "email": "support@verbb.io",
+        "issues": "https://github.com/verbb/gift-voucher/issues?state=open",
+        "source": "https://github.com/verbb/gift-voucher",
+        "docs": "https://github.com/verbb/gift-voucher",
+        "rss": "https://github.com/verbb/gift-voucher/commits/v2.atom"
+    },
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Verbb",
+            "homepage": "https://verbb.io"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "verbb\\giftvoucher\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Gift Voucher",
+        "handle": "gift-voucher",
+        "schemaVersion": "2.0.0",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "https://raw.githubusercontent.com/verbb/gift-voucher/craft-3/CHANGELOG.md",
+        "class": "verbb\\giftvoucher\\GiftVoucher"
     }
-  ],
-  "require": {
-    "composer/installers": "~1.0"
-  },
-  "config": {
-    "vendor-dir": "giftvoucher/vendor"
-  },
-  "autoload": {
-    "psr-4": {
-      "GiftVoucher\\": "giftvoucher/GiftVoucher"
-    }
-  }
 }

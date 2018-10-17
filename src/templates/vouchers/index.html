@@ -1,0 +1,13 @@
+{% extends '_layouts/elementindex' %}
+
+{% set title = 'Vouchers' | t('gift-voucher') %}
+{% set selectedSubnavItem = 'vouchers' %}
+
+{% set docTitle = title ~ ' - Gift Voucher' %}
+{% set elementType = 'verbb\\giftvoucher\\elements\\Voucher' %}
+
+{% if voucherTypeHandle is defined %}
+	{% includejs 'window.defaultVoucherTypeHandle = "' ~ voucherTypeHandle ~ '";' %}
+{% endif %}
+
+{% do view.registerAssetBundle('verbb\\giftvoucher\\assetbundles\\GiftVoucherAsset') -%}

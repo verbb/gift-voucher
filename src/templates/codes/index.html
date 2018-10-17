@@ -1,0 +1,9 @@
+{% extends '_layouts/elementindex' %}
+
+{% set title = 'Codes' | t('gift-voucher') %}
+{% set selectedSubnavItem = 'codes' %}
+
+{% set docTitle = title ~ ' - Gift Voucher' %}
+{% set elementType = 'verbb\\giftvoucher\\elements\\Code' %}
+
+{% do view.registerAssetBundle('verbb\\giftvoucher\\assetbundles\\GiftVoucherAsset') -%}

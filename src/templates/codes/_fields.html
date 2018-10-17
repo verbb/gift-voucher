@@ -1,0 +1,100 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.textAreaField({
+    label: 'Code key' | t('gift-voucher'),
+    instructions: 'The actual code for the voucher. This is generated automatically.' | t('gift-voucher'),
+    id: 'codeKey',
+    class: 'code',
+    name: 'codeKey',
+    disabled: true,
+    value: code.codeKey,
+}) }}
+
+{% if code.codeKey and not code.voucherId %}
+    {% set pvoucherInput %}
+        <div class="input ltr">
+            <input class="text ltr fullwidth" type="text" disabled="disabled" value="{{ code.getVoucherName() }}" autocomplete="off" />
+        </div>
+    {% endset %}
+
+    {{ forms.field({
+        label: 'Voucher' | t('gift-voucher'),
+        instructions: 'A deleted gift voucher' | t('gift-voucher')
+    }, voucherInput) }}
+{% else %}
+    {{ forms.elementSelectField({
+        label: 'Voucher' | t('gift-voucher'),
+        instructions: 'Select a voucher to be associated with this voucher code.' | t('gift-voucher'),
+        elementType: voucherElementType,
+        elements: code.voucherId ? craft.giftVoucher.vouchers.id(code.voucherId).all() : null,
+        id: 'voucher',
+        errors: code.getErrors('voucherId'),
+        class: 'ltr',
+        name: 'voucher',
+        limit: 1,
+        addButtonLabel: 'Select a Voucher' | t('gift-voucher'),
+    }) }}
+{% endif %}
+
+{% if not code.id %}
+    {% set amountLabel = 'Amount' | t('gift-voucher') %}
+    {% set amountInstruction = 'Define an amount for the value of the voucher code.' | t('gift-voucher') %}
+{% else %}
+    {% set amountLabel = 'Current Amount' | t %}
+    {% set amountInstruction = 'The current value of the voucher code, adjustable.' | t('gift-voucher') %}
+
+    {{ forms.textField({
+        label: 'Original Amount' | t('gift-voucher'),
+        instructions: 'The original value of the voucher code.' | t('gift-voucher'),
+        id: 'originalAmount',
+        name: 'originalAmount',
+        value: code.originalAmount,
+        disabled: true,
+    }) }}
+
+    <input type="hidden" name="originalAmount" value="{{ code.originalAmount }}">
+{% endif %}
+
+{{ forms.textField({
+    label: amountLabel | t('gift-voucher'),
+    instructions: amountInstruction | t('gift-voucher'),
+    id: 'currentAmount',
+    name: 'currentAmount',
+    value: code.currentAmount,
+    required: true,
+    errors: code.getErrors('currentAmount')
+}) }}
+
+{% if code.getRedemptions() %}
+    <hr>
+
+    <h2>{{ 'Redemptions' | t('gift-voucher') }}</h2>
+    <p>{{ 'Below is the list of all the times this voucher code has been used (redeemed).' | t('gift-voucher') }}</p>
+
+    <table id="fields" class="data fullwidth collapsible">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Order' | t('gift-voucher') }}</th>
+                <th scope="col">{{ 'Date' | t('gift-voucher') }}</th>
+                <th scope="col">{{ 'Amount Redeemed' | t('gift-voucher') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for redemption in code.getRedemptions() %}
+                <tr>
+                    <td>
+                        {{ redemption.getOrder().getLink() | raw }}
+                    </td>
+
+                    <td>
+                        {{ redemption.getOrder().dateOrdered | date('Y-m-d H:i:s') }}
+                    </td>
+
+                    <td class="nowrap" width="10%">
+                        ${{ redemption.amount }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

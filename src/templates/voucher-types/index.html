@@ -1,0 +1,50 @@
+{% extends 'gift-voucher/_layouts' %}
+
+{% set title = 'Voucher Types' | t('gift-voucher') %}
+{% set selectedSubnavItem = 'voucherTypes' %}
+
+{% set crumbs = [
+    { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
+    { label: 'Voucher Types' | t('gift-voucher'), url: url('gift-voucher/voucher-types') },
+] %}
+
+{% set voucherTypes = craft.giftVoucher.getVoucherTypes() %}
+{% block blockContent %}
+	<div id="noVoucherTypes"{% if voucherTypes %} class="hidden"{% endif %}>
+		<p>{{ 'No voucher types exist yet.' | t('gift-voucher') }}</p>
+	</div>
+
+	{% if voucherTypes | length %}
+		<table id="voucherTypes" class="data fullwidth collapsible">
+			<thead>
+    			<th scope="col">{{ 'Name' | t('gift-voucher') }}</th>
+    			<th scope="col">{{ 'Handle' | t('gift-voucher') }}</th>
+    			<td class="thin"></td>
+			</thead>
+			<tbody>
+    			{% for voucherType in voucherTypes %}
+    				<tr data-id="{{ voucherType.id }}" data-name="{{ voucherType.name | t('gift-voucher') }}">
+    					<th scope="row" data-title="{{ 'Name' | t('gift-voucher') }}"><a href="{{ url('gift-voucher/voucher-types/' ~ voucherType.id) }}">{{ voucherType.name | t('gift-voucher') }}</a></th>
+    					<td data-title="{{ 'Handle' | t('gift-voucher') }}"><code>{{ voucherType.handle }}</code></td>
+    					<td class="thin"><a class="delete icon" title="{{ 'Delete' | t('gift-voucher') }}" role="button"></a></td>
+    				</tr>
+    			{% endfor %}
+			</tbody>
+		</table>
+	{% endif %}
+
+    <div id="newVoucherType" class="buttons">
+        <a href="{{ url('gift-voucher/voucher-types/new') }}" class="btn submit add icon">{{ 'New voucher type' | t('gift-voucher') }}</a>
+    </div>
+{% endblock %}
+
+{% set js %}
+	var adminTable = new Craft.AdminTable({
+		tableSelector: '#voucherTypes',
+		noObjectsSelector: '#noVoucherTypes',
+		newObjectBtnSelector: '#newVoucherType',
+		deleteAction: 'gift-voucher/voucher-types/delete',
+		confirmDeleteMessage: '{{ 'Are you sure you want to delete “{name}” and all its vouchers?' | t('gift-voucher') }}'
+	});
+{% endset %}
+{% includeJs js %}

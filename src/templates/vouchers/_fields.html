@@ -1,0 +1,119 @@
+{% macro titleField(voucher) %}
+	{%- import '_includes/forms' as forms -%}
+
+	{{ forms.textField({
+		label: 'Title' | t('gift-voucher'),
+		site: voucher.site,
+		id: 'title',
+		name: 'title',
+		value: voucher.title,
+		placeholder: 'Enter title' | t('gift-voucher'),
+		errors: voucher.getErrors('title'),
+		first: true,
+		autofocus: true,
+		required: true,
+		maxlength: 255
+	}) }}
+{% endmacro %}
+
+{% macro generalMetaFields(voucher) %}
+    {%- import '_includes/forms' as forms -%}
+        
+    {{ forms.textField({
+        label: 'Slug' | t('gift-voucher'),
+        id: 'slug',
+        name: 'slug',
+        value: voucher.slug,
+        placeholder: 'Enter slug' | t('gift-voucher'),
+        errors: voucher.getErrors('slug') | merge(voucher.getErrors('uri'))
+    }) }}
+
+    {{ forms.dateTimeField({
+        label: 'Post Date' | t('gift-voucher'),
+        id: 'postDate',
+        name: 'postDate',
+        value: voucher.postDate,
+        errors: voucher.getErrors('postDate')
+    }) }}
+
+    {{ forms.dateTimeField({
+        label: 'Expiry Date' | t('gift-voucher'),
+        id: 'expiryDate',
+        name: 'expiryDate',
+        value: voucher.expiryDate,
+        errors: voucher.getErrors('expiryDate')
+    }) }}
+{% endmacro %}
+
+{% macro behavioralMetaFields(voucher) %}
+    {%- import '_includes/forms' as forms -%}
+
+    {{ forms.selectField({
+        label: 'Tax Category' | t('gift-voucher'),
+        name: 'taxCategoryId',
+        value: voucher.taxCategoryId,
+        required: true,
+        options: craft.commerce.taxCategories.getAllTaxCategoriesAsList()
+    }) }}
+
+    {% set shippingCategories = [] %}
+    {% for shippingCategory in craft.commerce.shippingCategories.getAllShippingCategories() %}
+        {% set shippingCategories = shippingCategories|merge([{ value: shippingCategory.id, label: shippingCategory.name }]) %}
+    {% endfor %}
+
+    {{ forms.selectField({
+        label: 'Shipping Category' | t('gift-voucher'),
+        name: 'shippingCategoryId',
+        value: voucher.shippingCategoryId,
+        required: true,
+        options: shippingCategories
+    }) }}
+{% endmacro %}
+
+{% macro generalFields(voucher) %}
+    {%- import '_includes/forms' as forms -%}
+
+    {{ forms.textField({
+        id: 'sku',
+        label: 'SKU' | t('gift-voucher'),
+        required: true,
+        name: 'sku',
+        value: voucher.sku,
+        class: 'code',
+        placeholder: 'Enter SKU' | t('gift-voucher'),
+        errors: voucher.getErrors('sku')
+    }) }}
+
+    {{ forms.lightswitchField({
+        id: 'customAmount',
+        name: 'customAmount',
+        on: voucher.customAmount,
+        label: 'Custom amount? <span class="info">Allow customers to set their own amount when purchasing this voucher.</span>' | t('gift-voucher')
+    }) }}
+
+    {{ forms.textField({
+        id: 'price',
+        label: 'Price' | t('gift-voucher'),
+        name: 'price',
+        value: (voucher.price == '0' ? '0' | number : (voucher.price ?  voucher.price | number ?: '')),
+        placeholder: 'Enter price' | t('gift-voucher'),
+        unit: craft.commerce.primaryPaymentCurrency.iso,
+        errors: voucher.getErrors('price'),
+        fieldClass: voucher.customAmount ? 'hidden'
+    }) }}
+
+    {% js %}
+        $(function() {
+            $(document).on('change', '#customAmount', function() {
+                var $priceField = $('#price-field');
+
+                if ($(this).hasClass('on')) {
+                    $priceField.addClass('hidden');
+                } else {
+                    $priceField.removeClass('hidden');
+                }
+            });
+        });
+    {% endjs %}
+{% endmacro %}
+

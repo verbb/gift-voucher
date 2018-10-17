@@ -1,0 +1,153 @@
+{% extends '_layouts/cp' %}
+{% set selectedSubnavItem = 'codes' %}
+
+{% set crumbs = [
+    { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
+    { label: 'Codes' | t('gift-voucher'), url: url('gift-voucher/codes') },
+] %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = continueEditingUrl %}
+
+{% import '_includes/forms' as forms %}
+
+{% set statusOptions = [
+    { label: 'Active' | t('gift-voucher'), value: 1 },
+    { label: 'Disabled' | t('gift-voucher'), value: 0 }
+] %}
+
+{% block actionButton %}
+    <div class="btngroup">
+        <input type="submit" class="btn submit" value="{{ 'Save' | t('gift-voucher') }}">
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ continueEditingUrl | hash }}">
+                        {{ 'Save and continue editing' | t('gift-voucher') }}
+                        {{ forms.optionShortcutLabel('S') }}
+                    </a>
+                </li>
+
+                {% if code.id %}
+                    <li>
+                        <a class="formsubmit" data-param="codeId" data-value="" data-redirect="{{ continueEditingUrl | hash }}">
+                            {{ 'Save as a new code' | t('gift-voucher') }}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            {% if code.id %}
+                <hr>
+                <ul>
+                    <li>
+                        <a class="formsubmit error" data-action="gift-voucher/codes/delete" data-confirm="{{ 'Are you sure you want to delete this code?' | t('gift-voucher') }}" data-redirect="{{ 'gift-voucher/codes' | hash }}">
+                            {{ 'Delete' | t('gift-voucher') }}
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <input type="hidden" name="action" value="gift-voucher/codes/save">
+    {{ redirectInput('gift-voucher/codes') }}
+    {% if code.id %}<input type="hidden" name="codeId" value="{{ code.id }}">{% endif %}
+
+    <div id="fields">
+        {% include 'gift-voucher/codes/_fields' %}
+    </div>
+{% endblock %}
+
+{% block details %}
+    <div class="meta">
+        {{ forms.dateTimeField({
+            label: 'Expiry Date' | t('gift-voucher'),
+            id: 'expiryDate',
+            name: 'expiryDate',
+            value: code.expiryDate,
+            errors: code.getErrors('expiryDate')
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: 'Enabled' | t('gift-voucher'),
+            id: 'enabled',
+            name: 'enabled',
+            on: code.enabled
+        }) }}
+
+        {% if craft.app.getIsMultiSite() %}
+            {{ forms.lightswitchField({
+                label: 'Enabled for site' | t('gift-voucher'),
+                id: 'enabledForSite',
+                name: 'enabledForSite',
+                on: code.enabledForSite
+            }) }}
+        {% endif %}
+    </div>
+
+    <hr>
+
+    <div class="meta">
+        {% if code.getVoucher() %}
+            {% set voucherInput %}
+                <a href="{{ code.getVoucher().getCpEditUrl() }}">{{ code.getVoucher().title }}</a>
+            {% endset %}
+        {% else %}
+            {% set voucherInput %}
+                {{ 'No voucher associated' | t('gift-voucher') }}
+            {% endset %}
+        {% endif %}
+
+        {{ forms.field({
+            label: 'Voucher' | t('gift-voucher')
+        }, voucherInput) }}
+
+        {% if code.getVoucherType() %}
+            {% set voucherTypeInput %}
+                <a href="{{ code.getVoucherType().getCpEditUrl() }}">{{ code.getVoucherType().name }}</a>
+            {% endset %}
+        {% else %}
+            {% set voucherTypeInput %}
+                {{ 'No voucher type associated' | t('gift-voucher') }}
+            {% endset %}
+        {% endif %}
+
+        {{ forms.field({
+            label: 'Voucher Type' | t('gift-voucher')
+        }, voucherTypeInput) }}
+
+        {% if code.orderId %}
+            {% set productInput %}
+                <a href="{{ code.getOrder().getCpEditUrl() }}">{{ code.getOrder() }}</a>
+            {% endset %}
+        {% else %}
+            {% set productInput %}
+                {{ 'No order associated' | t('gift-voucher') }}
+            {% endset %}
+        {% endif %}
+
+        {{ forms.field({
+            label: 'Order' | t('gift-voucher')
+        }, productInput) }}
+    </div>
+
+    {% if code.id %}
+        <hr>
+
+        <div class="meta read-only">
+            <div class="data">
+                <h5 class="heading">{{ 'Date Created' | t('gift-voucher') }}</h5>
+                <div class="value">{{ code.dateCreated | date('short') }} {{ code.dateCreated | time('short') }}</div>
+            </div>
+
+            <div class="data">
+                <h5 class="heading">{{ 'Date Updated' | t('gift-voucher') }}</h5>
+                <div class="value">{{ code.dateUpdated | date('short') }} {{ code.dateUpdated | time('short') }}</div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

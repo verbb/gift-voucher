@@ -1,0 +1,179 @@
+{% extends '_layouts/cp' %}
+{% set selectedSubnavItem = 'vouchers' %}
+
+{% set crumbs = [
+	{ label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
+	{ label: voucherType.name | t('gift-voucher'), url: url('gift-voucher/vouchers/' ~ voucherType.handle) },
+] %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = continueEditingUrl %}
+
+{% import '_includes/forms' as forms %}
+{% import 'gift-voucher/vouchers/_fields' as voucherFields %}
+
+{% block header %}
+    {{ block('pageTitle') }}
+    {{ block('contextMenu') }}
+    <div class="flex-grow"></div>
+
+    {% if showPreviewBtn or shareUrl is defined %}
+        {% if showPreviewBtn %}
+            <div class="btn livepreviewbtn">{{ 'Live Preview' | t('app') }}</div>
+        {% endif %}
+
+        {% if shareUrl is defined %}
+            <a href="{{ shareUrl }}" class="btn sharebtn" target="_blank">{{ 'Share' | t('app') }}</a>
+        {% endif %}
+
+        <div class="flex-grow"></div>
+    {% endif %}
+
+    {{ block('actionButton') }}
+{% endblock %}
+
+{% block actionButton %}
+    <div class="btngroup">
+        <input type="submit" class="btn submit" value="{{ 'Save' | t('gift-voucher') }}">
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ continueEditingUrl | hash }}">
+                        {{ 'Save and continue editing' | t('gift-voucher') }}
+                        {{ forms.optionShortcutLabel('S') }}
+                    </a>
+                </li>
+
+                {% if voucher.id %}
+                    <li>
+                        <a class="formsubmit" data-param="voucherId" data-value="" data-redirect="{{ continueEditingUrl | hash }}">
+                            {{ 'Save as a new voucher' | t('gift-voucher') }}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            {% if voucher.id %}
+                <hr>
+                <ul>
+                    <li>
+                        <a class="formsubmit error" data-action="gift-voucher/vouchers/delete" data-confirm="{{ 'Are you sure you want to delete this voucher?' | t('gift-voucher') }}" data-redirect="{{ 'gift-voucher/vouchers' | hash }}">
+                            {{ 'Delete' | t('gift-voucher') }}
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block contextMenu %}
+    {% if craft.app.getIsMultiSite() %}
+        <div class="btn menubtn" data-icon="world">{{ voucher.site.name | t('site') }}</div>
+        <div class="menu">
+            <ul class="padded">
+                {% for siteId in siteIds %}
+                    {% set site = craft.app.sites.getSiteById(siteId) %}
+                    {% set status = siteId in enabledSiteIds ? 'enabled' : 'disabled' %}
+
+                    <li>
+                        {% if siteId == voucher.siteId %}
+                            <a class="sel">
+                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
+                            </a>
+                        {% else %}
+                            {% set url = url('gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}/#{site.handle}') %}
+
+                            <a href="{{ url }}">
+                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+	<input type="hidden" name="action" value="gift-voucher/vouchers/save">
+	{{ redirectInput('gift-voucher/vouchers') }}
+	<input type="hidden" name="typeId" value="{{ voucherType.id }}">
+	{% if voucher.id %}<input type="hidden" name="voucherId" value="{{ voucher.id }}">{% endif %}
+
+	<div id="fields">
+        {{ voucherFields.titleField(voucher) }}
+
+        <div>
+            {% set allVoucherTab = voucherType.getFieldLayout().getTabs() %}
+
+            {% for tab in allVoucherTab %}
+                <div id="tab{{ loop.index }}" {% if not loop.first %} class="hidden" {% endif %}>
+                    {% include '_includes/fields' with {
+                        fields: tab.getFields(),
+                        element: voucher,
+                    } only %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if not voucher.slug %}
+        {% includejs %}
+            window.slugGenerator = new Craft.SlugGenerator('#title', '#slug');
+        {% endincludejs %}
+    {% endif %}
+{% endblock %}
+
+{% block details %}
+    <div class="meta">
+        {{ voucherFields.generalMetaFields(voucher) }}
+
+        {{ forms.lightswitchField({
+            label: 'Enabled' | t('gift-voucher'),
+            id: 'enabled',
+            name: 'enabled',
+            on: voucher.enabled
+        }) }}
+
+        {% if craft.app.getIsMultiSite() %}
+            {{ forms.lightswitchField({
+                label: 'Enabled for site' | t('gift-voucher'),
+                id: 'enabledForSite',
+                name: 'enabledForSite',
+                on: voucher.enabledForSite
+            }) }}
+        {% endif %}
+    </div>
+
+    <hr>
+
+    <div class="meta">
+        {{ voucherFields.behavioralMetaFields(voucher) }}
+    </div>
+
+    <hr>
+
+    <div class="meta">
+        {{ voucherFields.generalFields(voucher) }}
+    </div>
+
+    <hr>
+
+    {% if voucher.id %}
+        <hr>
+
+        <div class="meta read-only">
+            <div class="data">
+                <h5 class="heading">{{ 'Date Created' | t('gift-voucher') }}</h5>
+                <div class="value">{{ voucher.dateCreated | date('short') }} {{ voucher.dateCreated | time('short') }}</div>
+            </div>
+
+            <div class="data">
+                <h5 class="heading">{{ 'Date Updated' | t('gift-voucher') }}</h5>
+                <div class="value">{{ voucher.dateUpdated | date('short') }} {{ voucher.dateUpdated | time('short') }}</div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
