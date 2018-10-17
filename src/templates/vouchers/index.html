@@ -7,7 +7,9 @@
 {% set elementType = 'verbb\\giftvoucher\\elements\\Voucher' %}
 
 {% if voucherTypeHandle is defined %}
-	{% includejs 'window.defaultVoucherTypeHandle = "' ~ voucherTypeHandle ~ '";' %}
+    {% js %}
+	   window.defaultVoucherTypeHandle = '{{ voucherTypeHandle }}';
+    {% endjs %}
 {% endif %}
 
 {% do view.registerAssetBundle('verbb\\giftvoucher\\assetbundles\\GiftVoucherAsset') -%}

@@ -97,7 +97,7 @@
         name: 'price',
         value: (voucher.price == '0' ? '0' | number : (voucher.price ?  voucher.price | number ?: '')),
         placeholder: 'Enter price' | t('gift-voucher'),
-        unit: craft.commerce.primaryPaymentCurrency.iso,
+        unit: craft.commerce.paymentCurrencies.primaryPaymentCurrency.iso | upper,
         errors: voucher.getErrors('price'),
         fieldClass: voucher.customAmount ? 'hidden'
     }) }}
