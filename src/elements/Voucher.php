@@ -322,6 +322,11 @@ class Voucher extends Purchasable
             ->all();
     }
 
+    public function getProduct()
+    {
+        return $this;
+    }
+
     public function getFieldLayout()
     {
         $voucherType = $this->getType();
