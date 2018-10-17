@@ -124,7 +124,9 @@ class Code extends Element
 
     public function getRedemptions()
     {
-        return GiftVoucher::$plugin->getRedemptions()->getRedemptionsByCodeId($this->id);
+        if ($this->id) {
+            return GiftVoucher::$plugin->getRedemptions()->getRedemptionsByCodeId($this->id);
+        }
     }
 
     public function getName()
