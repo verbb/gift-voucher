@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 - 2018-10-18
+
+### Fixed
+- Fixed some deprecation notices
+- Fix redemption error for new codes
+
 ## 2.0.0 - 2018-10-17
 
 - Craft 3 release.
