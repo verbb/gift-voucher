@@ -443,9 +443,14 @@ class Voucher extends Purchasable
     {
         return $this->id;
     }
+    
     public function getSnapshot(): array
     {
-        return $this->getAttributes();
+        $data = [];
+
+        $data['fields'] = $this->getSerializedFieldValues();
+
+        return array_merge($this->getAttributes(), $data);
     }
 
     public function getPrice(): float
