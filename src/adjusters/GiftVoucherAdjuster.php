@@ -41,7 +41,9 @@ class GiftVoucherAdjuster implements AdjusterInterface
         }
 
         foreach ($giftVoucherCodes as $giftVoucherCode) {
-            $voucherCode = Code::findOne(['codeKey' => $giftVoucherCode]);
+            $voucherCode = Code::find()
+                ->where(['=', 'codeKey', $giftVoucherCode])
+                ->one();
 
             if ($voucherCode) {
                 $adjustment = $this->_getAdjustment($order, $voucherCode);

@@ -38,7 +38,9 @@ class CartController extends BaseFrontEndController
 
         $voucherCode = $request->getParam('voucherCode');
 
-        if (!$voucherCode) {
+        if (!$voucherCode || trim($voucherCode) == '') {
+            $this->_cart->addErrors(['voucherCode' => Craft::t('gift-voucher', 'No voucher code provided.')]);
+
             return null;
         }
 
