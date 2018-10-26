@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.2 - 2018-10-26
+
+### Added
+- Add product method for voucher for easy commerce compatibility
+- Add field data to line item snapshot
+
+### Changed
+- Codes are now generated after the order is paid, instead of when complete
+- Bring back `getPdfUrl()` and `getOrderPdfUrl()`
+
+### Fixed
+- Fix welcome redirect
+- Fix empty strings being able to validate vouchers (oops)
+
 ## 2.0.1 - 2018-10-18
 
 ### Fixed
