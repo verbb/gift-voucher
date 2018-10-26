@@ -7,11 +7,13 @@ use verbb\giftvoucher\elements\Code;
 
 use Craft;
 use craft\helpers\FileHelper;
+use craft\helpers\UrlHelper;
 use craft\web\View;
 
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\events\PdfEvent;
-use craft\commerce\Plugin as Commerce;
+use craft\commerce\models\LineItem;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -30,15 +32,36 @@ class PdfService extends Component
     // Public Methods
     // =========================================================================
 
-    public function renderPdf(Order $order, $option = '', $templatePath = null): string
+    public function getPdfUrl(Order $order, LineItem $lineItem = null, $option = null)
+    {
+        $url = null;
+
+        try {
+            $path = "gift-voucher/downloads/pdf?number={$order->number}" . ($option ? "&option={$option}" : '') . ($lineItem ? "&lineItemId={$lineItem->id}" : '');
+            $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/' . trim($path, '/');
+            $url = UrlHelper::siteUrl($path);
+        } catch (\Exception $e) {
+            Craft::error($e->getMessage());
+            return null;
+        }
+
+        return $url;
+    }
+
+    public function renderPdf(Order $order, LineItem $lineItem = null, $option = '', $templatePath = null): string
     {
         if (null === $templatePath){
             $templatePath = GiftVoucher::getInstance()->getSettings()->voucherCodesPdfPath;
         }
 
-        $codes = Code::find()
-            ->orderId($order->id)
-            ->all();
+        $codesQuery = Code::find()
+            ->orderId($order->id);
+
+        if ($lineItem) {
+            $codesQuery->lineItemId = $lineItem->id;
+        }
+
+        $codes = $codesQuery->all();
 
         // Trigger a 'beforeRenderPdf' event
         $event = new PdfEvent([
@@ -65,7 +88,7 @@ class PdfService extends Component
         }
 
         try {
-            $html = $view->renderTemplate($templatePath, compact('order', 'codes', 'option'));
+            $html = $view->renderTemplate($templatePath, compact('order', 'codes', 'lineItem', 'option'));
         } catch (\Exception $e) {
             // Set the pdf html to the render error.
             Craft::error('Voucher PDF render error. Order number: ' . $order->getShortNumber() . '. ' . $e->getMessage());

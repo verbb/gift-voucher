@@ -16,6 +16,7 @@ use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
 
 use craft\commerce\base\Purchasable;
+use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 use craft\commerce\models\TaxCategory;
 use craft\commerce\models\ShippingCategory;
@@ -293,25 +294,7 @@ class Voucher extends Purchasable
 
     public function getPdfUrl(LineItem $lineItem, $option = null)
     {
-        $url = null;
-
-        try {
-            $order = $lineItem->order;
-
-            $pdf = GiftVoucher::getInstance()->getPdf()->renderPdf($order, $option);
-
-            if ($pdf) {
-                $path = "gift-voucher/downloads/pdf?number={$order->number}" . ($option ? "&option={$option}" : '');
-                $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/' . trim($path, '/');
-                $url = UrlHelper::siteUrl($path);
-            }
-        } catch (\Exception $e) {
-            Craft::error($e->getMessage());
-            var_dump($e->getMessage());
-            return null;
-        }
-
-        return $url;
+        return GiftVoucher::$plugin->getPdf()->getPdfUrl($lineItem->order, $lineItem);
     }
 
     public function getCodes(LineItem $lineItem)
