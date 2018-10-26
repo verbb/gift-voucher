@@ -56,6 +56,11 @@ class GiftVoucher extends Plugin
         $this->_registerAdjusters();
     }
 
+    public function afterInstall()
+    {
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('gift-voucher/welcome'))->send();
+    }
+
     public function getSettingsUrl(): bool
     {
         return false;
@@ -99,15 +104,6 @@ class GiftVoucher extends Plugin
         }
 
         return $navItems;
-    }
-
-    public function afterInstallPlugin(PluginEvent $event)
-    {
-        $isCpRequest = Craft::$app->getRequest()->isCpRequest;
-
-        if ($event->plugin === $this && $isCpRequest) {
-            Craft::$app->controller->redirect(UrlHelper::cpUrl('gift-voucher/welcome'))->send();
-        }
     }
 
 
