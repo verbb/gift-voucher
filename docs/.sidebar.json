@@ -1,0 +1,49 @@
+[
+    {
+        "title": "Get Started",
+        "collapsable": false,
+        "children": [
+            "get-started/installation-setup",
+            "get-started/requirements",
+            "get-started/configuration"
+        ]
+    },
+    {
+        "title": "Feature Tour",
+        "collapsable": false,
+        "children": [
+            "feature-tour/vouchers",
+            "feature-tour/voucher-types",
+            "feature-tour/voucher-codes",
+            "feature-tour/redemptions",
+            "feature-tour/custom-amounts",
+            "feature-tour/pdf-vouchers"
+        ]
+    },
+    {
+        "title": "Models",
+        "collapsable": false,
+        "children": [
+            "models/voucher-model",
+            "models/code-model"
+        ]
+    },
+    {
+        "title": "Template Guide",
+        "collapsable": false,
+        "children": [
+            "template-guide/fetching-vouchers",
+            "template-guide/voucher-template",
+            "template-guide/displaying-voucher-codes",
+            "template-guide/redeeming-voucher-codes",
+            "template-guide/pdf-template"
+        ]
+    },
+    {
+        "title": "Support",
+        "collapsable": false,
+        "children": [
+            "support/get-support"
+        ]
+    }
+]
