@@ -432,6 +432,7 @@ class Voucher extends Purchasable
         $data = [];
 
         $data['fields'] = $this->getSerializedFieldValues();
+        $data['type'] = self::class;
 
         return array_merge($this->getAttributes(), $data);
     }
