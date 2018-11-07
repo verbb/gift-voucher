@@ -7,23 +7,22 @@ Create an `gift-voucher.php` file under your `/config` directory with the follow
 
 return [
     '*' => [
-        // 'letter', 'legal', 'A4', etc.
-        'pdfPaperSize' => 'letter',
-
-        // 'portrait' or 'landscape'
-        'pdfPaperOrientation' => 'portrait',
-
-        // true|false
-        'pdfAllowRemoteImages' => true,
+        'expiry' => 0,
+        'codeKeyLength' => 10,
+        'codeKeyCharacters' => 'ACDEFGHJKLMNPQRTUVWXYZ234679',
+        'voucherCodesPdfPath' => 'shop/_pdf/voucher',
+        'voucherCodesPdfFilenameFormat' => 'Voucher-{number}',
     ]
 ];
 ```
 
 ### Configuration options
 
-- `pdfPaperSize` - handles the PDF paper size. You can find a full list of available sizes under [Dompdf\\Adapter\\CPDF::$PAPER\_SIZES](https://github.com/dompdf/dompdf/blob/master/src/Adapter/CPDF.php)
-- `pdfPaperOrientation` - the PDF paper orientation, either `portrait` or `landscape`
-- `pdfAllowRemoteImages` - option to enable/disable remote images in PDFs.
+- `expiry` - Set a default expiry (in months). 0 to disable.
+- `codeKeyLength` - Set the number of characters for generated codes to be.
+- `codeKeyCharacters` - Supply valid characters to be used in code generation.
+- `voucherCodesPdfPath` - Set the path to your PDF.
+- `voucherCodesPdfFilenameFormat` - Set the defaulf PDF filename format.
 
 ## Control Panel
 
