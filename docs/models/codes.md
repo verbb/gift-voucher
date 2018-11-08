@@ -25,8 +25,8 @@ Code elements have the following attributes and methods:
 Attribute | Description
 --- | ---
 `id` | ID of the code.
-`voucherId` | The [Voucher](/craft-plugins/gift-voucher/docs/models/voucher) ID the code is generated for.
-`voucher` | The [Voucher](/craft-plugins/gift-voucher/docs/models/voucher) the code is generated for.
+`voucherId` | The [Voucher](/craft-plugins/gift-voucher/docs/models/vouchers) ID the code is generated for.
+`voucher` | The [Voucher](/craft-plugins/gift-voucher/docs/models/vouchers) the code is generated for.
 `voucherType` | The voucher's type the code is generated for.
 `orderId` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) ID where the parent voucher was originally purchased from.
 `order` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) where the parent voucher was originally purchased from.
