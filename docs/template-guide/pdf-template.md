@@ -2,9 +2,9 @@
 
 You can create PDFs for your gift vouchers, using a template that you have total control over.
 
-Start by ensuring you've setup the **Voucher PDF Template** under the [General Settings](/craft-plugins/gift-voucher/docs/get-started/installation-setup) for Gift Voucher.
+Start by ensuring you've setup the **Voucher PDF Template** under the [General Settings](docs:get-started/installation-setup) for Gift Voucher.
 
-Also check out [Configuration](/craft-plugins/gift-voucher/docs/get-started/configuration) for more options to adjust your PDF.
+Also check out [Configuration](docs:get-started/configuration) for more options to adjust your PDF.
 
 ## Create a link for customers to download
 
@@ -47,7 +47,7 @@ The parent order that this voucher was purchased from
 
 ### codes
 
-A collection of [Codes](/craft-plugins/gift-voucher/docs/models/codes). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
+A collection of [Codes](docs:models/codes). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
 
 ## Example template
 
@@ -167,4 +167,4 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
 The above will produce a design similar to the below, which we of course encourage you to change to your needs!
 
-![Voucher Demo](/uploads/plugins/gift-voucher/voucher-demo.png)
+![Voucher Demo](/docs/screenshots/voucher-demo.png)

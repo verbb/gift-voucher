@@ -2,7 +2,7 @@
 
 When a customer has purchased a gift voucher, a Code element will be automatically generated for each voucher in their cart. This element contains the unique code for other customers to use to obtain a discount on their purchases.
 
-As such, you'll need this reference in particular when templating your [PDF template](/craft-plugins/gift-voucher/docs/template-guide/pdf-template), or showing the resulting voucher in your order summary or email templates.
+As such, you'll need this reference in particular when templating your [PDF template](docs:template-guide/pdf-template), or showing the resulting voucher in your order summary or email templates.
 
 ## Querying Codes
 
@@ -25,8 +25,8 @@ Code elements have the following attributes and methods:
 Attribute | Description
 --- | ---
 `id` | ID of the code.
-`voucherId` | The [Voucher](/craft-plugins/gift-voucher/docs/models/vouchers) ID the code is generated for.
-`voucher` | The [Voucher](/craft-plugins/gift-voucher/docs/models/vouchers) the code is generated for.
+`voucherId` | The [Voucher](docs:models/vouchers) ID the code is generated for.
+`voucher` | The [Voucher](docs:models/vouchers) the code is generated for.
 `voucherType` | The voucher's type the code is generated for.
 `orderId` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) ID where the parent voucher was originally purchased from.
 `order` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) where the parent voucher was originally purchased from.
