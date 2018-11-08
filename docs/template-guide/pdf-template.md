@@ -167,4 +167,4 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
 The above will produce a design similar to the below, which we of course encourage you to change to your needs!
 
-![Voucher Demo](/uploads/plugins/gift-voucher/voucher-demo.png)
+![Voucher Demo](/docs/screenshots/voucher-demo.png)

@@ -10,4 +10,4 @@ Fortunately, Gift Voucher has partial redemption built-in, and is smart enough t
 
 Redemptions are also tracked every time a voucher code is used in an order. A record with the associated code, order and amount is created, which can be viewed from a single voucher code page in the control panel.
 
-![Redemption Tracking](/uploads/plugins/gift-voucher/redemption-tracking.png)
+![Redemption Tracking](/docs/screenshots/redemption-tracking.png)

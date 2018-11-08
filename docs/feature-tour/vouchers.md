@@ -12,7 +12,7 @@ Before you can create vouchers, you'll first need to setup a [Voucher Type →](
 
 Each field is fairly self-explanatory, but the following fields are available for vouchers.
 
-![Voucher Edit](/uploads/plugins/gift-voucher/voucher-edit.png)
+![Voucher Edit](/docs/screenshots/voucher-edit.png)
 
 - **Title** - Give this voucher a meaningful name. This will be shown to the customer.
 - **Enabled** - Allow the voucher to be shown on the front-end of your site or not.
