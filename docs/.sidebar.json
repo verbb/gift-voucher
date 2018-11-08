@@ -24,8 +24,8 @@
         "title": "Models",
         "collapsable": false,
         "children": [
-            "models/voucher",
-            "models/code"
+            "models/vouchers",
+            "models/codes"
         ]
     },
     {
