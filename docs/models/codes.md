@@ -1,14 +1,22 @@
-# Code Element
+# Codes
 
 When a customer has purchased a gift voucher, a Code element will be automatically generated for each voucher in their cart. This element contains the unique code for other customers to use to obtain a discount on their purchases.
 
 As such, you'll need this reference in particular when templating your [PDF template](/craft-plugins/gift-voucher/docs/template-guide/pdf-template), or showing the resulting voucher in your order summary or email templates.
 
-## Simple Output
+## Querying Codes
 
-Outputting a `Code` element in your template without attaching a property or method will simply return the generated code key.
+Codes can be queried using the following:
 
-`<h1>{{ code }}</h1>`
+```twig
+{% set codes = craft.giftVoucher.codes({
+    orderId: order.id,
+}) %}
+
+{% for code in codes %}
+    {{ code.codeKey }}
+{% endfor %}
+```
 
 Code elements have the following attributes and methods:
 
