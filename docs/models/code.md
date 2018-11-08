@@ -22,7 +22,8 @@ Attribute | Description
 `voucherType` | The voucher's type the code is generated for.
 `orderId` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) ID where the parent voucher was originally purchased from.
 `order` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) where the parent voucher was originally purchased from.
-`lineItemId` | The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html) ID in the order where `lineItem` | The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html) in the order where the parent voucher was originally purchased from.
+`lineItemId` | The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html) ID in the order where the parent voucher was originally purchased from.
+`lineItem` | The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html) in the order where the parent voucher was originally purchased from.
 `codeKey` | The generated, unique code used for redeeming this amount.
 `originalAmount` | When the voucher is purchased initially, the amount is stored under this value. This cannot be updated.
 `currentAmount` | The current amount of the code. Because vouchers can be redeemed multiple times, this amount can be used all at once, or over a few orders depending on the value. This value will be updated with each redemption.
