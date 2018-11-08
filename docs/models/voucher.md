@@ -38,6 +38,6 @@ Attribute | Description
 Method | Description
 --- | ---
 `getCpEditUrl()` | The url to edit this voucher in the control panel.
-`getPdfUrl(LineItem $lineItem, $option = null)` | Get the PDF URL for this voucher and line item.
-`getCodes(LineItem $lineItem)` | Get all Code's for a provided line item and voucher.
+`getPdfUrl(LineItem $lineItem, $option = null)` | Get the PDF URL for this voucher and [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html).
+`getCodes(LineItem $lineItem)` | Get all Code's for a provided [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html) and voucher.
 `getProduct()` | Convenience method for native Commerce product behaviour. 
