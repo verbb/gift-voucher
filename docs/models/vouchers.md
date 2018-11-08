@@ -1,14 +1,20 @@
-# Voucher Element
+# Vouchers
 
 When you're on a single voucher template, or looping through vouchers using `craft.giftVoucher.vouchers()`, you're actually working with a `Voucher` element. This in turn extends Commerce's [Purchasable](https://docs.craftcms.com/commerce/v2/purchasables.html) object.
 
-## Simple Output
+## Querying Vouchers
 
-Outputting a `Voucher` element in your template without attaching a property or method will return the product’s name:
+Vouchers can be queried using the following:
 
-`<h1>{{ product }}</h1>`
+```twig
+{% set vouchers = craft.giftVoucher.vouchers({
+    type: 'giftCards',
+}) %}
 
-Voucher elements have the following attributes and methods:
+{% for voucher in vouchers %}
+    {{ voucher.name }}
+{% endfor %}
+```
 
 ## Attributes
 
