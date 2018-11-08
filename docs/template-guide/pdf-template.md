@@ -26,7 +26,7 @@ This will output an anchor tag with a link to the gift voucher. You can also ren
 
 In both cases, the URL will look something similar to:
 
-`https://mysite.local/actions/giftVoucher/downloads/pdf?number=ba018a32b43cfef51c031f61ec4d2c48&lineItemId=12`
+`https://mysite.local/actions/gift-voucher/downloads/pdf?number=ba018a32b43cfef51c031f61ec4d2c48&lineItemId=12`
 
 This URL will be using the template you have defined under the Gift Voucher plugin settings.
 
@@ -47,7 +47,7 @@ The parent order that this voucher was purchased from
 
 ### codes
 
-A collection of [Code Models](/craft-plugins/gift-voucher/docs/models/code-model). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
+A collection of [Codes](/craft-plugins/gift-voucher/docs/models/codes). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
 
 ## Example template
 
@@ -138,17 +138,17 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
 <body>
 
-{% for code in codes %}
+{% for code in codes.all() %}
     <div class="voucher">
         <img class="voucher-img" src="https://verbb.io/uploads/plugins/gift-voucher/gift-card-img.jpg" />
 
-        <span class="field-amount">{{ code.currentAmount | currency(order.currency, true) }}</span>
+        <span class="field-amount">{{ code.currentAmount | currency(order.currency, [], [], true) }}</span>
 
         <div class="field-content">
             <div class="demo-title">{{ code.voucher.title }}</div>
             <div class="demo-p">Check out our awesome range on our online store today.</div>
 
-            <div class="field-code">{{ code }}</div>
+            <div class="field-code">{{ code.codeKey }}</div>
 
             {% if code.expiryDate %}
                 <div class="field-expiry">Valid from {{ code.voucher.dateCreated | date("M j, Y") }} to {{ code.expiryDate | date("M j, Y") }}</div>
@@ -167,4 +167,4 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
 The above will produce a design similar to the below, which we of course encourage you to change to your needs!
 
-![Voucher Demo](/docs/screenshots/voucher-demo.png)
+![Voucher Demo](/uploads/plugins/gift-voucher/voucher-demo.png)

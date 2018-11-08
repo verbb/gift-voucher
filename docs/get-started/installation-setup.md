@@ -1,25 +1,23 @@
 # Installation & Setup
+You can install Gift Voucher via the plugin store, or through Composer.
 
-Installing Gift Voucher is as simple as any other Craft plugin - just drop the `giftvoucher` folder in your `craft/plugins` directory and install.
+### Craft Plugin Store
+To install **Gift Voucher**, navigate to the _Plugin Store_ section of your Craft control panel, search for `Gift Voucher`, and click the _Try_ button.
 
-## Installation
+### Composer
+You can also add the package to your project using Composer.
 
-1.  [Download the latest version](/craft-plugins/gift-voucher/pricing) of Gift Voucher and unzip.
-2.  Copy the `giftvoucher/` directory into your `craft/plugins/` directory.
-3.  Inside the Craft control panel, navigate to _Settings → Plugins_.
-4.  Locate the row showing the Gift Voucher plugin and click _Install_.
+1. Open your terminal and go to your Craft project:
+```
+cd /path/to/project
+```
+2. Then tell Composer to load the plugin:
+```
+composer require verbb/gift-voucher
+```
+3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Gift Voucher.
 
-## Settings/License
+## Licensing
+You can try Gift Voucher in a development environment for as long as you like. Once your site goes live, you are required to purchase a license for the plugin.
 
-With Gift Voucher installed, you will be able to access the plugin settings. Here you can control the general settings, and add your license key for Gift Voucher when you're ready to go live.
-
-In the **General Settings** section you can:
-
-- Set an **Voucher Expiry** in months after the purchase of the voucher (or leave it empty to never expire vouchers).
-- Adjust the **Voucher Code Character Length**. Just in case 10 characters are too long for your taste.
-- Define the path to a **Voucher PDF Template** used for generating your gift vouchers as PDFs.
-- Define the **Voucher PDF Filename Format** for the gift voucher PDFs.
-
-## Setup
-
-With Gift Voucher now setup, you'll want to first create a [Voucher Type →](/craft-plugins/gift-voucher/docs/feature-tour/voucher-types) that groups your gift vouchers.
+For more information, see [Craft's Commercial Plugin Licensing](https://docs.craftcms.com/v3/plugins.html#commercial-plugin-licensing).

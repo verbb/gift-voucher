@@ -1,6 +1,6 @@
 # Vouchers
 
-Vouchers are very similar to Commerce Products, and in fact are [purchasables](https://craftcommerce.com/docs/purchasables), allowing it to make use of many core Commerce functions. You should treat it like a regular Product, with a few handy extras.
+Vouchers are very similar to Commerce Products, and in fact are [purchasables](https://docs.craftcms.com/commerce/v2/purchasables.html), allowing it to make use of many core Commerce functions. You should treat it like a regular Product, with a few handy extras.
 
 ### Create a Voucher
 
