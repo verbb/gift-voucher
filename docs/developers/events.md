@@ -91,8 +91,8 @@ Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent
 Plugins can get notified before an redemption is saved
 
 ```php
-use verbb\commerce\events\RedemptionEvent;
-use verbb\commerce\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\events\RedemptionEvent;
+use verbb\giftvoucher\services\RedemptionsService as Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_SAVE_REDEMPTION, function(RedemptionEvent $e) {
@@ -105,8 +105,8 @@ Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_SAVE_REDEMPTION, functio
 Plugins can get notified after a redemption has been saved
 
 ```php
-use verbb\commerce\events\RedemptionEvent;
-use verbb\commerce\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\events\RedemptionEvent;
+use verbb\giftvoucher\services\RedemptionsService as Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_AFTER_SAVE_REDEMPTION, function(RedemptionEvent $e) {
@@ -119,8 +119,8 @@ Event::on(Redemptions::class, Redemptions::EVENT_AFTER_SAVE_REDEMPTION, function
 Plugins can get notified before an redemption is deleted
 
 ```php
-use verbb\commerce\events\RedemptionEvent;
-use verbb\commerce\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\events\RedemptionEvent;
+use verbb\giftvoucher\services\RedemptionsService as Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_DELETE_REDEMPTION, function(RedemptionEvent $e) {
@@ -133,8 +133,8 @@ Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_DELETE_REDEMPTION, funct
 Plugins can get notified after a redemption has been deleted
 
 ```php
-use verbb\commerce\events\RedemptionEvent;
-use verbb\commerce\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\events\RedemptionEvent;
+use verbb\giftvoucher\services\RedemptionsService as Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_AFTER_DELETE_REDEMPTION, function(RedemptionEvent $e) {
