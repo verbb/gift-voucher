@@ -4,27 +4,19 @@
 
 Gift Voucher is a Craft Commerce plugin allowing your customers to purchase digital gift vouchers, which can be redeemed by other customers during checkout for a discount on their order. Support for intelligent redemptions, PDF generation, customer-entered amounts, and lots more!
 
-## Requirements
+![](https://verbb.io/uploads/plugins/gift-voucher/voucher-demo.png)
 
-This plugin requires Craft CMS 3.0.0 or later.
+## Features
 
-## Installation
-
-To install the plugin, follow these instructions.
-
-1. Open your terminal and go to your Craft project:
-
-```
-cd /path/to/project
-```
-
-2. Then tell Composer to load the plugin:
-
-```
-composer require verbb/gift-voucher
-```
-
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Gift Voucher.
+- Sell and redeem digital gift vouchers for your customers.
+- Create multiple voucher types with custom fields for ultimate flexibility.
+- Intelligent redemptions - only spend the required amount off your voucher code, or pay any remainder.
+- Optional expiration dates.
+- Set fixed or custom amounts for gift vouchers. Useful if you'd like your customers to set their own price.
+- Track redemptions, see how customers are spending
+- Manually create coupon codes. You can also override prices in case you need to give customers a little extra something.
+- Generate PDF gift vouchers - 100% control over your templates.
+- Template example to get you started.
 
 ## Documentation
 
