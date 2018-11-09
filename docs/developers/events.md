@@ -52,7 +52,7 @@ Event::on(Voucher::class, Voucher::EVENT_BEFORE_SAVE, function(Event $e) {
 Plugins can get notified after a voucher has been saved
 
 ```php
-use verbb\navigation\elements\Voucher;
+use verbb\giftvoucher\elements\Voucher;
 use yii\base\Event;
 
 Event::on(Voucher::class, Voucher::EVENT_AFTER_SAVE, function(Event $e) {
@@ -129,7 +129,7 @@ Event::on(Code::class, Code::EVENT_BEFORE_SAVE, function(Event $e) {
 Plugins can get notified after a code has been saved
 
 ```php
-use verbb\navigation\elements\Code;
+use verbb\giftvoucher\elements\Code;
 use yii\base\Event;
 
 Event::on(Code::class, Code::EVENT_AFTER_SAVE, function(Event $e) {
