@@ -326,6 +326,94 @@
 		"rFN": 0,
 		"uCM": 0
 		},
+	"/docs/screenshots/multiple-vouchers.png": {
+		"ft": 32768,
+		"iS": 71763,
+		"oA": 0,
+		"oAP": "/docs/screenshots/multiple-vouchers.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"/docs/screenshots/redemption-tracking.png": {
+		"ft": 32768,
+		"iS": 124353,
+		"oA": 0,
+		"oAP": "/docs/screenshots/redemption-tracking.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"/docs/screenshots/voucher-codes-edit.png": {
+		"ft": 32768,
+		"iS": 95196,
+		"oA": 0,
+		"oAP": "/docs/screenshots/voucher-codes-edit.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"/docs/screenshots/voucher-codes-overview.png": {
+		"ft": 32768,
+		"iS": 47421,
+		"oA": 0,
+		"oAP": "/docs/screenshots/voucher-codes-overview.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"/docs/screenshots/voucher-demo.png": {
+		"ft": 32768,
+		"iS": 243264,
+		"oA": 0,
+		"oAP": "/docs/screenshots/voucher-demo.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"/docs/screenshots/voucher-edit.png": {
+		"ft": 32768,
+		"iS": 59962,
+		"oA": 0,
+		"oAP": "/docs/screenshots/voucher-edit.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"/docs/screenshots/voucher-types-edit.png": {
+		"ft": 32768,
+		"iS": 63277,
+		"oA": 0,
+		"oAP": "/docs/screenshots/voucher-types-edit.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"/docs/screenshots/voucher-types-overview.png": {
+		"ft": 32768,
+		"iS": 19965,
+		"oA": 0,
+		"oAP": "/docs/screenshots/voucher-types-overview.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
 	"/docs/support/get-support.md": {
 		"cB": 0,
 		"cS": 0,
