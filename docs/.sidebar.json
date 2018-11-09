@@ -44,7 +44,7 @@
         "collapsable": false,
         "children": [
             "developers/voucher",
-            "developers/codes",
+            "developers/code",
             "developers/events"
         ]
     },
