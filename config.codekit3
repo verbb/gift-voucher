@@ -56,6 +56,60 @@
 		"oO": 0,
 		"oS": 1
 		},
+	"/docs/developers/code.md": {
+		"cB": 0,
+		"cS": 0,
+		"eF": 1,
+		"eL": 1,
+		"ema": 1,
+		"eSQ": 1,
+		"ft": 4096,
+		"oA": 1,
+		"oAP": "/docs/developers/code.html",
+		"oF": 0,
+		"oFM": 0,
+		"oS": 0,
+		"pHT": 0,
+		"pME": 1,
+		"rFN": 0,
+		"uCM": 0
+		},
+	"/docs/developers/events.md": {
+		"cB": 0,
+		"cS": 0,
+		"eF": 1,
+		"eL": 1,
+		"ema": 1,
+		"eSQ": 1,
+		"ft": 4096,
+		"oA": 1,
+		"oAP": "/docs/developers/events.html",
+		"oF": 0,
+		"oFM": 0,
+		"oS": 0,
+		"pHT": 0,
+		"pME": 1,
+		"rFN": 0,
+		"uCM": 0
+		},
+	"/docs/developers/voucher.md": {
+		"cB": 0,
+		"cS": 0,
+		"eF": 1,
+		"eL": 1,
+		"ema": 1,
+		"eSQ": 1,
+		"ft": 4096,
+		"oA": 1,
+		"oAP": "/docs/developers/voucher.html",
+		"oF": 0,
+		"oFM": 0,
+		"oS": 0,
+		"pHT": 0,
+		"pME": 1,
+		"rFN": 0,
+		"uCM": 0
+		},
 	"/docs/feature-tour/custom-amounts.md": {
 		"cB": 0,
 		"cS": 0,
@@ -218,7 +272,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/models/code-model.md": {
+	"/docs/getting-elements/code-queries.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -227,7 +281,7 @@
 		"eSQ": 1,
 		"ft": 4096,
 		"oA": 1,
-		"oAP": "/docs/models/code-model.html",
+		"oAP": "/docs/getting-elements/code-queries.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,
@@ -236,7 +290,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/models/voucher-model.md": {
+	"/docs/getting-elements/voucher-queries.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -245,7 +299,7 @@
 		"eSQ": 1,
 		"ft": 4096,
 		"oA": 1,
-		"oAP": "/docs/models/voucher-model.html",
+		"oAP": "/docs/getting-elements/voucher-queries.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,
@@ -290,7 +344,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/template-guide/displaying-voucher-codes.md": {
+	"/docs/template-guides/available-variables.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -299,7 +353,7 @@
 		"eSQ": 1,
 		"ft": 4096,
 		"oA": 1,
-		"oAP": "/docs/template-guide/displaying-voucher-codes.html",
+		"oAP": "/docs/template-guides/available-variables.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,
@@ -308,7 +362,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/template-guide/fetching-vouchers.md": {
+	"/docs/template-guides/displaying-voucher-codes.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -317,7 +371,7 @@
 		"eSQ": 1,
 		"ft": 4096,
 		"oA": 1,
-		"oAP": "/docs/template-guide/fetching-vouchers.html",
+		"oAP": "/docs/template-guides/displaying-voucher-codes.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,
@@ -326,7 +380,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/template-guide/pdf-template.md": {
+	"/docs/template-guides/pdf-template.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -335,7 +389,7 @@
 		"eSQ": 1,
 		"ft": 4096,
 		"oA": 1,
-		"oAP": "/docs/template-guide/pdf-template.html",
+		"oAP": "/docs/template-guides/pdf-template.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,
@@ -344,7 +398,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/template-guide/redeeming-voucher-codes.md": {
+	"/docs/template-guides/redeeming-voucher-codes.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -353,7 +407,7 @@
 		"eSQ": 1,
 		"ft": 4096,
 		"oA": 1,
-		"oAP": "/docs/template-guide/redeeming-voucher-codes.html",
+		"oAP": "/docs/template-guides/redeeming-voucher-codes.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,
@@ -362,7 +416,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/template-guide/voucher-template.md": {
+	"/docs/template-guides/voucher-template.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -371,7 +425,7 @@
 		"eSQ": 1,
 		"ft": 4096,
 		"oA": 1,
-		"oAP": "/docs/template-guide/voucher-template.html",
+		"oAP": "/docs/template-guides/voucher-template.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,

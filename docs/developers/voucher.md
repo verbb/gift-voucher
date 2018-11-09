@@ -1,20 +1,6 @@
-# Vouchers
+# Voucher
 
-When you're on a single voucher template, or looping through vouchers using `craft.giftVoucher.vouchers()`, you're actually working with a `Voucher` element. This in turn extends Commerce's [Purchasable](https://docs.craftcms.com/commerce/v2/purchasables.html) object.
-
-## Querying Vouchers
-
-Vouchers can be queried using the following:
-
-```twig
-{% set vouchers = craft.giftVoucher.vouchers({
-    type: 'giftCards',
-}) %}
-
-{% for voucher in vouchers %}
-    {{ voucher.name }}
-{% endfor %}
-```
+Whenever you're dealing with a vouchers in your template, you're actually working with a `Voucher` object.
 
 ## Attributes
 

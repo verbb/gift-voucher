@@ -47,7 +47,7 @@ The parent order that this voucher was purchased from
 
 ### codes
 
-A collection of [Codes](docs:models/codes). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
+A collection of [Codes](docs:models/code). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
 
 ## Example template
 

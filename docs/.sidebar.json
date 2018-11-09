@@ -21,22 +21,31 @@
         ]
     },
     {
-        "title": "Models",
+        "title": "Template Guides",
         "collapsable": false,
         "children": [
-            "models/vouchers",
-            "models/codes"
+            "template-guides/available-variables",
+            "template-guides/voucher-template",
+            "template-guides/displaying-voucher-codes",
+            "template-guides/redeeming-voucher-codes",
+            "template-guides/pdf-template"
         ]
     },
     {
-        "title": "Template Guide",
+        "title": "Getting Elements",
         "collapsable": false,
         "children": [
-            "template-guide/fetching-vouchers",
-            "template-guide/voucher-template",
-            "template-guide/displaying-voucher-codes",
-            "template-guide/redeeming-voucher-codes",
-            "template-guide/pdf-template"
+            "getting-elements/voucher-queries",
+            "getting-elements/code-queries"
+        ]
+    },
+    {
+        "title": "Developers",
+        "collapsable": false,
+        "children": [
+            "developers/voucher",
+            "developers/codes",
+            "developers/events"
         ]
     },
     {

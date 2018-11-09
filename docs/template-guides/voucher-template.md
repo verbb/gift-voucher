@@ -1,26 +1,4 @@
-# Fetching Vouchers
-
-Because vouchers are a custom [purchasable](https://docs.craftcms.com/commerce/v2/purchasables.html), they won't automatically appear on your shop without a bit of templating. Essentially, this is because they exist outside of the native Commerce products/variants. Fortunately, implementing these templates are straightforward, and you'll find it quite similar to Commerce.
-
-You can display a list of all vouchers via the following template snippet:
-
-```twig
-{% for voucher in craft.giftVoucher.vouchers().all() %}
-```
-
-Like [Variants](https://craftcommerce.com/docs/variant-model), vouchers are elements, meaning you have access to familiar [Element querying](https://docs.craftcms.com/v3/dev/element-queries/#app). For instance you can limit vouchers via `limit()`.
-
-```twig
-{% for voucher in craft.giftVoucher.vouchers().limit(5).all() %}
-```
-
-Or select vouchers of a specific `type`.
-
-```twig
-{% for voucher in craft.giftVoucher.vouchers().type('xmas').all() %}
-```
-
-### Templates
+# Voucher Template
 
 Create a file named `index.html` file in your `templates/shop/products/gift-voucher` folder. This folder may vary depending on your chosen site structure. Enter the content as below:
 
