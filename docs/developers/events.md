@@ -33,6 +33,33 @@ Event::on(Pdf::class, Pdf::EVENT_AFTER_RENDER_PDF, function(PdfEvent $e) {
 });
 ```
 
+### The `beforeSaveVoucher` event
+
+Plugins can get notified before a voucher is saved. Event handlers can prevent the submission from getting sent by setting `$event->isValid` to false.
+
+```php
+use verbb\giftvoucher\elements\Voucher;
+use yii\base\Event;
+
+Event::on(Voucher::class, Voucher::EVENT_BEFORE_SAVE, function(Event $e) {
+    $voucher = $event->sender;
+    $event->isValid = false;
+});
+```
+
+### The `afterSaveVoucher` event
+
+Plugins can get notified after a voucher has been saved
+
+```php
+use verbb\navigation\elements\Voucher;
+use yii\base\Event;
+
+Event::on(Voucher::class, Voucher::EVENT_AFTER_SAVE, function(Event $e) {
+    $voucher = $event->sender;
+});
+```
+
 ### The `beforeSaveVoucherType` event
 
 Plugins can get notified before a voucher type is being saved.
@@ -80,6 +107,33 @@ Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent
     } while (!GiftVoucher::getInstance()->getCodes()->isCodeKeyUnique($codeKey));
 
     $e->codeKey = $codeKey;
+});
+```
+
+### The `beforeSaveCode` event
+
+Plugins can get notified before a code is saved. Event handlers can prevent the submission from getting sent by setting `$event->isValid` to false.
+
+```php
+use verbb\giftvoucher\elements\Code;
+use yii\base\Event;
+
+Event::on(Code::class, Code::EVENT_BEFORE_SAVE, function(Event $e) {
+    $code = $event->sender;
+    $event->isValid = false;
+});
+```
+
+### The `afterSaveCode` event
+
+Plugins can get notified after a code has been saved
+
+```php
+use verbb\navigation\elements\Code;
+use yii\base\Event;
+
+Event::on(Code::class, Code::EVENT_AFTER_SAVE, function(Event $e) {
+    $code = $event->sender;
 });
 ```
 
