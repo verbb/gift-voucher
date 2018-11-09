@@ -7,7 +7,7 @@ Events can be used to extend the functionality of Gift Voucher.
 ### The `beforeRenderPdf` event
 
 Event handlers can override Gift Voucher’s PDF generation by setting the `pdf` property on the event to a custom-rendered PDF.
-Plugins can get notified before the PDF or an order is being rendered.
+Plugins can get notified before the PDF or a voucher is being rendered.
 
 ```php
 use craft\commerce\events\PdfEvent;
@@ -21,7 +21,7 @@ Event::on(Pdf::class, Pdf::EVENT_BEFORE_RENDER_PDF, function(PdfEvent $e) {
 
 ### The `afterRenderPdf` event
 
-Plugins can get notified after the PDF or an order has been rendered.
+Plugins can get notified after the PDF or a voucher has been rendered.
 
 ```php
 use craft\commerce\events\PdfEvent;
@@ -35,7 +35,7 @@ Event::on(Pdf::class, Pdf::EVENT_AFTER_RENDER_PDF, function(PdfEvent $e) {
 
 ### The `beforeSaveVoucher` event
 
-Plugins can get notified before a voucher is saved. Event handlers can prevent the submission from getting sent by setting `$event->isValid` to false.
+Plugins can get notified before a voucher is saved. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
 
 ```php
 use verbb\giftvoucher\elements\Voucher;
@@ -112,7 +112,7 @@ Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent
 
 ### The `beforeSaveCode` event
 
-Plugins can get notified before a code is saved. Event handlers can prevent the submission from getting sent by setting `$event->isValid` to false.
+Plugins can get notified before a code is saved. Event handlers can prevent the code from getting sent by setting `$event->isValid` to false.
 
 ```php
 use verbb\giftvoucher\elements\Code;
