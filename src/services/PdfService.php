@@ -48,20 +48,38 @@ class PdfService extends Component
         return $url;
     }
 
-    public function renderPdf(Order $order, LineItem $lineItem = null, $option = '', $templatePath = null): string
+    public function getPdfUrlForCode($code, $option = null)
+    {
+        $url = null;
+
+        try {
+            $path = "gift-voucher/downloads/pdf?codeId={$code->id}" . ($option ? "&option={$option}" : '');
+            $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/' . trim($path, '/');
+            $url = UrlHelper::siteUrl($path);
+        } catch (\Exception $e) {
+            Craft::error($e->getMessage());
+            return null;
+        }
+
+        return $url;
+    }
+
+    public function renderPdf($codes, $order = [], $lineItem = null, $option = '', $templatePath = null): string
     {
         if (null === $templatePath){
             $templatePath = GiftVoucher::getInstance()->getSettings()->voucherCodesPdfPath;
         }
 
-        $codesQuery = Code::find()
-            ->orderId($order->id);
+        if (!$codes && $order) {
+            $codesQuery = Code::find()
+                ->orderId($order->id);
 
-        if ($lineItem) {
-            $codesQuery->lineItemId = $lineItem->id;
+            if ($lineItem) {
+                $codesQuery->lineItemId = $lineItem->id;
+            }
+
+            $codes = $codesQuery->all();
         }
-
-        $codes = $codesQuery->all();
 
         // Trigger a 'beforeRenderPdf' event
         $event = new PdfEvent([
@@ -91,7 +109,14 @@ class PdfService extends Component
             $html = $view->renderTemplate($templatePath, compact('order', 'codes', 'lineItem', 'option'));
         } catch (\Exception $e) {
             // Set the pdf html to the render error.
-            Craft::error('Voucher PDF render error. Order number: ' . $order->getShortNumber() . '. ' . $e->getMessage());
+            if ($order) {
+                Craft::error('Voucher PDF render error. Order number: ' . $order->getShortNumber() . '. ' . $e->getMessage());
+            }
+
+            if ($codes) {
+                Craft::error('Voucher PDF render error. Code key: ' . $codes[0]->codeKey . '. ' . $e->getMessage());
+            }
+
             Craft::$app->getErrorHandler()->logException($e);
             $html = Craft::t('gift-voucher', 'An error occurred while generating this PDF.');
         }

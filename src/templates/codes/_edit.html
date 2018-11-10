@@ -16,7 +16,14 @@
     { label: 'Disabled' | t('gift-voucher'), value: 0 }
 ] %}
 
+{% set pdfUrl = code.getPdfUrl() %}
+
 {% block actionButton %}
+    {% if pdfUrl %}
+        <a class="btn" href="{{ pdfUrl }}" target="_blank">{{ 'Download PDF' | t('gift-voucher') }}</a>
+        <div class="flex-grow"></div>
+    {% endif %}
+
     <div class="btngroup">
         <input type="submit" class="btn submit" value="{{ 'Save' | t('gift-voucher') }}">
         <div class="btn submit menubtn"></div>

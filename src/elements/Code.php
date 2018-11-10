@@ -139,6 +139,11 @@ class Code extends Element
         return true;
     }
 
+    public function getPdfUrl($option = null)
+    {
+        return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option = null);
+    }
+
     public static function defineSources(string $context = null): array
     {
         $voucherTypes = GiftVoucher::getInstance()->getVoucherTypes()->getAllVoucherTypes();

@@ -24,30 +24,44 @@ class DownloadsController extends Controller
 
     public function actionPdf(): Response
     {
-        $number = Craft::$app->getRequest()->getParam('number');
-        $option = Craft::$app->getRequest()->getParam('option', '');
-        $lineItemId = Craft::$app->getRequest()->getParam('lineItemId', '');
-        $format = Craft::$app->getRequest()->getParam('format');
-        $attach = Craft::$app->getRequest()->getParam('attach');
+        $request = Craft::$app->getRequest();
 
+        $codes = [];
+        $order = [];
         $lineItem = null;
-        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
-        if (!$order) {
-            throw new HttpException('No Order Found');
+        $number = $request->getParam('number');
+        $option = $request->getParam('option', '');
+        $lineItemId = $request->getParam('lineItemId', '');
+        $codeId = $request->getParam('codeId', '');
+
+        if ($number) {
+            $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+
+            if (!$order) {
+                throw new HttpException('No Order Found');
+            }
         }
 
         if ($lineItemId) {
             $lineItem = Commerce::getInstance()->getLineItems()->getLineItemById($lineItemId);
         }
 
-        $pdf = GiftVoucher::getInstance()->getPdf()->renderPdf($order, $lineItem, $option);
+        if ($codeId) {
+            $codes = [Craft::$app->getElements()->getElementById($codeId)];
+        }
+
+        $pdf = GiftVoucher::getInstance()->getPdf()->renderPdf($codes, $order, $lineItem, $option);
         $filenameFormat = GiftVoucher::getInstance()->getSettings()->voucherCodesPdfFilenameFormat;
 
         $fileName = $this->getView()->renderObjectTemplate($filenameFormat, $order);
 
         if (!$fileName) {
-            $fileName = 'Voucher-' . $order->number;
+            if ($order) {
+                $fileName = 'Voucher-' . $order->number;
+            } else if ($codes) {
+                $fileName = 'Voucher-' . $code[0]->codeKey;
+            }
         }
 
         return Craft::$app->getResponse()->sendContentAsFile($pdf, $fileName . '.pdf', [

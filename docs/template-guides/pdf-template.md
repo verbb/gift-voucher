@@ -138,7 +138,7 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
 <body>
 
-{% for code in codes.all() %}
+{% for code in codes %}
     <div class="voucher">
         <img class="voucher-img" src="https://verbb.io/uploads/plugins/gift-voucher/gift-card-img.jpg" />
 
@@ -154,7 +154,7 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
                 <div class="field-expiry">Valid from {{ code.voucher.dateCreated | date("M j, Y") }} to {{ code.expiryDate | date("M j, Y") }}</div>
             {% endif %}
 
-            {% if order.customer.user %}
+            {% if order and order.customer.user %}
                 <div class="field-customer">Gifted by {{ order.customer.user.name }}</div>
             {% endif %}
         </div>
