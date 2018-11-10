@@ -164,10 +164,6 @@ class VoucherQuery extends ElementQuery
 
         $this->_applyEditableParam();
 
-        if (!$this->orderBy) {
-            $this->orderBy = ['postDate' => SORT_DESC];
-        }
-
         return parent::beforePrepare();
     }
 
