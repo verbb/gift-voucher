@@ -105,7 +105,7 @@ class VouchersController extends Controller
 
         $this->enforceVoucherPermissions($voucher);
 
-        if (Craft::$app->getElements()->deleteElement($voucher)) {
+        if (!Craft::$app->getElements()->deleteElement($voucher)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {
                 $this->asJson(['success' => false]);
             }
