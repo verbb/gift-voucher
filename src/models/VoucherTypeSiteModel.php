@@ -53,18 +53,10 @@ class VoucherTypeSiteModel extends Model
 
     public function getSite(): Site
     {
-        if ($this->_site !== null) {
-            return $this->_site;
+        if (!$this->_site) {
+            $this->_site = Craft::$app->getSites()->getSiteById($this->siteId);
         }
-
-        if (!$this->siteId) {
-            throw new InvalidConfigException('Voucher type site is missing its site ID');
-        }
-
-        if (($this->_site = Craft::$app->getSites()->getSiteById($this->siteId)) === null) {
-            throw new InvalidConfigException('Invalid site ID: ' . $this->siteId);
-        }
-
+        
         return $this->_site;
     }
 
