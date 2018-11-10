@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.0.3 - 2018-11-10
+
+### Added
+- Allow PDFs to be generated for single voucher codes.
+- Add type to snapshot data.
+
+### Fixed
+- Fix Gift Voucher element field name.
+- Fix error when deleting a voucher.
+- Fix querying by `voucherId` on a code.
+- Fix error when querying and saving vouchers.
+
 ## 2.0.2 - 2018-10-26
 
 ### Added
