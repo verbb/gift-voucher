@@ -188,7 +188,7 @@ class CodeQuery extends ElementQuery
         ]);
 
         if ($this->voucherId) {
-            $this->subQuery->andWhere(Db::parseDateParam('giftvoucher_vouchers.voucherId', $this->voucherId));
+            $this->subQuery->andWhere(Db::parseParam('giftvoucher_vouchers.voucherId', $this->voucherId));
         }
 
         if ($this->typeId) {
