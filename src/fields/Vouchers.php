@@ -11,7 +11,7 @@ class Vouchers extends BaseRelationField
     // Public Methods
     // =========================================================================
 
-    public function getName(): string
+    public static function displayName(): string
     {
         return Craft::t('gift-voucher', 'Gift Vouchers');
     }
