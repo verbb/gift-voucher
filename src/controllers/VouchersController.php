@@ -92,7 +92,7 @@ class VouchersController extends Controller
         return $this->renderTemplate('gift-voucher/vouchers/_edit', $variables);
     }
 
-    public function actionDeleteVoucher(): Response
+    public function actionDeleteVoucher()
     {
         $this->requirePostRequest();
 
