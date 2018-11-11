@@ -35,9 +35,6 @@
     "extra": {
         "name": "Gift Voucher",
         "handle": "gift-voucher",
-        "schemaVersion": "2.0.0",
-        "hasCpSettings": true,
-        "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/verbb/gift-voucher/craft-3/CHANGELOG.md",
         "class": "verbb\\giftvoucher\\GiftVoucher"
     }
