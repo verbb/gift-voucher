@@ -438,11 +438,11 @@ class Voucher extends Purchasable
 
         $data['type'] = self::class;
 
-        // Default Variant custom field handles
+        // Default Voucher custom field handles
         $voucherFields = [];
         $voucherFieldsEvent = new CustomizeVoucherSnapshotFieldsEvent([
             'voucher' => $this,
-            'fields' => $variantFields
+            'fields' => $voucherFields,
         ]);
 
         // Allow plugins to modify fields to be fetched
@@ -454,12 +454,12 @@ class Voucher extends Purchasable
         $voucherFieldData = $this->getSerializedFieldValues($voucherFieldsEvent->fields);
         $voucherDataEvent = new CustomizeVoucherSnapshotDataEvent([
             'voucher' => $this,
-            'fieldData' => $voucherFieldData
+            'fieldData' => $voucherFieldData,
         ]);
 
         // Allow plugins to modify captured Voucher data
         if ($this->hasEventHandlers(self::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT)) {
-            $this->trigger(self::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, $variantDataEvent);
+            $this->trigger(self::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, $voucherDataEvent);
         }
 
         $data['fields'] = $voucherDataEvent->fieldData;
