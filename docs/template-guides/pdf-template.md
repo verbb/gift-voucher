@@ -21,7 +21,7 @@ For example, on our order summary template (`shop/customer/order.html`), we have
 This will output an anchor tag with a link to the gift voucher. You can also render all vouchers in a single PDF, as opposed to each line item as a separate PDF. Simple amend the template call to:
 
 ```twig
-<a href="{{ craft.giftVoucher.getOrderPdfUrl(order.number) }}">Download All Gift Vouchers</a>
+<a href="{{ craft.giftVoucher.getOrderPdfUrl(order) }}">Download All Gift Vouchers</a>
 ```
 
 In both cases, the URL will look something similar to:

@@ -589,6 +589,13 @@
 		"oAP": "/build/src/elements",
 		"oF": 0
 		},
+	"/src/events/CustomizeVoucherSnapshotDataEvent.php": {
+		"cB": 0,
+		"ft": 8192,
+		"oA": 2,
+		"oAP": "/src/events/CustomizeVoucherSnapshotDataEvent.php",
+		"oF": 0
+		},
 	"/src/events/GenerateCodeEvent.php": {
 		"cB": 0,
 		"ft": 8192,
@@ -2815,7 +2822,7 @@
 			"flagValue": -1
 			},
 		"comments": {
-			"active": 1,
+			"active": 0,
 			"flagValue": -1
 			},
 		"comparisons": {
