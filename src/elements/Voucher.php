@@ -3,6 +3,8 @@ namespace verbb\giftvoucher\elements;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\db\VoucherQuery;
+use verbb\giftvoucher\events\CustomizeVoucherSnapshotDataEvent;
+use verbb\giftvoucher\events\CustomizeVoucherSnapshotFieldsEvent;
 use verbb\giftvoucher\models\VoucherTypeModel;
 use verbb\giftvoucher\records\VoucherRecord;
 
@@ -33,6 +35,9 @@ class Voucher extends Purchasable
     const STATUS_LIVE = 'live';
     const STATUS_PENDING = 'pending';
     const STATUS_EXPIRED = 'expired';
+
+    const EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT = 'beforeCaptureVoucherSnapshot';
+    const EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT = 'afterCaptureVoucherSnapshot';
 
 
     // Properties
@@ -431,8 +436,33 @@ class Voucher extends Purchasable
     {
         $data = [];
 
-        $data['fields'] = $this->getSerializedFieldValues();
         $data['type'] = self::class;
+
+        // Default Variant custom field handles
+        $voucherFields = [];
+        $voucherFieldsEvent = new CustomizeVoucherSnapshotFieldsEvent([
+            'voucher' => $this,
+            'fields' => $variantFields
+        ]);
+
+        // Allow plugins to modify fields to be fetched
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT)) {
+            $this->trigger(self::EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT, $voucherFieldsEvent);
+        }
+
+        // Capture specified Voucher field data
+        $voucherFieldData = $this->getSerializedFieldValues($voucherFieldsEvent->fields);
+        $voucherDataEvent = new CustomizeVoucherSnapshotDataEvent([
+            'voucher' => $this,
+            'fieldData' => $voucherFieldData
+        ]);
+
+        // Allow plugins to modify captured Voucher data
+        if ($this->hasEventHandlers(self::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT)) {
+            $this->trigger(self::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, $variantDataEvent);
+        }
+
+        $data['fields'] = $voucherDataEvent->fieldData;
 
         return array_merge($this->getAttributes(), $data);
     }

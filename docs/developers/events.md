@@ -88,6 +88,36 @@ Event::on(VoucherTypes::class, VoucherTypes::EVENT_AFTER_SAVE_VOUCHERTYPE, funct
 });
 ```
 
+### The `beforeCaptureVoucherSnapshot` event
+
+Plugins can get notified before we capture a voucher's field data, and customize which fields are included.
+
+```php
+use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\events\CustomizeVoucherSnapshotFieldsEvent;
+
+Event::on(Voucher::class, Voucher::EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT, function(CustomizeVoucherSnapshotFieldsEvent $e) {
+    $voucher = $e->voucher;
+    $fields = $e->fields;
+    // Modify fields, or set to `null` to capture all.
+});
+```
+
+### The `afterCaptureVoucherSnapshot` event
+
+Plugins can get notified after we capture a voucher's field data, and customize, extend, or redact the data to be persisted.
+
+```php
+use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\events\CustomizeVoucherSnapshotDataEvent;
+
+Event::on(Voucher::class, Voucher::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, function(CustomizeVoucherSnapshotFieldsEvent $e) {
+    $voucher = $e->voucher;
+    $data = $e->fieldData;
+    // Modify or redact captured `$data`...
+});
+```
+
 
 ## Code related events
 
