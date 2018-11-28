@@ -4,8 +4,8 @@ Once a user has purchased a gift voucher, its important to actually provide the 
 
 ```twig
 {% if craft.giftVoucher.isVoucher(item) %}
-    {% for voucherCode in item.purchasable.getCodesForLineItem(item) %}
-        Code: {{ voucherCode }}<br />
+    {% for code in item.purchasable.getCodes(item) %}
+        Code: {{ code }}<br />
     {% endfor %}
 {% endif %}
 ```
