@@ -15,7 +15,7 @@ Use the following template code and add it to your cart page (ideally near the c
     {{ csrfInput() }}
 
     <span class="{% if cart.getFirstError('voucherCode') %}has-error{% endif %}">
-        <input type="text" name="giftVoucherCode" width="11" class="{% if cart.getFirstError('voucherCode') %}has-error{% endif %}" value="{{ craft.giftVoucher.getVoucherCode }}" placeholder="Voucher Code"/>
+        <input type="text" name="voucherCode" width="11" class="{% if cart.getFirstError('voucherCode') %}has-error{% endif %}" value="{{ craft.giftVoucher.getVoucherCode }}" placeholder="Voucher Code"/>
     </span>
 
     <input type="submit" class="button" value="{% if craft.giftVoucher.getVoucherCode %}Change{% else %}Apply{% endif %} Voucher"/>
