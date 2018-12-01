@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.4 - 2018-12-01
+
+### Added
+- Add `beforeCaptureVoucherSnapshot` and `afterCaptureVoucherSnapshot`.
+
+### Fixed
+- Fix permissions for vouchers and codes.
+- Fix error occuring when installing plugin via command line
+
 ## 2.0.3 - 2018-11-10
 
 ### Added
