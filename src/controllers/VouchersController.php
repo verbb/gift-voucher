@@ -62,7 +62,7 @@ class VouchersController extends Controller
             throw new Exception('The voucher type was not found.');
         }
 
-        $this->requirePermission('giftVoucher-manageVouchers:'.$voucherType->id);
+        $this->requirePermission('giftVoucher-manageVoucherType:' . $voucherType->id);
         $variables['voucherType'] = $voucherType;
 
         if ($siteHandle !== null) {
@@ -201,7 +201,7 @@ class VouchersController extends Controller
             throw new HttpException(404);
         }
 
-        $this->requirePermission('giftVoucher-manageVouchers:' . $voucher->typeId);
+        $this->requirePermission('giftVoucher-manageVoucherType:' . $voucher->typeId);
 
         // Create the token and redirect to the voucher URL with the token in place
         $token = Craft::$app->getTokens()->createToken([

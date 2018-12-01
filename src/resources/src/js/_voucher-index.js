@@ -7,39 +7,28 @@ if (typeof Craft.GiftVoucher === 'undefined') {
 var elementTypeClass = 'verbb\\giftvoucher\\elements\\Voucher';
 
 Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
-
-    voucherTypes: null,
-
-    $newVoucherBtnGroup: null,
+    editableVoucherTypes: null,
+    $newVoucherBtnVoucherType: null,
     $newVoucherBtn: null,
 
-    canCreateVouchers: false,
+    init: function(elementType, $container, settings) {
+        this.on('selectSource', $.proxy(this, 'updateButton'));
+        this.on('selectSite', $.proxy(this, 'updateButton'));
+        this.base(elementType, $container, settings);
+    },
 
     afterInit: function() {
-        // Find which voucher types are being shown as sources
-        this.voucherTypes = [];
+        // Find which of the visible voucherTypes the user has permission to create new vouchers in
+        this.editableVoucherTypes = [];
 
+        for (var i = 0; i < Craft.GiftVoucher.editableVoucherTypes.length; i++) {
+            var voucherType = Craft.GiftVoucher.editableVoucherTypes[i];
 
-        for (var i = 0; i < this.$sources.length; i++) {
-            var $source = this.$sources.eq(i),
-                key = $source.data('key'),
-                match = key.match(/^voucherType:(\d+)$/);
-
-            if (match) {
-                this.voucherTypes.push({
-                    id: parseInt(match[1]),
-                    handle: $source.data('handle'),
-                    name: $source.text(),
-                    editable: $source.data('editable')
-                });
-
-                if (!this.canCreateVouchers && $source.data('editable')) {
-                    this.canCreateVouchers = true;
-                }
+            if (this.getSourceByKey('voucherType:' + voucherType.id)) {
+                this.editableVoucherTypes.push(voucherType);
             }
         }
 
-        this.on('selectSource', $.proxy(this, 'updateButton'));
         this.base();
     },
 
@@ -48,6 +37,7 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
         if (this.settings.context === 'index' && typeof defaultVoucherTypeHandle !== 'undefined') {
             for (var i = 0; i < this.$sources.length; i++) {
                 var $source = $(this.$sources[i]);
+                
                 if ($source.data('handle') === defaultVoucherTypeHandle) {
                     return $source.data('key');
                 }
@@ -58,30 +48,34 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
     },
 
     updateButton: function() {
+        if (!this.$source) {
+            return;
+        }
+
         // Get the handle of the selected source
         var selectedSourceHandle = this.$source.data('handle');
 
         // Update the New Voucher button
         // ---------------------------------------------------------------------
 
-        // Remove the old button, if there is one
-        if (this.$newVoucherBtnGroup) {
-            this.$newVoucherBtnGroup.remove();
-        }
+        if (this.editableVoucherTypes.length) {
+            // Remove the old button, if there is one
+            if (this.$newVoucherBtnVoucherType) {
+                this.$newVoucherBtnVoucherType.remove();
+            }
 
-        // Are they viewing a voucher type source?
-        var selectedVoucherType;
-        if (selectedSourceHandle) {
-            for (var i = 0; i < this.voucherTypes.length; i++) {
-                if (this.voucherTypes[i].handle === selectedSourceHandle) {
-                    selectedVoucherType = this.voucherTypes[i];
-                    break;
+            // Determine if they are viewing a voucherType that they have permission to create vouchers in
+            var selectedVoucherType;
+
+            if (selectedSourceHandle) {
+                for (i = 0; i < this.editableVoucherTypes.length; i++) {
+                    if (this.editableVoucherTypes[i].handle === selectedSourceHandle) {
+                        selectedVoucherType = this.editableVoucherTypes[i];
+                        break;
+                    }
                 }
             }
-        }
 
-        // Are they allowed to create new vouchers?
-        if (this.canCreateVouchers) {
             this.$newVoucherBtnGroup = $('<div class="btngroup submit"/>');
             var $menuBtn;
 
@@ -89,8 +83,8 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
             // Otherwise only show a menu button
             if (selectedVoucherType) {
                 var href = this._getVoucherTypeTriggerHref(selectedVoucherType),
-                    label = (this.settings.context === 'index' ? Craft.t('gift-voucher', 'New voucher') : Craft.t('gift-voucher', 'New {voucherType} voucher', {voucherType: selectedVoucherType.name}));
-                this.$newVoucherBtn = $('<a class="btn submit add icon" '+href+'>'+label+'</a>').appendTo(this.$newVoucherBtnGroup);
+                    label = (this.settings.context === 'index' ? Craft.t('gift-voucher', 'New voucher') : Craft.t('gift-voucher', 'New {voucherType} voucher', { voucherType: selectedVoucherType.name }));
+                this.$newVoucherBtn = $('<a class="btn submit add icon" ' + href + '>' + label + '</a>').appendTo(this.$newVoucherBtnGroup);
 
                 if (this.settings.context !== 'index') {
                     this.addListener(this.$newVoucherBtn, 'click', function(ev) {
@@ -98,7 +92,7 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
                     });
                 }
 
-                if (this.voucherTypes.length > 1) {
+                if (this.editableVoucherTypes.length > 1) {
                     $menuBtn = $('<div class="btn submit menubtn"></div>').appendTo(this.$newVoucherBtnGroup);
                 }
             } else {
@@ -108,8 +102,8 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
             if ($menuBtn) {
                 var menuHtml = '<div class="menu"><ul>';
 
-                for (var i = 0; i < this.voucherTypes.length; i++) {
-                    var voucherType = this.voucherTypes[i];
+                for (var i = 0; i < this.editableVoucherTypes.length; i++) {
+                    var voucherType = this.editableVoucherTypes[i];
 
                     if (this.settings.context === 'index' || voucherType !== selectedVoucherType) {
                         var href = this._getVoucherTypeTriggerHref(voucherType),
@@ -150,9 +144,19 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
     _getVoucherTypeTriggerHref: function(voucherType)
     {
         if (this.settings.context === 'index') {
-            return 'href="'+Craft.getUrl('gift-voucher/vouchers/'+voucherType.handle+'/new')+'"';
+            var uri = 'gift-voucher/vouchers/' + voucherType.handle + '/new';
+            
+            if (this.siteId && this.siteId != Craft.primarySiteId) {
+                for (var i = 0; i < Craft.sites.length; i++) {
+                    if (Craft.sites[i].id == this.siteId) {
+                        uri += '/' + Craft.sites[i].handle;
+                    }
+                }
+            }
+
+            return 'href="' + Craft.getUrl(uri) + '"';
         } else {
-            return 'data-id="'+voucherType.id+'"';
+            return 'data-id="' + voucherType.id + '"';
         }
     },
 
@@ -165,9 +169,9 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
         // Find the voucher type
         var voucherType;
 
-        for (var i = 0; i < this.voucherTypes.length; i++) {
-            if (this.voucherTypes[i].id === voucherTypeId) {
-                voucherType = this.voucherTypes[i];
+        for (var i = 0; i < this.editableVoucherTypes.length; i++) {
+            if (this.editableVoucherTypes[i].id === voucherTypeId) {
+                voucherType = this.editableVoucherTypes[i];
                 break;
             }
         }
@@ -178,14 +182,14 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
 
         this.$newVoucherBtn.addClass('inactive');
         var newVoucherBtnText = this.$newVoucherBtn.text();
-        this.$newVoucherBtn.text(Craft.t('gift-voucher', 'New {voucherType} voucher', {voucherType: voucherType.name}));
+        this.$newVoucherBtn.text(Craft.t('gift-voucher', 'New {voucherType} voucher', { voucherType: voucherType.name }));
 
         new Craft.ElementEditor({
             hudTrigger: this.$newVoucherBtnGroup,
             elementType: elementTypeClass,
-            locale: this.locale,
+            siteId: this.siteId,
             attributes: {
-                typeId: voucherTypeId
+                typeId: voucherTypeId,
             },
             onBeginLoading: $.proxy(function() {
                 this.$newVoucherBtn.addClass('loading');
@@ -198,7 +202,7 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
             }, this),
             onSaveElement: $.proxy(function(response) {
                 // Make sure the right voucher type is selected
-                var voucherTypeSourceKey = 'voucherType:'+voucherTypeId;
+                var voucherTypeSourceKey = 'voucherType:' + voucherTypeId;
 
                 if (this.sourceKey !== voucherTypeSourceKey) {
                     this.selectSourceByKey(voucherTypeSourceKey);
@@ -212,11 +216,6 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
 });
 
 // Register it!
-try {
-    Craft.registerElementIndexClass(elementTypeClass, Craft.GiftVoucher.VoucherIndex);
-}
-catch(e) {
-    // Already registered
-}
+Craft.registerElementIndexClass(elementTypeClass, Craft.GiftVoucher.VoucherIndex);
 
 })(jQuery);

@@ -1,15 +1,31 @@
 {% extends '_layouts/elementindex' %}
 
 {% set title = 'Vouchers' | t('gift-voucher') %}
-{% set selectedSubnavItem = 'vouchers' %}
-
 {% set docTitle = title ~ ' - Gift Voucher' %}
 {% set elementType = 'verbb\\giftvoucher\\elements\\Voucher' %}
+{% set selectedSubnavItem = 'vouchers' %}
 
-{% if voucherTypeHandle is defined %}
-    {% js %}
-	   window.defaultVoucherTypeHandle = '{{ voucherTypeHandle }}';
-    {% endjs %}
-{% endif %}
+{% js %}
+    if (typeof Craft.GiftVoucher === 'undefined') {
+        Craft.GiftVoucher = {};
+    }
+
+    {% set voucherTypes = [] %}
+
+    {% for voucherType in craft.giftVoucher.getEditableVoucherTypes() %}
+        {% set voucherTypes = voucherTypes | merge([{
+            id: voucherType.id,
+            name: voucherType.name,
+            handle: voucherType.handle,
+        }]) %}
+    {% endfor %}
+
+    Craft.GiftVoucher.editableVoucherTypes = {{ voucherTypes | json_encode | raw }};
+
+    {% if voucherTypeHandle is defined %}
+        window.defaultVoucherTypeHandle = '{{ voucherTypeHandle }}';
+    {% endif %}
+{% endjs %}
+
 
 {% do view.registerAssetBundle('verbb\\giftvoucher\\assetbundles\\GiftVoucherAsset') -%}

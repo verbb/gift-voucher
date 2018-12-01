@@ -596,6 +596,13 @@
 		"oAP": "/src/events/CustomizeVoucherSnapshotDataEvent.php",
 		"oF": 0
 		},
+	"/src/events/CustomizeVoucherSnapshotFieldsEvent.php": {
+		"cB": 0,
+		"ft": 8192,
+		"oA": 2,
+		"oAP": "/src/events/CustomizeVoucherSnapshotFieldsEvent.php",
+		"oF": 0
+		},
 	"/src/events/GenerateCodeEvent.php": {
 		"cB": 0,
 		"ft": 8192,

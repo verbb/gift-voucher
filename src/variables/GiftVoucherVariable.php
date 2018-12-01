@@ -28,6 +28,11 @@ class GiftVoucherVariable
         return GiftVoucher::$plugin->getVoucherTypes()->getAllVoucherTypes();
     }
 
+    public function getEditableVoucherTypes(): array
+    {
+        return GiftVoucher::$plugin->getVoucherTypes()->getEditableVoucherTypes();
+    }
+
     public function vouchers(): VoucherQuery
     {
         return Voucher::find();

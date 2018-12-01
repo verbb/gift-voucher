@@ -9,7 +9,7 @@ var elementTypeClass = 'verbb\\giftvoucher\\elements\\Code';
 /**
  * Product index class
  */
-Craft.GiftVoucher.LicenseIndex = Craft.BaseElementIndex.extend({
+Craft.GiftVoucher.CodeIndex = Craft.BaseElementIndex.extend({
 
     afterInit: function() {
         var href = 'href="' + Craft.getUrl('gift-voucher/codes/new') + '"',
@@ -26,7 +26,7 @@ Craft.GiftVoucher.LicenseIndex = Craft.BaseElementIndex.extend({
 
 // Register it!
 try {
-    Craft.registerElementIndexClass(elementTypeClass, Craft.GiftVoucher.LicenseIndex);
+    Craft.registerElementIndexClass(elementTypeClass, Craft.GiftVoucher.CodeIndex);
 }
 catch(e) {
     // Already registered
