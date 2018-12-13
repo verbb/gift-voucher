@@ -134,7 +134,8 @@ class GiftVoucher extends Plugin
     {
         Event::on(Sites::class, Sites::EVENT_AFTER_SAVE_SITE, [$this->getVoucherTypes(), 'afterSaveSiteHandler']);
         Event::on(Sites::class, Sites::EVENT_AFTER_SAVE_SITE, [$this->getVouchers(), 'afterSaveSiteHandler']);
-        Event::on(Order::class, Order::EVENT_AFTER_ORDER_PAID, [$this->getCodes(), 'handleCompletedOrder']);
+        Event::on(Order::class, Order::EVENT_AFTER_ORDER_PAID, [$this->getCodes(), 'handlePaidOrder']);
+        Event::on(Order::class, Order::EVENT_AFTER_COMPLETE_ORDER, [$this->getCodes(), 'handleCompletedOrder']);
     }
 
     private function _registerElementTypes()

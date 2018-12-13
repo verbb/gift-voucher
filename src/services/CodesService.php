@@ -26,7 +26,7 @@ class CodesService extends Component
         return !(bool)Code::findOne(['codeKey' => $codeKey]);
     }
 
-    public static function handleCompletedOrder(Event $event)
+    public static function handlePaidOrder(Event $event)
     {
         $order = $event->sender;
         $lineItems = $order->getLineItems();
@@ -42,6 +42,12 @@ class CodesService extends Component
                 }
             }
         }
+    }
+
+    public static function handleCompletedOrder(Event $event)
+    {
+        $order = $event->sender;
+        $lineItems = $order->getLineItems();
 
         // Handle redemption of vouchers (when someone is using a code)
         $giftVoucherCodes = Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
