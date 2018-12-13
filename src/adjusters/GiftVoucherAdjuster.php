@@ -2,18 +2,22 @@
 namespace verbb\giftvoucher\adjusters;
 
 use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\events\VoucherAdjustmentsEvent;
 
 use Craft;
+use craft\base\Component;
 use craft\commerce\base\AdjusterInterface;
 use craft\commerce\elements\Order;
 use craft\commerce\models\OrderAdjustment;
 
 use DateTime;
 
-class GiftVoucherAdjuster implements AdjusterInterface
+class GiftVoucherAdjuster extends Component implements AdjusterInterface
 {
     // Constants
     // =========================================================================
+
+    const EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED = 'afterVoucherAdjustmentsCreated';
 
     const ADJUSTMENT_TYPE = 'discount';
 
@@ -54,7 +58,20 @@ class GiftVoucherAdjuster implements AdjusterInterface
             }
         }
 
-        return $adjustments;
+        // Raise the 'afterVoucherAdjustmentsCreated' event
+        $event = new VoucherAdjustmentsEvent([
+            'order' => $order,
+            'giftVoucherCodes' => $giftVoucherCodes,
+            'adjustments' => $adjustments,
+        ]);
+
+        $this->trigger(self::EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED, $event);
+
+        if (!$event->isValid) {
+            return false;
+        }
+
+        return $event->adjustments;
     }
 
 
