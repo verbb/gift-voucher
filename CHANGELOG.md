@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.5 - 2018-12-14
+
+### Added
+- Add `afterVoucherAdjustmentsCreated`.
+
+### Fixed
+- Fix querying codes by voucherId not working.
+- Fix codes not being generated correctly after checkout completion.
+- Fix redemptions not being generated correctly after checkout completion.
+
 ## 2.0.4 - 2018-12-01
 
 ### Added
