@@ -118,6 +118,19 @@ Event::on(Voucher::class, Voucher::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, functio
 });
 ```
 
+### The `afterVoucherAdjustmentsCreated` event
+
+Plugins can get notified after the discount has been made on an order, and before it returns it's adjustments. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
+
+```php
+use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
+use verbb\giftvoucher\events\VoucherAdjustmentsEvent;
+
+Event::on(GiftVoucherAdjuster::class, GiftVoucherAdjuster::EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED, function(VoucherAdjustmentsEvent $e) {
+
+});
+```
+
 
 ## Code related events
 
