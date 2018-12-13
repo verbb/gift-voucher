@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.6 - 2018-12-14
+
+### Changed
+- Use `beforeCompleteOrder` as the event to generate codes, ensuring they can be used in emails.
+
 ## 2.0.5 - 2018-12-14
 
 ### Added
