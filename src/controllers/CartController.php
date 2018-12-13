@@ -41,7 +41,7 @@ class CartController extends BaseFrontEndController
         if (!$voucherCode || trim($voucherCode) == '') {
             $this->_cart->addErrors(['voucherCode' => Craft::t('gift-voucher', 'No voucher code provided.')]);
 
-            return null;
+            return $this->_returnCart();
         }
 
         $error = '';
@@ -62,14 +62,16 @@ class CartController extends BaseFrontEndController
 
                 if ($couponError) {
                     $this->_cart->addErrors(['couponCode' => $couponError]);
-                    return null;
+
+                    return $this->_returnCart();
                 }
 
                 return $this->_returnCart();
             }
 
             $this->_cart->addErrors(['voucherCode' => $error]);
-            return null;
+
+            return $this->_returnCart();
         }
 
         // Get already stored voucher codes
@@ -118,16 +120,43 @@ class CartController extends BaseFrontEndController
     // Private Methods
     // =========================================================================
 
-    // Straight from Commerce
     private function _returnCart()
     {
         $request = Craft::$app->getRequest();
 
+        // Test if we've already set errors on the cart - below we're saving the order again, wiping out current errors
+        if ($this->_cart->hasErrors()) {
+            $error = Craft::t('commerce', 'Unable to update cart.');
+
+            if ($request->getAcceptsJson()) {
+                return $this->asJson([
+                    'error' => $error,
+                    'success' => !$this->_cart->hasErrors(),
+                    $this->_cartVariable => $this->cartArray($this->_cart)
+                ]);
+            }
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                $this->_cartVariable => $this->_cart
+            ]);
+
+            Craft::$app->getSession()->setError($error);
+
+            return null;
+        }
+
+        //
+        // Straight from Commerce
+        //
         if (!$this->_cart->validate() || !Craft::$app->getElements()->saveElement($this->_cart, false)) {
             $error = Craft::t('commerce', 'Unable to update cart.');
 
             if ($request->getAcceptsJson()) {
-                return $this->asJson(['error' => $error, $this->_cartVariable => $this->cartArray($this->_cart)]);
+                return $this->asJson([
+                    'error' => $error,
+                    'success' => !$this->_cart->hasErrors(),
+                    $this->_cartVariable => $this->cartArray($this->_cart)
+                ]);
             }
 
             Craft::$app->getUrlManager()->setRouteParams([
@@ -140,7 +169,10 @@ class CartController extends BaseFrontEndController
         }
 
         if ($request->getAcceptsJson()) {
-            return $this->asJson([$this->_cartVariable => $this->cartArray($this->_cart)]);
+            return $this->asJson([
+                'success' => !$this->_cart->hasErrors(),
+                $this->_cartVariable => $this->cartArray($this->_cart)
+            ]);
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('commerce', 'Cart updated.'));
