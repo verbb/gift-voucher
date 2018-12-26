@@ -22,7 +22,7 @@ class DownloadsController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionPdf(): Response
+    public function actionPdf()
     {
         $request = Craft::$app->getRequest();
 
@@ -34,6 +34,9 @@ class DownloadsController extends Controller
         $option = $request->getParam('option', '');
         $lineItemId = $request->getParam('lineItemId', '');
         $codeId = $request->getParam('codeId', '');
+
+        $format = $request->getParam('format');
+        $attach = $request->getParam('attach');
 
         if ($number) {
             $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
@@ -64,8 +67,18 @@ class DownloadsController extends Controller
             }
         }
 
-        return Craft::$app->getResponse()->sendContentAsFile($pdf, $fileName . '.pdf', [
-            'mimeType' => 'application/pdf'
-        ]);
+        $options = [
+            'mimeType' => 'application/pdf',
+        ];
+
+        if ($attach) {
+            $options['inline'] = true;
+        }
+
+        if ($format === 'plain') {
+            return $pdf;
+        } else {
+            return Craft::$app->getResponse()->sendContentAsFile($pdf, $fileName . '.pdf', $options);
+        }
     }
 }

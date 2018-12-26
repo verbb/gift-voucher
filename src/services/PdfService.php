@@ -67,7 +67,10 @@ class PdfService extends Component
     public function renderPdf($codes, $order = [], $lineItem = null, $option = '', $templatePath = null): string
     {
         $settings = GiftVoucher::getInstance()->getSettings();
-        
+
+        $request = Craft::$app->getRequest();
+        $format = $request->getParam('format');
+
         if (null === $templatePath){
             $templatePath = $settings->voucherCodesPdfPath;
         }
@@ -154,7 +157,12 @@ class PdfService extends Component
         $dompdf->setOptions($options);
 
         $dompdf->loadHtml($html);
-        $dompdf->render();
+
+        if ($format === 'plain') {
+            return $html;
+        } else {
+            $dompdf->render();
+        }
 
         // Trigger an 'afterRenderPdf' event
         $event = new PdfEvent([
