@@ -85,7 +85,9 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $adjustment->type = self::ADJUSTMENT_TYPE;
         $adjustment->name = $voucherCode->getVoucher()->title;
         $adjustment->orderId = $order->id;
-        $adjustment->description = 'Gift Voucher discount using code ' . $voucherCode->codeKey;
+        $adjustment->description = Craft::t('gift-voucher', 'Gift Voucher discount using code {code}', [
+            'code' => $voucherCode->codeKey
+        ]);
         $adjustment->sourceSnapshot = $voucherCode->attributes;
 
         // Check if there is a amount left

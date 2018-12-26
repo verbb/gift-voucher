@@ -284,6 +284,8 @@ class Code extends Element
             $codeRecord->orderId = $this->orderId;
             $codeRecord->voucherId = $this->voucherId;
             $codeRecord->codeKey = $this->generateCodeKey();
+            // set the codeKey to the Code as well to use it directly
+            $this->codeKey = $codeRecord->codeKey;
         }
         
         $codeRecord->originalAmount = $this->originalAmount;
