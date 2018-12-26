@@ -149,8 +149,7 @@ class PdfService extends Component
         // Paper Size and Orientation
         $pdfPaperSize = $settings->pdfPaperSize;
         $pdfPaperOrientation = $settings->pdfPaperOrientation;
-        $options->setDefaultPaperOrientation($pdfPaperOrientation);
-        $options->setDefaultPaperSize($pdfPaperSize);
+        $dompdf->setPaper($pdfPaperSize, $pdfPaperOrientation);
 
         $dompdf->setOptions($options);
 
