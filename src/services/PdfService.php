@@ -66,8 +66,10 @@ class PdfService extends Component
 
     public function renderPdf($codes, $order = [], $lineItem = null, $option = '', $templatePath = null): string
     {
+        $settings = GiftVoucher::getInstance()->getSettings();
+        
         if (null === $templatePath){
-            $templatePath = GiftVoucher::getInstance()->getSettings()->voucherCodesPdfPath;
+            $templatePath = $settings->voucherCodesPdfPath;
         }
 
         if (!$codes && $order) {
@@ -136,7 +138,7 @@ class PdfService extends Component
         FileHelper::isWritable($dompdfTempDir);
         FileHelper::isWritable($dompdfLogFile);
 
-        $isRemoteEnabled = Commerce::getInstance()->getSettings()->pdfAllowRemoteImages;
+        $isRemoteEnabled = $settings->pdfAllowRemoteImages;
 
         $options = new Options();
         $options->setTempDir($dompdfTempDir);
@@ -145,8 +147,8 @@ class PdfService extends Component
         $options->setIsRemoteEnabled($isRemoteEnabled);
 
         // Paper Size and Orientation
-        $pdfPaperSize = Commerce::getInstance()->getSettings()->pdfPaperSize;
-        $pdfPaperOrientation = Commerce::getInstance()->getSettings()->pdfPaperOrientation;
+        $pdfPaperSize = $settings->pdfPaperSize;
+        $pdfPaperOrientation = $settings->pdfPaperOrientation;
         $options->setDefaultPaperOrientation($pdfPaperOrientation);
         $options->setDefaultPaperSize($pdfPaperSize);
 

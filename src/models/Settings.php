@@ -14,4 +14,8 @@ class Settings extends Model
     public $voucherCodesPdfPath = 'shop/_pdf/voucher';
     public $voucherCodesPdfFilenameFormat = 'Voucher-{number}';
 
+    public $pdfAllowRemoteImages = false;
+    public $pdfPaperSize = 'letter';
+    public $pdfPaperOrientation = 'portrait';
+
 }

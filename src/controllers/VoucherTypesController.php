@@ -103,7 +103,7 @@ class VoucherTypesController extends Controller
             return $this->redirectToPostedUrl($voucherType);
         }
 
-        Craft::$app->getSession()->setError(Craft::t('commerce', 'Couldn’t save voucher type.'));
+        Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t save voucher type.'));
 
         // Send the voucherType back to the template
         Craft::$app->getUrlManager()->setRouteParams([

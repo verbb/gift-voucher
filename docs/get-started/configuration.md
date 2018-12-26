@@ -12,6 +12,9 @@ return [
         'codeKeyCharacters' => 'ACDEFGHJKLMNPQRTUVWXYZ234679',
         'voucherCodesPdfPath' => 'shop/_pdf/voucher',
         'voucherCodesPdfFilenameFormat' => 'Voucher-{number}',
+        'pdfAllowRemoteImages' => false,
+        'pdfPaperSize' => 'letter',
+        'pdfPaperOrientation' => 'portrait',
     ]
 ];
 ```
@@ -23,6 +26,9 @@ return [
 - `codeKeyCharacters` - Supply valid characters to be used in code generation.
 - `voucherCodesPdfPath` - Set the path to your PDF.
 - `voucherCodesPdfFilenameFormat` - Set the defaulf PDF filename format.
+- `pdfAllowRemoteImages` - Whether to allow remote images in the PDF.
+- `pdfPaperSize` - Sets the paper size for the PDF.
+- `pdfPaperOrientation` - Sets the paper orientation for the PDF.
 
 ## Control Panel
 
