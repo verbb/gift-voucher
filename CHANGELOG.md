@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.7 - 2018-12-26
+
+### Fixed
+- Include translation of Adjuster description. Thanks (@Anubarak).
+- Set the `codeKey` to the element after storing the record to use it directly after the Code is created. Thanks (@Anubarak).
+- Add PDF config settings, rather than from Commerce.
+- Fix PDF paper orientation and size not changing from defaults.
+- Bring back missing `format` and `attach` params for PDF.
+
 ## 2.0.6 - 2018-12-14
 
 ### Changed
