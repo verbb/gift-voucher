@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.8 - 2019-02-17
+
+### Fixed
+- Fix migration issue from Craft 2 to Craft 3.
+
 ## 2.0.7 - 2018-12-26
 
 ### Fixed
