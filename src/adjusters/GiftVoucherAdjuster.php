@@ -1,11 +1,13 @@
 <?php
 namespace verbb\giftvoucher\adjusters;
 
+use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\events\VoucherAdjustmentsEvent;
 
 use Craft;
 use craft\base\Component;
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\base\AdjusterInterface;
 use craft\commerce\elements\Order;
 use craft\commerce\models\OrderAdjustment;
@@ -36,6 +38,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $adjustments = [];
 
         $this->_orderTotal = $order->getTotalPrice();
+        $settings = GiftVoucher::getInstance()->getSettings();
 
         // Get code by session
         $giftVoucherCodes = Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
@@ -58,6 +61,21 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
             }
         }
 
+        // Check to see if there's any discounts that should stop processing
+        if ($settings->stopProcessing) {
+            $discounts = Commerce::getInstance()->getDiscounts()->getAllDiscounts();
+
+            foreach ($discounts as $discount) {
+                // Is this discount set to stop processing?
+                if ($discount->stopProcessing) {
+                    // Is this discount applied on the order?
+                    if ($order->couponCode && (strcasecmp($order->couponCode, $discount->code) == 0)) {
+                        return [];
+                    }
+                }
+            }
+        }
+
         // Raise the 'afterVoucherAdjustmentsCreated' event
         $event = new VoucherAdjustmentsEvent([
             'order' => $order,
@@ -68,7 +86,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $this->trigger(self::EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED, $event);
 
         if (!$event->isValid) {
-            return false;
+            return [];
         }
 
         return $event->adjustments;

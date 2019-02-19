@@ -71,6 +71,16 @@
         errors: settings.getErrors('voucherCodesPdfFilenameFormat'),
         required: true,
     }) }}
+
+    {{ forms.checkboxField({
+        label: 'Don’t allow voucher codes to be used if discounts are applied on the order' | t('gift-voucher'),
+        id: 'stopProcessing',
+        name: 'stopProcessing',
+        value: 1,
+        checked: settings.stopProcessing,
+        errors: settings.getErrors('stopProcessing'),
+    }) }}
+
 {% endnamespace %}
 
 {% endblock %}

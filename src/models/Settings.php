@@ -13,6 +13,7 @@ class Settings extends Model
     public $codeKeyCharacters = 'ACDEFGHJKLMNPQRTUVWXYZ234679';
     public $voucherCodesPdfPath = 'shop/_pdf/voucher';
     public $voucherCodesPdfFilenameFormat = 'Voucher-{number}';
+    public $stopProcessing = true;
 
     public $pdfAllowRemoteImages = false;
     public $pdfPaperSize = 'letter';
