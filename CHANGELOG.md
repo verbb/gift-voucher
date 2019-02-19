@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.9 - 2019-02-19
+
+### Added
+- Added “Don’t allow voucher codes to be used if discounts are applied on the order”. By default, discount codes and voucher codes can be applied to an order together, which may not always be desired. This setting honours the "Don’t apply subsequent discounts if this discount is applied" for discounts.
+
 ## 2.0.8 - 2019-02-17
 
 ### Fixed
