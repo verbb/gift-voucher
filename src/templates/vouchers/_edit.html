@@ -108,8 +108,8 @@
         <div>
             {% set allVoucherTab = voucherType.getFieldLayout().getTabs() %}
 
-            {% for tab in allVoucherTab %}
-                <div id="tab{{ loop.index }}" {% if not loop.first %} class="hidden" {% endif %}>
+            {% for tab in voucherType.getFieldLayout().getTabs() %}
+                <div id="{{ tab.getHtmlId() }}" {% if not loop.first %} class="hidden" {% endif %}>
                     {% include '_includes/fields' with {
                         fields: tab.getFields(),
                         element: voucher,
