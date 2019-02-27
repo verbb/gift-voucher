@@ -55,6 +55,8 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
         // Get the handle of the selected source
         var selectedSourceHandle = this.$source.data('handle');
 
+        var i, href, label;
+
         // Update the New Voucher button
         // ---------------------------------------------------------------------
 
@@ -76,15 +78,15 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
                 }
             }
 
-            this.$newVoucherBtnGroup = $('<div class="btngroup submit"/>');
+            this.$newVoucherBtnVoucherType = $('<div class="btngroup submit"/>');
             var $menuBtn;
 
             // If they are, show a primary "New voucher" button, and a dropdown of the other voucher types (if any).
             // Otherwise only show a menu button
             if (selectedVoucherType) {
-                var href = this._getVoucherTypeTriggerHref(selectedVoucherType),
-                    label = (this.settings.context === 'index' ? Craft.t('gift-voucher', 'New voucher') : Craft.t('gift-voucher', 'New {voucherType} voucher', { voucherType: selectedVoucherType.name }));
-                this.$newVoucherBtn = $('<a class="btn submit add icon" ' + href + '>' + label + '</a>').appendTo(this.$newVoucherBtnGroup);
+                href = this._getVoucherTypeTriggerHref(selectedVoucherType);
+                label = (this.settings.context === 'index' ? Craft.t('gift-voucher', 'New voucher') : Craft.t('gift-voucher', 'New {voucherType} voucher', { voucherType: selectedVoucherType.name }));
+                this.$newVoucherBtn = $('<a class="btn submit add icon" ' + href + '>' + Craft.escapeHtml(label) + '</a>').appendTo(this.$newVoucherBtnVoucherType);
 
                 if (this.settings.context !== 'index') {
                     this.addListener(this.$newVoucherBtn, 'click', function(ev) {
@@ -93,10 +95,10 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
                 }
 
                 if (this.editableVoucherTypes.length > 1) {
-                    $menuBtn = $('<div class="btn submit menubtn"></div>').appendTo(this.$newVoucherBtnGroup);
+                    $menuBtn = $('<div class="btn submit menubtn"></div>').appendTo(this.$newVoucherBtnVoucherType);
                 }
             } else {
-                this.$newVoucherBtn = $menuBtn = $('<div class="btn submit add icon menubtn">'+Craft.t('gift-voucher', 'New voucher')+'</div>').appendTo(this.$newVoucherBtnGroup);
+                this.$newVoucherBtn = $menuBtn = $('<div class="btn submit add icon menubtn">' + Craft.t('gift-voucher', 'New voucher') + '</div>').appendTo(this.$newVoucherBtnVoucherType);
             }
 
             if ($menuBtn) {
@@ -106,15 +108,15 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
                     var voucherType = this.editableVoucherTypes[i];
 
                     if (this.settings.context === 'index' || voucherType !== selectedVoucherType) {
-                        var href = this._getVoucherTypeTriggerHref(voucherType),
-                            label = (this.settings.context === 'index' ? voucherType.name : Craft.t('gift-voucher', 'New {voucherType} voucher', {voucherType: voucherType.name}));
-                        menuHtml += '<li><a '+href+'">'+label+'</a></li>';
+                        href = this._getVoucherTypeTriggerHref(voucherType);
+                        label = (this.settings.context === 'index' ? voucherType.name : Craft.t('gift-voucher', 'New {voucherType} voucher', { voucherType: voucherType.name }));
+                        menuHtml += '<li><a ' + href + '">' + Craft.escapeHtml(label) + '</a></li>';
                     }
                 }
 
                 menuHtml += '</ul></div>';
 
-                $(menuHtml).appendTo(this.$newVoucherBtnGroup);
+                $(menuHtml).appendTo(this.$newVoucherBtnVoucherType);
                 var menuBtn = new Garnish.MenuBtn($menuBtn);
 
                 if (this.settings.context !== 'index') {
@@ -124,7 +126,7 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
                 }
             }
 
-            this.addButton(this.$newVoucherBtnGroup);
+            this.addButton(this.$newVoucherBtnVoucherType);
         }
 
         // Update the URL if we're on the Vouchers index
@@ -141,8 +143,7 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
         }
     },
 
-    _getVoucherTypeTriggerHref: function(voucherType)
-    {
+    _getVoucherTypeTriggerHref: function(voucherType) {
         if (this.settings.context === 'index') {
             var uri = 'gift-voucher/vouchers/' + voucherType.handle + '/new';
             
@@ -160,8 +161,7 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
         }
     },
 
-    _openCreateVoucherModal: function(voucherTypeId)
-    {
+    _openCreateVoucherModal: function(voucherTypeId) {
         if (this.$newVoucherBtn.hasClass('loading')) {
             return;
         }
