@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.10 - 2019-02-27
+
+### Fixed
+- Fix multiple tabs for voucher types not showing.
+- Fix “New voucher” layout issue when switching voucher types
+
 ## 2.0.9 - 2019-02-19
 
 ### Added
