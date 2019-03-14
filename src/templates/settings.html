@@ -1,5 +1,6 @@
 {% extends 'gift-voucher/_layouts' %}
 {% import '_includes/forms' as forms %}
+{% import 'gift-voucher/_macros' as macros %}
 
 {% set crumbs = [
     { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher/settings') },
@@ -28,6 +29,7 @@
         options: months,
         errors: settings.getErrors('expiry'),
         required: true,
+        warning: macros.configWarning('expiry', 'gift-voucher'),
     }) }}
 
     {{ forms.textField({
@@ -37,6 +39,7 @@
         value: settings.codeKeyLength,
         errors: settings.getErrors('codeKeyLength'),
         required: true,
+        warning: macros.configWarning('codeKeyLength', 'gift-voucher'),
     }) }}
 
     {{ forms.textField({
@@ -46,6 +49,7 @@
         value: settings.codeKeyCharacters,
         errors: settings.getErrors('codeKeyCharacters'),
         required: true,
+        warning: macros.configWarning('codeKeyCharacters', 'gift-voucher'),
     }) }}
 
     {{ forms.textField({
@@ -56,6 +60,7 @@
         value: settings.voucherCodesPdfPath,
         errors: settings.getErrors('voucherCodesPdfPath'),
         required: true,
+        warning: macros.configWarning('voucherCodesPdfPath', 'gift-voucher'),
     }) }}
 
     {{ forms.textField({
@@ -70,6 +75,7 @@
         class: 'code ltr',
         errors: settings.getErrors('voucherCodesPdfFilenameFormat'),
         required: true,
+        warning: macros.configWarning('voucherCodesPdfFilenameFormat', 'gift-voucher'),
     }) }}
 
     {{ forms.checkboxField({
@@ -79,6 +85,7 @@
         value: 1,
         checked: settings.stopProcessing,
         errors: settings.getErrors('stopProcessing'),
+        warning: macros.configWarning('stopProcessing', 'gift-voucher'),
     }) }}
 
 {% endnamespace %}
