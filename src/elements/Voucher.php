@@ -177,7 +177,6 @@ class Voucher extends Purchasable
         $html = $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'titleField', [$this]);
         $html .= parent::getEditorHtml();
         $html .= $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'generalFields', [$this]);
-        $html .= $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'pricingFields', [$this]);
         $html .= $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'behavioralMetaFields', [$this]);
         $html .= $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'generalMetaFields', [$this]);
 
