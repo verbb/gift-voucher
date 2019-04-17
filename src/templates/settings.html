@@ -12,8 +12,7 @@
 
 {% block blockContent %}
 
-<input type="hidden" name="action" value="plugins/save-plugin-settings">
-<input type="hidden" name="pluginHandle" value="gift-voucher">
+<input type="hidden" name="action" value="gift-voucher/base/save-plugin-settings">
 
 {% namespace 'settings' %}
     {% set months = [{ label: 'No expiry' | t('gift-voucher'), value: 0 }] %}
@@ -88,6 +87,25 @@
         warning: macros.configWarning('stopProcessing', 'gift-voucher'),
     }) }}
 
+    {{ forms.textField({
+        label: "Voucher Code Fields Path" | t('gift-voucher'),
+        instructions: 'The fields path for custom fields. For nested arrays separate each key with a dot. For example `nested.array` would require an input like {ex1}' | t('gift-voucher', {
+            ex1: 'input type="text" name="options[nested][array][fieldHandle]"',
+        }),
+        id: 'fieldsPath',
+        name: 'fieldsPath',
+        value: settings.fieldsPath,
+        class: 'code ltr',
+        placeholder: 'fields',
+        errors: settings.getErrors('fieldsPath'),
+        required: true,
+        warning: macros.configWarning('fieldsPath', 'gift-voucher'),
+    }) }}
 {% endnamespace %}
+
+    <h3>{{ 'Voucher Code Field Layout'|t('gift-voucher') }}</h3>
+    {% include "_includes/fieldlayoutdesigner" with {
+        fieldLayout: settings.getFieldLayout(),
+    } only %}
 
 {% endblock %}

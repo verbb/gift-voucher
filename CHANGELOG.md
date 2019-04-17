@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.11 - 2019-04-17
+
+### Added
+- Added the ability to set field layouts for Voucher Codes
+- Added a field layout designer to the settings for Voucher Codes
+- Added an event `PopulateCodeFromLineItemEvent` to set additional fields/properties when a new Code is created based on a Voucher/LineItem
+- Added an event to validate LineItem options for custom fields in the Code
+- Added a migration to include an initial empty `content` record for all existing Voucher Codes
+- Added a new setting `fieldsPath` that represents the path of custom fields in the LineItems options
+- Added additional Tabs for custom fields in the Voucher Code if there are any
+
+### Changed
+- Use a custom controller to store the plugins settings ensuring the new Field Layout setting is stored properly
+
 ## 2.0.10 - 2019-02-27
 
 ### Fixed

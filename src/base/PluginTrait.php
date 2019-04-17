@@ -1,14 +1,11 @@
 <?php
 namespace verbb\giftvoucher\base;
 
-use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\services\CodesService;
 use verbb\giftvoucher\services\PdfService;
 use verbb\giftvoucher\services\RedemptionsService;
 use verbb\giftvoucher\services\VouchersService;
 use verbb\giftvoucher\services\VoucherTypesService;
-
-use Craft;
 
 trait PluginTrait
 {
@@ -21,27 +18,52 @@ trait PluginTrait
     // Public Methods
     // =========================================================================
 
-    public function getCodes()
+    /**
+     * Get Codes Service
+     *
+     * @return CodesService
+     */
+    public function getCodes(): CodesService
     {
         return $this->get('codes');
     }
 
-    public function getPdf()
+    /**
+     * Get the PDF Service
+     *
+     * @return PdfService
+     */
+    public function getPdf(): PdfService
     {
         return $this->get('pdf');
     }
 
-    public function getRedemptions()
+    /**
+     * Get the Redemption Service
+     *
+     * @return RedemptionsService
+     */
+    public function getRedemptions(): RedemptionsService
     {
         return $this->get('redemptions');
     }
 
-    public function getVouchers()
+    /**
+     * Get the Voucher Service
+     *
+     * @return VouchersService
+     */
+    public function getVouchers(): VouchersService
     {
         return $this->get('vouchers');
     }
 
-    public function getVoucherTypes()
+    /**
+     * Get the VoucherTypes Service
+     *
+     * @return VoucherTypesService
+     */
+    public function getVoucherTypes(): VoucherTypesService
     {
         return $this->get('voucherTypes');
     }
