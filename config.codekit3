@@ -115,7 +115,7 @@
 		"rFN": 0,
 		"uCM": 0
 		},
-	"/docs/feature-tour/custom-amounts.md": {
+	"/docs/feature-tour/multiple-vouchers.md": {
 		"cB": 0,
 		"cS": 0,
 		"eF": 1,
@@ -125,7 +125,7 @@
 		"ft": 4096,
 		"hM": 0,
 		"oA": 1,
-		"oAP": "/docs/feature-tour/custom-amounts.html",
+		"oAP": "/docs/feature-tour/multiple-vouchers.html",
 		"oF": 0,
 		"oFM": 0,
 		"oS": 0,
