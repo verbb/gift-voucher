@@ -12,7 +12,7 @@ Attribute | Description
 `url` | The URL to this single voucher.
 `purchasableId` | Returns this vouchers id - as vouchers are purchasables.
 `type` | The voucher's product type.
-`typeId` | The voucher's voucher type Id
+`typeId` | The voucher's voucher type ID
 `price` | The listing price of the voucher.
 `customAmount` | Whether this voucher should have a custom (user-provided) amount.
 `sku` | The sku of the voucher.
