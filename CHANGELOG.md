@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.11 - 2019-06-01
+
+### Added
+- Add override notice for settings fields.
+
+### Fixed
+- Fix missing `sku` and `price` query params.
+- Fix error in element HUD.
+
 ## 2.0.10 - 2019-02-27
 
 ### Fixed
