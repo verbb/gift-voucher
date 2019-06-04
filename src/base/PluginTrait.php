@@ -8,6 +8,8 @@ use verbb\giftvoucher\services\RedemptionsService;
 use verbb\giftvoucher\services\VouchersService;
 use verbb\giftvoucher\services\VoucherTypesService;
 
+use verbb\giftvoucher\integrations\klaviyoconnect\KlaviyoConnect;
+
 use Craft;
 
 trait PluginTrait
@@ -24,6 +26,11 @@ trait PluginTrait
     public function getCodes()
     {
         return $this->get('codes');
+    }
+
+    public function getKlaviyoConnect()
+    {
+        return $this->get('klaviyoConnect');
     }
 
     public function getPdf()
@@ -50,6 +57,7 @@ trait PluginTrait
     {
         $this->setComponents([
             'codes' => CodesService::class,
+            'klaviyoConnect' => KlaviyoConnect::class,
             'pdf' => PdfService::class,
             'redemptions' => RedemptionsService::class,
             'vouchers' => VouchersService::class,

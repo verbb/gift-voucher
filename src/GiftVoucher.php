@@ -27,6 +27,9 @@ use craft\commerce\services\OrderAdjustments;
 
 use yii\base\Event;
 
+use fostercommerce\klaviyoconnect\services\Track;
+use fostercommerce\klaviyoconnect\models\EventProperties;
+
 class GiftVoucher extends Plugin
 {
     // Public Properties
@@ -136,6 +139,9 @@ class GiftVoucher extends Plugin
         Event::on(Sites::class, Sites::EVENT_AFTER_SAVE_SITE, [$this->getVouchers(), 'afterSaveSiteHandler']);
         // Event::on(Order::class, Order::EVENT_AFTER_ORDER_PAID, [$this->getCodes(), 'handlePaidOrder']);
         Event::on(Order::class, Order::EVENT_BEFORE_COMPLETE_ORDER, [$this->getCodes(), 'handleCompletedOrder']);
+
+        // Klaviyo Connect Plugin
+        Event::on(Track::class, Track::ADD_LINE_ITEM_CUSTOM_PROPERTIES, [$this->getKlaviyoConnect(), 'addLineItemCustomProperties']);
     }
 
     private function _registerElementTypes()
