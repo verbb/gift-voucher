@@ -96,7 +96,7 @@ class GiftVoucher extends Plugin
             ];
         }
 
-        if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVouchers')) {
+        if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherTypes')) {
             $navItems['subnav']['voucherTypes'] = [
                 'label' => Craft::t('gift-voucher', 'Voucher Types'),
                 'url' => 'gift-voucher/voucher-types',
