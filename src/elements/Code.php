@@ -275,6 +275,9 @@ class Code extends Element
         return $rules;
     }
 
+    /**
+     * @return \craft\elements\db\ElementQueryInterface|\verbb\giftvoucher\elements\db\CodeQuery
+     */
     public static function find(): ElementQueryInterface
     {
         return new CodeQuery(static::class);
