@@ -51,7 +51,7 @@ class CodesService extends Component
         }
 
         // Handle redemption of vouchers (when someone is using a code)
-        $giftVoucherCodes = Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
+        $giftVoucherCodes = (bool)Craft::$app->getRequest()->isConsoleRequest === false? Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes') : null;
 
         if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
             foreach ($order->getAdjustments() as $adjustment) {
