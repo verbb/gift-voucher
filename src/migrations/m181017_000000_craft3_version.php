@@ -73,6 +73,7 @@ class m181017_000000_craft3_version extends Migration
 
 
         $this->addColumn('{{%giftvoucher_vouchers}}', 'postDate', $this->dateTime());
+        $this->addColumn('{{%giftvoucher_vouchers}}', 'expiryDate', $this->dateTime());
         $this->dropColumn('{{%giftvoucher_vouchers}}', 'expiry');
 
 
