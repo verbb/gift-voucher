@@ -25,7 +25,7 @@ class VouchersController extends Controller
     // Properties
     // =========================================================================
 
-    protected $allowAnonymous = ['actionViewSharedVoucher'];
+    protected $allowAnonymous = ['view-shared-voucher'];
 
 
     // Public Methods
