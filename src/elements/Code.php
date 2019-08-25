@@ -334,7 +334,7 @@ class Code extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'code' => ['label' => Craft::t('gift-voucher', 'Code')],
+            'codeKey' => ['label' => Craft::t('gift-voucher', 'Code')],
             'voucher' => ['label' => Craft::t('gift-voucher', 'Voucher')],
             'voucherType' => ['label' => Craft::t('gift-voucher', 'Voucher Type')],
             'orderLink' => ['label' => Craft::t('gift-voucher', 'Order')],
@@ -351,7 +351,7 @@ class Code extends Element
             $attributes[] = 'voucherType';
         }
 
-        $attributes[] = 'code';
+        $attributes[] = 'codeKey';
         $attributes[] = 'voucher';
         $attributes[] = 'dateCreated';
         $attributes[] = 'orderLink';
@@ -363,7 +363,7 @@ class Code extends Element
 
     protected static function defineSearchableAttributes(): array
     {
-        return ['voucherName'];
+        return ['voucherName', 'codeKey'];
     }
 
     protected function tableAttributeHtml(string $attribute): string
