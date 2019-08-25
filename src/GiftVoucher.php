@@ -3,6 +3,7 @@ namespace verbb\giftvoucher;
 
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\base\PluginTrait;
+use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\fields\Vouchers;
 use verbb\giftvoucher\models\Settings;
@@ -148,8 +149,9 @@ class GiftVoucher extends Plugin
 
     private function _registerElementTypes()
     {
-        Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function(RegisterComponentTypesEvent $e) {
-            $e->types[] = Voucher::class;
+        Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function(RegisterComponentTypesEvent $event) {
+            $event->types[] = Code::class;
+            $event->types[] = Voucher::class;
         });
     }
 
