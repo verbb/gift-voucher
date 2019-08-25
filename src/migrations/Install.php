@@ -98,10 +98,10 @@ class Install extends Migration
     protected function dropTables()
     {
         $this->dropTable('{{%giftvoucher_codes}}');
-		$this->dropTable('{{%giftvoucher_redemptions}}');
-		$this->dropTable('{{%giftvoucher_vouchers}}');
-		$this->dropTable('{{%giftvoucher_vouchertypes}}');
-		$this->dropTable('{{%giftvoucher_vouchertypes_sites}}');
+        $this->dropTable('{{%giftvoucher_redemptions}}');
+        $this->dropTable('{{%giftvoucher_vouchers}}');
+        $this->dropTable('{{%giftvoucher_vouchertypes}}');
+        $this->dropTable('{{%giftvoucher_vouchertypes_sites}}');
     }
     
     protected function createIndexes()
@@ -128,6 +128,7 @@ class Install extends Migration
 
     protected function addForeignKeys()
     {
+        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'id'), '{{%giftvoucher_codes}}', 'id', '{{%elements}}', 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'lineItemId'), '{{%giftvoucher_codes}}', 'lineItemId', '{{%commerce_lineitems}}', 'id', 'SET NULL', null);
         $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'orderId'), '{{%giftvoucher_codes}}', 'orderId', '{{%commerce_orders}}', 'id', 'SET NULL', null);
         $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'voucherId'), '{{%giftvoucher_codes}}', 'voucherId', '{{%giftvoucher_vouchers}}', 'id', 'SET NULL', null);
