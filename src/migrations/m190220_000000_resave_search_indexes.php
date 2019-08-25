@@ -1,5 +1,5 @@
 <?php
-namespace verbb\comments\migrations;
+namespace verbb\giftvoucher\migrations;
 
 use verbb\comments\elements\Comment;
 
