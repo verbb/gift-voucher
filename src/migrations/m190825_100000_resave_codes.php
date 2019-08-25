@@ -1,26 +1,25 @@
 <?php
 namespace verbb\giftvoucher\migrations;
 
+use verbb\giftvoucher\elements\Code;
+
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\queue\jobs\ResaveElements;
 
-use yii\db\Expression;
-
-class m190220_000000_resave_search_indexes extends Migration
+class m190725_100000_resave_codes extends Migration
 {
     public function safeUp()
     {
         Craft::$app->getQueue()->push(new ResaveElements([
-            'elementType' => Comment::class,
+            'elementType' => Code::class,
         ]));
     }
 
     public function safeDown()
     {
-        echo "m190220_000000_resave_search_indexes cannot be reverted.\n";
-
+        echo "m190725_100000_resave_codes cannot be reverted.\n";
         return false;
     }
 }
