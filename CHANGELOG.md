@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.12.1 - 2019-07-25
+
+### Fixed
+- Fix namespacing issue.
+
 ## 2.0.12 - 2019-07-25
 
 ### Added 
