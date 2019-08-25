@@ -8,7 +8,7 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\queue\jobs\ResaveElements;
 
-class m190725_100000_resave_codes extends Migration
+class m190825_100000_resave_codes extends Migration
 {
     public function safeUp()
     {
@@ -19,7 +19,7 @@ class m190725_100000_resave_codes extends Migration
 
     public function safeDown()
     {
-        echo "m190725_100000_resave_codes cannot be reverted.\n";
+        echo "m190825_100000_resave_codes cannot be reverted.\n";
         return false;
     }
 }
