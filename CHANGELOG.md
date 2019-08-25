@@ -1,16 +1,16 @@
 # Changelog
 
-## 2.0.13 - 2019-07-25
+## 2.0.13 - 2019-08-25
 
 ### Fixed
 - Fix incorrect migration.
 
-## 2.0.12.1 - 2019-07-25
+## 2.0.12.1 - 2019-08-25
 
 ### Fixed
 - Fix namespacing issue.
 
-## 2.0.12 - 2019-07-25
+## 2.0.12 - 2019-08-25
 
 ### Added 
 - Add support for Klaviyo Connect plugin.
