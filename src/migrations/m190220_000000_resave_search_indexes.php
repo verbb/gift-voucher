@@ -1,8 +1,6 @@
 <?php
 namespace verbb\giftvoucher\migrations;
 
-use verbb\comments\elements\Comment;
-
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
