@@ -4,6 +4,7 @@ namespace verbb\giftvoucher;
 use craft\commerce\models\LineItem;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\base\PluginTrait;
+use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\fields\Vouchers;
 use verbb\giftvoucher\models\Settings;
@@ -26,12 +27,18 @@ use craft\commerce\services\OrderAdjustments;
 
 use yii\base\Event;
 
+/**
+ *
+ * @property array $cpNavItem
+ * @property mixed $settingsResponse
+ * @property bool  $settingsUrl
+ */
 class GiftVoucher extends Plugin
 {
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '2.0.1';
+    public $schemaVersion = '2.0.2';
     public $hasCpSettings = true;
     public $hasCpSection = true;
 
@@ -144,6 +151,7 @@ class GiftVoucher extends Plugin
     {
         Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function(RegisterComponentTypesEvent $e) {
             $e->types[] = Voucher::class;
+            $e->types[] = Code::class;
         });
     }
 

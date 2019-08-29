@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.0.12 - 2019-07-25
+
+ ### Added 
+- Add support for Commerce 3.
+
+ ### Changed
+- Adjust template functions `vouchers()` and `codes()` to allow criteria as params.
+
+ ### Fixed
+- Incorrect permission for voucher types.
+- Fix anonymous requests to gift voucher previewing.
+- Fix missing Commerce requirement.
+- Fix missing expiryDate column.
+- Fix voucher search indexes.
+- Fix lack of registering Code as an element type.
+- Add codeKey to searchable attributes.
+- Fix legacy codes (from Craft 2) not correctly being elements.
+- Fix lack of integrity constraint on codes.
+
+
 ## 2.0.11 - 2019-04-17
 
 ### Added

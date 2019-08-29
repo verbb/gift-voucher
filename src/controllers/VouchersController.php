@@ -25,7 +25,7 @@ class VouchersController extends Controller
     // Properties
     // =========================================================================
 
-    protected $allowAnonymous = ['actionViewSharedVoucher'];
+    protected $allowAnonymous = ['view-shared-voucher'];
 
 
     // Public Methods
@@ -425,7 +425,7 @@ class VouchersController extends Controller
         if (($postDate = Craft::$app->getRequest()->getBodyParam('postDate')) !== null) {
             $voucher->postDate = DateTimeHelper::toDateTime($postDate) ?: null;
         }
-        
+
         if (($expiryDate = Craft::$app->getRequest()->getBodyParam('expiryDate')) !== null) {
             $voucher->expiryDate = DateTimeHelper::toDateTime($expiryDate) ?: null;
         }
