@@ -1,5 +1,11 @@
 # Changelog
 
+
+## 2.0.13 - 2019-11-19
+
+### Fixed
+- Fixed a Bug that could occur when re-saving an order via job, Craft already closes the session before running the job -> the adjuster has no valid session
+
 ## 2.0.12 - 2019-07-25
 
  ### Added 

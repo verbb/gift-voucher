@@ -35,9 +35,11 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $settings = GiftVoucher::getInstance()->getSettings();
 
         // Get code by session
-
-        $giftVoucherCodes = (bool) Craft::$app->getRequest()->isConsoleRequest === false ? Craft::$app->getSession()
-            ->get('giftVoucher.giftVoucherCodes') : [];
+        $giftVoucherCodes = [];
+        // secure "resaveElements" because the QueueController does "$response->sendAndClose() -> the session is already closed
+        if((bool)Craft::$app->getRequest()->getIsConsoleRequest() === true && Craft::$app->getSession()->getIsActive() === true){
+            $giftVoucherCodes = Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
+        }
 
         if (!$giftVoucherCodes || count($giftVoucherCodes) == 0) {
             return [];
