@@ -71,7 +71,9 @@ class Code extends Element
         }
 
         if ($this->voucherId) {
-            return $this->_voucher = Voucher::findOne($this->voucherId);
+            // find disabled vouchers as well, this is only for the CP
+            $this->_voucher = Voucher::find()->id($this->voucherId)->anyStatus()->one();
+            return $this->_voucher;
         }
 
         return null;

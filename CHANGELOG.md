@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.14 - 2019-11-25
+
+### Fixed
+- Display inactive Vouchers in the CP
 
 ## 2.0.13 - 2019-11-19
 
