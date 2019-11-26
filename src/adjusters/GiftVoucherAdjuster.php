@@ -37,7 +37,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         // Get code by session
         $giftVoucherCodes = [];
         // secure "resaveElements" because the QueueController does "$response->sendAndClose() -> the session is already closed
-        if((bool)Craft::$app->getRequest()->getIsConsoleRequest() === true && Craft::$app->getSession()->getIsActive() === true){
+        if((bool)Craft::$app->getRequest()->getIsConsoleRequest() === false && Craft::$app->getSession()->getIsActive() === true){
             $giftVoucherCodes = Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
         }
 
