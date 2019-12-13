@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.15 - 2019-12-13
+
+### Fixed
+- Fixed minor session issue
+
 ## 2.0.14 - 2019-11-25
 
 ### Fixed
