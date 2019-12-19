@@ -6,6 +6,7 @@ use Craft;
 use craft\base\Model;
 use craft\models\FieldLayout;
 use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\storage\Session;
 use yii\base\InvalidConfigException;
 
 class Settings extends Model
@@ -40,6 +41,12 @@ class Settings extends Model
      * @var string|null $fieldsPath
      */
     public $fieldsPath = 'fields';
+    /**
+     * The class that handles Codes
+     *
+     * @var string|array $codeStorage
+     */
+    public $codeStorage = Session::class;
 
     /**
      * Returns the owner's field layout.

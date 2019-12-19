@@ -75,17 +75,8 @@ class CartController extends BaseFrontEndController
         }
 
         // Get already stored voucher codes
-        $giftVoucherCodes = $session->get('giftVoucher.giftVoucherCodes');
-
-        if (!$giftVoucherCodes) {
-            $giftVoucherCodes = [];
-        }
-
-        // Add voucher code to session array
-        if (!in_array($voucherCode, $giftVoucherCodes, false)) {
-            $giftVoucherCodes[] = $voucherCode;
-            $session->set('giftVoucher.giftVoucherCodes', $giftVoucherCodes);
-        }
+        // $giftVoucherCodes = $session->get('giftVoucher.giftVoucherCodes');
+        GiftVoucher::getInstance()->getCodeStorage()->add($voucherCode, $this->_cart);
 
         return $this->_returnCart();
     }
@@ -93,25 +84,10 @@ class CartController extends BaseFrontEndController
     public function actionRemoveCode()
     {
         $this->requirePostRequest();
-
         $request = Craft::$app->getRequest();
-        $session = Craft::$app->getSession();
 
         $voucherCode = $request->getParam('voucherCode');
-
-        // Get session array
-        $giftVoucherCodes = $session->get('giftVoucher.giftVoucherCodes');
-
-        // Search for the key in array
-        $key = array_search($voucherCode, $giftVoucherCodes, false);
-
-        // Delete particular voucher code from session array via key
-        if ($giftVoucherCodes && isset($giftVoucherCodes[$key])) {
-            unset($giftVoucherCodes[$key]);
-        }
-
-        // Store the updated session array
-        $session->set('giftVoucher.giftVoucherCodes', $giftVoucherCodes);
+        GiftVoucher::getInstance()->getCodeStorage()->remove($voucherCode, $this->_cart);
 
         return $this->_returnCart();
     }

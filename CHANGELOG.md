@@ -1,5 +1,21 @@
 # Changelog
 
+
+## 2.0.16 - 2019-12-19
+
+### Added
+
+- add a component `codeStorage` for storing and receiving codes that are used
+- added an interface for `codeStorage` and the possibility to use custom classes/components
+- added a class `Session` for storing the used codes for an order in the session
+- added a class `Order` for storing the used codes for an order in the field layout in a Codes field
+
+### Changed
+
+- all codeKeys are now grabbed via `GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);`
+- all codeKeys are now set via `GiftVoucher::getInstance()->getCodeStorage()->set($codeKeys, $order);` or the `add` or `remove` function
+- this will make sure you can add a VoucherCode in the CP
+
 ## 2.0.15 - 2019-12-13
 
 ### Fixed

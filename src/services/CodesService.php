@@ -51,7 +51,7 @@ class CodesService extends Component
         }
 
         // Handle redemption of vouchers (when someone is using a code)
-        $giftVoucherCodes = (bool)Craft::$app->getRequest()->isConsoleRequest === false? Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes') : null;
+        $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
 
         if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
             foreach ($order->getAdjustments() as $adjustment) {
@@ -77,8 +77,8 @@ class CodesService extends Component
                 }
             }
 
-            // Delete session code 'giftVoucher.giftVoucherCode'
-            Craft::$app->getSession()->set('giftVoucher.giftVoucherCodes', null);
+            // Delete the code
+            GiftVoucher::getInstance()->getCodeStorage()->setCodes([], $order);
         }
     }
 

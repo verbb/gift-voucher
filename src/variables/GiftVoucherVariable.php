@@ -5,6 +5,7 @@ namespace verbb\giftvoucher\variables;
 use Craft;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
+use craft\commerce\Plugin as Commerce;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\db\CodeQuery;
 use verbb\giftvoucher\elements\db\VoucherQuery;
@@ -56,7 +57,8 @@ class GiftVoucherVariable
 
     public function getVoucherCodes()
     {
-        return Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
+        $cart = Commerce::getInstance()->getCarts()->getCart();
+        return GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($cart);
     }
 
     public function isVoucher(LineItem $lineItem)
