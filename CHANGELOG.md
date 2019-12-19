@@ -9,6 +9,7 @@
 - added an interface for `codeStorage` and the possibility to use custom classes/components
 - added a class `Session` for storing the used codes for an order in the session
 - added a class `Order` for storing the used codes for an order in the field layout in a Codes field
+- add a new Code relation field type
 
 ### Changed
 
