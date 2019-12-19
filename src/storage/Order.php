@@ -11,7 +11,6 @@
 
 namespace verbb\giftvoucher\storage;
 
-
 use Craft;
 use craft\base\Component;
 use verbb\giftvoucher\helpers\CodeHelper;
@@ -74,9 +73,17 @@ class Order extends Component implements CodeStorageInterface
         $code = CodeHelper::getCode($code);
         if($code !== null && $this->fieldHandle !== null){
             $codes = $order->getFieldValue($this->fieldHandle)->ids();
-            ArrayHelper::removeValue($codes, (int)$code->id);
-            $codes = array_unique($codes);
 
+            // can't use ArrayHelper due to "id" vs (int)$id ¯\_(ツ)_/¯
+            $codeId = (int)$code->id;
+            foreach ($codes as $key => $c){
+                if((int)$c === $codeId){
+                    unset($codes[$key]);
+                }
+            }
+
+            // remove duplicates if there are any
+            $codes = array_unique($codes);
             $order->setFieldValue($this->fieldHandle, $codes);
 
             return Craft::$app->getElements()->saveElement($order);
@@ -137,7 +144,7 @@ class Order extends Component implements CodeStorageInterface
      * @throws \yii\base\Exception
      * @throws \Throwable
      * @author Robin Schambach
-     * @since  18.12.2019
+     * @since  2.0.16
      */
     public function setCodes(array $codes, \craft\commerce\elements\Order $order): bool
     {
