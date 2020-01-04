@@ -10,9 +10,6 @@ use craft\commerce\elements\Order;
 
 use yii\helpers\ArrayHelper;
 
-/**
- * @property \verbb\giftvoucher\elements\Code[]|array|int[]|string[] $codes
- */
 class Order extends Component implements CodeStorageInterface
 {
     // Properties

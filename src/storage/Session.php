@@ -9,14 +9,6 @@ use craft\base\Component;
 
 use craft\commerce\elements\Order;
 
-/**
- * Class Session
- * @package verbb\giftvoucher\storage
- * @since   2.0.16
- *
- * @property array $codeKeys
- * @property array $codes
- */
 class Session extends Component implements CodeStorageInterface
 {
     // Properties
