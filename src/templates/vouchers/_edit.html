@@ -175,5 +175,7 @@
                 <div class="value">{{ voucher.dateUpdated | date('short') }} {{ voucher.dateUpdated | time('short') }}</div>
             </div>
         </div>
-    {% endif %}
+	{% endif %}
+	
+	{% hook "cp.gift-voucher.voucher.edit.details" %}
 {% endblock %}
