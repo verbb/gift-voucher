@@ -38,7 +38,7 @@ class GiftVoucher extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '2.0.2';
+    public $schemaVersion = '2.0.3';
     public $hasCpSettings = true;
     public $hasCpSection = true;
 
