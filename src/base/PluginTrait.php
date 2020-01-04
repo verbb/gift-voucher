@@ -1,12 +1,16 @@
 <?php
 namespace verbb\giftvoucher\base;
 
+use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\integrations\klaviyoconnect\KlaviyoConnect;
 use verbb\giftvoucher\services\CodesService;
 use verbb\giftvoucher\services\PdfService;
 use verbb\giftvoucher\services\RedemptionsService;
 use verbb\giftvoucher\services\VouchersService;
 use verbb\giftvoucher\services\VoucherTypesService;
 use verbb\giftvoucher\storage\CodeStorageInterface;
+
+use Craft;
 
 trait PluginTrait
 {
@@ -89,6 +93,7 @@ trait PluginTrait
 
         $this->setComponents([
             'codes' => CodesService::class,
+            'klaviyoConnect' => KlaviyoConnect::class,
             'pdf' => PdfService::class,
             'redemptions' => RedemptionsService::class,
             'vouchers' => VouchersService::class,

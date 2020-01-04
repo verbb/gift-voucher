@@ -98,10 +98,10 @@ class Install extends Migration
     protected function dropTables()
     {
         $this->dropTable('{{%giftvoucher_codes}}');
-		$this->dropTable('{{%giftvoucher_redemptions}}');
-		$this->dropTable('{{%giftvoucher_vouchers}}');
-		$this->dropTable('{{%giftvoucher_vouchertypes}}');
-		$this->dropTable('{{%giftvoucher_vouchertypes_sites}}');
+        $this->dropTable('{{%giftvoucher_redemptions}}');
+        $this->dropTable('{{%giftvoucher_vouchers}}');
+        $this->dropTable('{{%giftvoucher_vouchertypes}}');
+        $this->dropTable('{{%giftvoucher_vouchertypes_sites}}');
     }
 
     protected function createIndexes()

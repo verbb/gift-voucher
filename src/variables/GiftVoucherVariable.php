@@ -71,6 +71,11 @@ class GiftVoucherVariable
         return $adjuster->sourceSnapshot['codeKey'] ?? false;
     }
 
+    public function isVoucherAdjustment($adjuster)
+    {
+        return $adjuster->sourceSnapshot['codeKey'] ?? false;
+    }
+
     public function getPdfUrl(LineItem $lineItem)
     {
         if ($this->isVoucher($lineItem)) {

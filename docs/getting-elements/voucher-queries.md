@@ -463,22 +463,16 @@ Possible values include:
 
 ::: code
 ```twig
-{# Get the requested voucher SKU from the URL #}
-{% set requestedSlug = craft.app.request.getSegment(3) %}
-
-{# Fetch the voucher with that slug #}
+{# Fetch the voucher with an sku #}
 {% set voucher = craft.giftVoucher.vouchers()
-    .sku(requestedSlug|literal)
+    .sku('some-sku')
     .one() %}
 ```
 
 ```php
-// Get the requested voucher SKU from the URL
-$requestedSlug = \Craft::$app->request->getSegment(3);
-
-// Fetch the voucher with that slug
+// Fetch the voucher with an sku
 $voucher = \verbb\giftvoucher\elements\Voucher::find()
-    ->sku(\craft\helpers\Db::escapeParam($requestedSlug))
+    ->sku('some-sku')
     ->one();
 ```
 :::

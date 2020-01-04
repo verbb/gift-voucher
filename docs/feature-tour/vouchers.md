@@ -21,7 +21,7 @@ Each field is fairly self-explanatory, but the following fields are available fo
 - **Tax Category** - Select a tax category for this voucher. You can set up more categories in your _Craft Commerce Settings_. This will not appear unless you have more than one.
 - **Shipping Category** - Select a shipping category for this voucher. You can set up more categories in your _Craft Commerce Settings_. This will not appear unless you have more than one.
 - **SKU** - A mandatory field for any product. You can set up an **Automatic SKU Format** in your _Voucher Types_ settings. More details in the [Voucher Type →](docs:feature-tour/voucher-types) section.
-- **Custom amount** - You can enable a custom amount for vouchers, which allows the customer purchasing this voucher to set its value. Be aware that you have to tweak your front-end templates for [Custom Amounts →](docs:feature-tour/custom-amounts).
+- **Custom amount** - You can enable a custom amount for vouchers, which allows the customer purchasing this voucher to set its value. Be aware that you have to tweak your front-end templates for [Custom Amounts →](docs:template-guides/voucher-template).
 - **Price** - Provide the amount this voucher should provide off of the total customer order.
 
-Once you've created your first voucher, you'll want to show it to your customers. To do this, you'll need to implement some template code. Start with our [Template Guide →](docs:template-guide).
+Once you've created your first voucher, you'll want to show it to your customers. To do this, you'll need to implement some template code. Start with our [Template Guide →](docs:template-guides/voucher-template).

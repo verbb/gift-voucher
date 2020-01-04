@@ -14,4 +14,4 @@ Once a user has purchased a gift voucher, its important to actually provide the 
 Because multiple vouchers can be purchased for one line item, its important to loop through potentially multiple unique voucher codes as above.
 :::
 
-If you're looking for something a little prettier than simply showing the code in your order confirmation page or email, you may want to look at generating a [PDF Template](docs:template-guide/pdf-template).
+If you're looking for something a little prettier than simply showing the code in your order confirmation page or email, you may want to look at generating a [PDF Template](docs:template-guides/pdf-template).

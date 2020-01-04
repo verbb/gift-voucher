@@ -4,4 +4,4 @@ Gift Voucher supports redeeming multiple vouchers. Simply add as many voucher co
 
 ![Multiple Vouchers](/docs/screenshots/multiple-vouchers.png)
 
-You might want to check out our [Template Guide →](docs:template-guide/redeeming-voucher-codes) to find out how you can implement multiple gift vouchers into your project.
+You might want to check out our [Template Guide →](docs:template-guides/redeeming-voucher-codes) to find out how you can implement multiple gift vouchers into your project.

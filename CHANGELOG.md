@@ -1,46 +1,25 @@
 # Changelog
 
-
-## 2.0.16 - 2019-12-19
-
-### Added
-
-- add a component `codeStorage` for storing and receiving codes that are used
-- added an interface for `codeStorage` and the possibility to use custom classes/components
-- added a class `Session` for storing the used codes for an order in the session
-- added a class `Order` for storing the used codes for an order in the field layout in a Codes field
-- add a new Code relation field type
-
-### Changed
-
-- all codeKeys are now grabbed via `GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);`
-- all codeKeys are now set via `GiftVoucher::getInstance()->getCodeStorage()->set($codeKeys, $order);` or the `add` or `remove` function
-- this will make sure you can add a VoucherCode in the CP
-
-## 2.0.15 - 2019-12-13
+## 2.0.13 - 2019-08-25
 
 ### Fixed
-- Fixed minor session issue
+- Fix incorrect migration.
 
-## 2.0.14 - 2019-11-25
-
-### Fixed
-- Display inactive Vouchers in the CP
-
-## 2.0.13 - 2019-11-19
+## 2.0.12.1 - 2019-08-25
 
 ### Fixed
-- Fixed a Bug that could occur when re-saving an order via job, Craft already closes the session before running the job -> the adjuster has no valid session
+- Fix namespacing issue.
 
-## 2.0.12 - 2019-07-25
+## 2.0.12 - 2019-08-25
 
- ### Added 
+### Added 
+- Add support for Klaviyo Connect plugin.
 - Add support for Commerce 3.
 
- ### Changed
+### Changed
 - Adjust template functions `vouchers()` and `codes()` to allow criteria as params.
 
- ### Fixed
+### Fixed
 - Incorrect permission for voucher types.
 - Fix anonymous requests to gift voucher previewing.
 - Fix missing Commerce requirement.
@@ -51,20 +30,14 @@
 - Fix legacy codes (from Craft 2) not correctly being elements.
 - Fix lack of integrity constraint on codes.
 
-
-## 2.0.11 - 2019-04-17
+## 2.0.11 - 2019-06-01
 
 ### Added
-- Added the ability to set field layouts for Voucher Codes
-- Added a field layout designer to the settings for Voucher Codes
-- Added an event `PopulateCodeFromLineItemEvent` to set additional fields/properties when a new Code is created based on a Voucher/LineItem
-- Added an event to validate LineItem options for custom fields in the Code
-- Added a migration to include an initial empty `content` record for all existing Voucher Codes
-- Added a new setting `fieldsPath` that represents the path of custom fields in the LineItems options
-- Added additional Tabs for custom fields in the Voucher Code if there are any
+- Add override notice for settings fields.
 
-### Changed
-- Use a custom controller to store the plugins settings ensuring the new Field Layout setting is stored properly
+### Fixed
+- Fix missing `sku` and `price` query params.
+- Fix error in element HUD.
 
 ## 2.0.10 - 2019-02-27
 

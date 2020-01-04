@@ -7,8 +7,8 @@ Whenever you're dealing with a code in your template, you're actually working wi
 Attribute | Description
 --- | ---
 `id` | ID of the code.
-`voucherId` | The [Voucher](docs:models/voucher) ID the code is generated for.
-`voucher` | The [Voucher](docs:models/voucher) the code is generated for.
+`voucherId` | The [Voucher](docs:developer/voucher) ID the code is generated for.
+`voucher` | The [Voucher](docs:developer/voucher) the code is generated for.
 `voucherType` | The voucher's type the code is generated for.
 `orderId` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) ID where the parent voucher was originally purchased from.
 `order` | The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) where the parent voucher was originally purchased from.

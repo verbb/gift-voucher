@@ -21,6 +21,8 @@ class VoucherQuery extends ElementQuery
     // =========================================================================
 
     public $editable = false;
+    public $price;
+    public $sku;
     public $typeId;
     public $postDate;
     public $expiryDate;
@@ -73,6 +75,25 @@ class VoucherQuery extends ElementQuery
         return $this;
     }
 
+    public function typeId($value)
+    {
+        $this->typeId = $value;
+
+        return $this;
+    }
+
+    public function price($value)
+    {
+        $this->price = $value;
+        return $this;
+    }
+
+    public function sku($value)
+    {
+        $this->sku = $value;
+        return $this;
+    }
+
     public function before($value)
     {
         if ($value instanceof DateTime) {
@@ -104,13 +125,6 @@ class VoucherQuery extends ElementQuery
         return $this;
     }
 
-    public function typeId($value)
-    {
-        $this->typeId = $value;
-
-        return $this;
-    }
-
     public function postDate($value)
     {
         $this->postDate = $value;
@@ -124,6 +138,7 @@ class VoucherQuery extends ElementQuery
 
         return $this;
     }
+
 
     // Protected Methods
     // =========================================================================
@@ -160,6 +175,14 @@ class VoucherQuery extends ElementQuery
 
         if ($this->typeId) {
             $this->subQuery->andWhere(Db::parseParam('giftvoucher_vouchers.typeId', $this->typeId));
+        }
+
+        if ($this->price) {
+            $this->subQuery->andWhere(Db::parseParam('giftvoucher_vouchers.price', $this->price));
+        }
+
+        if ($this->sku) {
+            $this->subQuery->andWhere(Db::parseParam('giftvoucher_vouchers.sku', $this->sku));
         }
 
         $this->_applyEditableParam();
