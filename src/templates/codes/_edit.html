@@ -65,7 +65,20 @@
     {% if code.id %}<input type="hidden" name="codeId" value="{{ code.id }}">{% endif %}
 
     <div id="fields">
-        {% include 'gift-voucher/codes/_fields' %}
+        <div id="general">
+            {% include 'gift-voucher/codes/_fields' %}
+        </div>
+
+        {# include the field layout :) #}
+        {% for tab in code.getFieldLayout().getTabs() %}
+            <div id="{{ tab.getHtmlId() }}" class="hidden">
+                {% include "_includes/fields" with {
+                    fields:  tab.getFields(),
+                    element: code,
+                    static:  (static is defined ? static : false)
+                } only %}
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
 

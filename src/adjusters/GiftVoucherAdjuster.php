@@ -1,18 +1,17 @@
 <?php
-namespace verbb\giftvoucher\adjusters;
 
-use verbb\giftvoucher\GiftVoucher;
-use verbb\giftvoucher\elements\Code;
-use verbb\giftvoucher\events\VoucherAdjustmentsEvent;
+namespace verbb\giftvoucher\adjusters;
 
 use Craft;
 use craft\base\Component;
-use craft\commerce\Plugin as Commerce;
 use craft\commerce\base\AdjusterInterface;
 use craft\commerce\elements\Order;
 use craft\commerce\models\OrderAdjustment;
-
+use craft\commerce\Plugin as Commerce;
 use DateTime;
+use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\events\VoucherAdjustmentsEvent;
+use verbb\giftvoucher\GiftVoucher;
 
 class GiftVoucherAdjuster extends Component implements AdjusterInterface
 {
@@ -20,16 +19,11 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
     // =========================================================================
 
     const EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED = 'afterVoucherAdjustmentsCreated';
-
     const ADJUSTMENT_TYPE = 'discount';
-
-
     // Properties
     // =========================================================================
 
     private $_orderTotal;
-
-
     // Public Methods
     // =========================================================================
 
@@ -41,16 +35,14 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $settings = GiftVoucher::getInstance()->getSettings();
 
         // Get code by session
-        $giftVoucherCodes = Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
-        
+        $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
+
         if (!$giftVoucherCodes || count($giftVoucherCodes) == 0) {
             return [];
         }
 
         foreach ($giftVoucherCodes as $giftVoucherCode) {
-            $voucherCode = Code::find()
-                ->where(['=', 'codeKey', $giftVoucherCode])
-                ->one();
+            $voucherCode = Code::find()->where(['=', 'codeKey', $giftVoucherCode])->one();
 
             if ($voucherCode) {
                 $adjustment = $this->_getAdjustment($order, $voucherCode);
@@ -77,11 +69,13 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         }
 
         // Raise the 'afterVoucherAdjustmentsCreated' event
-        $event = new VoucherAdjustmentsEvent([
-            'order' => $order,
-            'giftVoucherCodes' => $giftVoucherCodes,
-            'adjustments' => $adjustments,
-        ]);
+        $event = new VoucherAdjustmentsEvent(
+            [
+                'order'            => $order,
+                'giftVoucherCodes' => $giftVoucherCodes,
+                'adjustments'      => $adjustments,
+            ]
+        );
 
         $this->trigger(self::EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED, $event);
 
@@ -103,9 +97,13 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $adjustment->type = self::ADJUSTMENT_TYPE;
         $adjustment->name = $voucherCode->getVoucher()->title;
         $adjustment->orderId = $order->id;
-        $adjustment->description = Craft::t('gift-voucher', 'Gift Voucher discount using code {code}', [
-            'code' => $voucherCode->codeKey
-        ]);
+        $adjustment->description = Craft::t(
+            'gift-voucher',
+            'Gift Voucher discount using code {code}',
+            [
+                'code' => $voucherCode->codeKey
+            ]
+        );
         $adjustment->sourceSnapshot = $voucherCode->attributes;
 
         // Check if there is a amount left
@@ -123,7 +121,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         if ($this->_orderTotal < $voucherCode->currentAmount) {
             $adjustment->amount = $this->_orderTotal * -1;
         } else {
-            $adjustment->amount = (float)$voucherCode->currentAmount * -1;
+            $adjustment->amount = (float) $voucherCode->currentAmount * -1;
         }
 
         $this->_orderTotal += $adjustment->amount;
