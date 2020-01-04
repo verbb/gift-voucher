@@ -154,8 +154,6 @@ class GiftVoucher extends Plugin
 
     private function _registerElementTypes()
     {
-private function _registerElementTypes()
-    {
         Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = Code::class;
             $event->types[] = Voucher::class;
@@ -164,14 +162,10 @@ private function _registerElementTypes()
 
     private function _registerFieldTypes()
     {
-        Event::on(
-            Fields::class,
-            Fields::EVENT_REGISTER_FIELD_TYPES,
-            static function(RegisterComponentTypesEvent $event) {
-                $event->types[] = Vouchers::class;
-                $event->types[] = Codes::class;
-            }
-        );
+        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
+            $event->types[] = Vouchers::class;
+            $event->types[] = Codes::class;
+        });
     }
 
     private function _registerPurchasableTypes()
