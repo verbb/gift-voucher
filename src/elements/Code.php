@@ -5,6 +5,7 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\db\CodeQuery;
 use verbb\giftvoucher\events\GenerateCodeEvent;
 use verbb\giftvoucher\records\CodeRecord;
+
 use Craft;
 use craft\base\Element;
 use craft\db\Query;
@@ -14,23 +15,12 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
+
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
+
 use yii\base\InvalidConfigException;
 
-/**
- * Class Code
- * @package verbb\giftvoucher\elements
- *
- * @property mixed  $amount
- * @property string $voucherName
- * @property null   $lineItem
- * @property mixed  $redemptions
- * @property null   $voucherType
- * @property null   $voucher
- * @property mixed  $name
- * @property null   $order
- */
 class Code extends Element
 {
     // Constants
@@ -62,6 +52,148 @@ class Code extends Element
     public function __toString()
     {
         return (string)$this->codeKey;
+    }
+
+    public function getName()
+    {
+        return Craft::t('gift-voucher', 'Code');
+    }
+
+    public static function hasContent(): bool
+    {
+        return true;
+    }
+
+    public static function hasStatuses(): bool
+    {
+        return true;
+    }
+
+    public static function defineSources(string $context = null): array
+    {
+        $voucherTypes = GiftVoucher::getInstance()->getVoucherTypes()->getAllVoucherTypes();
+
+        $voucherTypeIds = [];
+
+        foreach ($voucherTypes as $voucherType) {
+            $voucherTypeIds[] = $voucherType->id;
+        }
+
+        $sources = [
+            '*' => [
+                'label' => Craft::t('gift-voucher', 'All voucher types'),
+                'criteria' => ['typeId' => $voucherTypeIds],
+                'defaultSort' => ['dateCreated', 'desc']
+            ]
+        ];
+
+        $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
+
+        foreach ($voucherTypes as $voucherType) {
+            $key = 'voucherType:' . $voucherType->id;
+
+            $sources[$key] = [
+                'key' => $key,
+                'label' => $voucherType->name,
+                'data' => [
+                    'handle' => $voucherType->handle
+                ],
+                'criteria' => ['typeId' => $voucherType->id]
+            ];
+        }
+
+        return $sources;
+    }
+
+    protected static function defineActions(string $source = null): array
+    {
+        $actions = [];
+
+        $actions[] = Craft::$app->getElements()->createAction([
+            'type' => Delete::class,
+            'confirmationMessage' => Craft::t('gift-voucher', 'Are you sure you want to delete the selected codes?'),
+            'successMessage' => Craft::t('gift-voucher', 'Codes deleted.'),
+        ]);
+
+        return $actions;
+    }
+
+    public function setEagerLoadedElements(string $handle, array $elements)
+    {
+        if ($handle === 'voucher') {
+            $this->_voucher = $elements[0] ?? null;
+
+            return;
+        }
+
+        if ($handle === 'order') {
+            $this->_order = $elements[0] ?? null;
+
+            return;
+        }
+
+        parent::setEagerLoadedElements($handle, $elements);
+    }
+
+    public static function eagerLoadingMap(array $sourceElements, string $handle)
+    {
+        $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
+
+        if ($handle === 'voucher') {
+            $map = (new Query())
+                ->select('id as source, voucherId as target')
+                ->from('{{%giftvoucher_codes}}')
+                ->where(['in', 'id', $sourceElementIds])
+                ->all();
+
+            return array(
+                'elementType' => Voucher::class,
+                'map' => $map
+            );
+        }
+
+        if ($handle === 'order') {
+            $map = (new Query())
+                ->select('id as source, orderId as target')
+                ->from('{{%giftvoucher_codes}}')
+                ->where(['in', 'id', $sourceElementIds])
+                ->all();
+
+            return array(
+                'elementType' => Order::class,
+                'map' => $map
+            );
+        }
+
+        return parent::eagerLoadingMap($sourceElements, $handle);
+    }
+
+    public function rules(): array
+    {
+        $rules = parent::rules();
+
+        $rules[] = [['voucherId'], 'required'];
+        $rules[] = [['expiryDate'], DateTimeValidator::class];
+
+        return $rules;
+    }
+
+    public static function find(): ElementQueryInterface
+    {
+        return new CodeQuery(static::class);
+    }
+
+    public function datetimeAttributes(): array
+    {
+        $attributes = parent::datetimeAttributes();
+        $attributes[] = 'expiryDate';
+
+        return $attributes;
+    }
+
+    public function getCpEditUrl(): string
+    {
+        return UrlHelper::cpUrl('gift-voucher/codes/' . $this->id);
     }
 
     public function getVoucher()
@@ -131,11 +263,6 @@ class Code extends Element
         return parent::getFieldLayout() ?? GiftVoucher::getInstance()->getSettings()->getFieldLayout();
     }
 
-    public function getCpEditUrl(): string
-    {
-        return UrlHelper::cpUrl('gift-voucher/codes/' . $this->id);
-    }
-
     public function getRedemptions()
     {
         if ($this->id) {
@@ -143,154 +270,9 @@ class Code extends Element
         }
     }
 
-    public function getName()
-    {
-        return Craft::t('gift-voucher', 'Code');
-    }
-
-    public static function hasStatuses(): bool
-    {
-        return true;
-    }
-
     public function getPdfUrl($option = null)
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option = null);
-    }
-
-    public static function defineSources(string $context = null): array
-    {
-        $voucherTypes = GiftVoucher::getInstance()->getVoucherTypes()->getAllVoucherTypes();
-
-        $voucherTypeIds = [];
-
-        foreach ($voucherTypes as $voucherType) {
-            $voucherTypeIds[] = $voucherType->id;
-        }
-
-        $sources = [
-            '*' => [
-                'label' => Craft::t('gift-voucher', 'All voucher types'),
-                'criteria' => ['typeId' => $voucherTypeIds],
-                'defaultSort' => ['dateCreated', 'desc']
-            ]
-        ];
-
-        $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
-
-        foreach ($voucherTypes as $voucherType) {
-            $key = 'voucherType:' . $voucherType->id;
-
-            $sources[$key] = [
-                'key' => $key,
-                'label' => $voucherType->name,
-                'data' => [
-                    'handle' => $voucherType->handle
-                ],
-                'criteria' => ['typeId' => $voucherType->id]
-            ];
-        }
-
-        return $sources;
-    }
-
-    protected static function defineActions(string $source = null): array
-    {
-        $actions = [];
-
-        $actions[] = Craft::$app->getElements()->createAction([
-            'type' => Delete::class,
-            'confirmationMessage' => Craft::t('gift-voucher', 'Are you sure you want to delete the selected codes?'),
-            'successMessage' => Craft::t('gift-voucher', 'Codes deleted.'),
-        ]);
-
-        return $actions;
-    }
-
-    /**
-     * Codes can now have content as well
-     *
-     * @return bool
-     */
-    public static function hasContent(): bool
-    {
-        return true;
-    }
-
-    public static function eagerLoadingMap(array $sourceElements, string $handle)
-    {
-        $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
-
-        if ($handle === 'voucher') {
-            $map = (new Query())
-                ->select('id as source, voucherId as target')
-                ->from('{{%giftvoucher_codes}}')
-                ->where(['in', 'id', $sourceElementIds])
-                ->all();
-
-            return array(
-                'elementType' => Voucher::class,
-                'map' => $map
-            );
-        }
-
-        if ($handle === 'order') {
-            $map = (new Query())
-                ->select('id as source, orderId as target')
-                ->from('{{%giftvoucher_codes}}')
-                ->where(['in', 'id', $sourceElementIds])
-                ->all();
-
-            return array(
-                'elementType' => Order::class,
-                'map' => $map
-            );
-        }
-
-        return parent::eagerLoadingMap($sourceElements, $handle);
-    }
-
-    public function setEagerLoadedElements(string $handle, array $elements)
-    {
-        if ($handle === 'voucher') {
-            $this->_voucher = $elements[0] ?? null;
-
-            return;
-        }
-
-        if ($handle === 'order') {
-            $this->_order = $elements[0] ?? null;
-
-            return;
-        }
-
-        parent::setEagerLoadedElements($handle, $elements);
-    }
-
-    public function rules(): array
-    {
-        $rules = parent::rules();
-
-        $rules[] = [['voucherId'], 'required'];
-        $rules[] = [['expiryDate'], DateTimeValidator::class];
-
-        return $rules;
-    }
-
-    /**
-     * @return \craft\elements\db\ElementQueryInterface|\verbb\giftvoucher\elements\db\CodeQuery
-     */
-    public static function find(): ElementQueryInterface
-    {
-        return new CodeQuery(static::class);
-    }
-
-    public function datetimeAttributes(): array
-    {
-        $attributes = parent::datetimeAttributes();
-        $attributes[] = 'expiryDate';
-
-        return $attributes;
     }
 
     public function afterSave(bool $isNew)

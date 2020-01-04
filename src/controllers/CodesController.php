@@ -1,11 +1,12 @@
 <?php
 namespace verbb\giftvoucher\controllers;
 
-use craft\base\Element;
-use craft\base\Field;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
+
 use Craft;
+use craft\base\Element;
+use craft\base\Field;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 
@@ -17,11 +18,6 @@ class CodesController extends Controller
     // Public Methods
     // =========================================================================
 
-    /**
-     * init
-     *
-     * @throws \yii\web\ForbiddenHttpException
-     */
     public function init()
     {
         $this->requirePermission('giftVoucher-manageCodes');
@@ -29,14 +25,6 @@ class CodesController extends Controller
         parent::init();
     }
 
-    /**
-     * Action Edit
-     *
-     * @param int|null                              $codeId
-     * @param \verbb\giftvoucher\elements\Code|\craft\base\ElementInterface|null $code
-     *
-     * @return \yii\web\Response
-     */
     public function actionEdit(int $codeId = null, Code $code = null): Response
     {
         if ($code === null) {
@@ -53,8 +41,9 @@ class CodesController extends Controller
 
         $variables['tabs'] = [];
         $tabs = $code->getFieldLayout()->getTabs();
+
         // prepend the first tab as general setting in case there are no field layout tabs
-        if(empty($tabs) === false){
+        if (empty($tabs) === false) {
             $variables['tabs'][] = [
                 // TODO: Maybe There is a better wording for it ¯\_(ツ)_/¯
                 'label' => Craft::t('app', 'Settings'),
@@ -71,7 +60,6 @@ class CodesController extends Controller
             // check if there are any errors for this tab
             if ($code->hasErrors()) {
                 foreach ($tab->getFields() as $field) {
-                    /** @var Field $field */
                     if ($hasErrors = $code->hasErrors($field->handle . '.*')) {
                         break;
                     }
@@ -93,16 +81,6 @@ class CodesController extends Controller
         return $this->renderTemplate('gift-voucher/codes/_edit', $variables);
     }
 
-    /**
-     * Action Save
-     *
-     * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
-     * @return \yii\web\Response|null
-     */
     public function actionSave()
     {
         $this->requirePostRequest();
@@ -140,6 +118,7 @@ class CodesController extends Controller
         // populate fields
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $code->setFieldValuesFromRequest($fieldsLocation);
+
         // validate fields
         $code->setScenario(Element::SCENARIO_LIVE);
 
@@ -152,18 +131,10 @@ class CodesController extends Controller
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Code saved.'));
+
         return $this->redirectToPostedUrl($code);
     }
 
-    /**
-     * Action Delete
-     *
-     * @throws \Throwable
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
-     * @return \yii\web\Response|null
-     */
     public function actionDelete()
     {
         $this->requirePostRequest();
@@ -171,7 +142,7 @@ class CodesController extends Controller
         $codeId = Craft::$app->getRequest()->getRequiredBodyParam('codeId');
         $code = Craft::$app->getElements()->getElementById($codeId, Code::class);
 
-        if(!$code){
+        if (!$code) {
             throw new Exception('No code with the ID “{id}”', ['id' => $codeId]);
         }
 

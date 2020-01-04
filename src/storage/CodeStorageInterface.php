@@ -1,14 +1,4 @@
 <?php
-/**
- * Craft CMS Plugins for Craft CMS 3.x
- *
- * Created with PhpStorm.
- *
- * @link      https://github.com/Anubarak/
- * @email     anubarak1993@gmail.com
- * @copyright Copyright (c) 2019 Robin Schambach
- */
-
 namespace verbb\giftvoucher\storage;
 
 use craft\commerce\elements\Order;
@@ -19,6 +9,9 @@ use craft\commerce\elements\Order;
  */
 interface CodeStorageInterface
 {
+    // Public Methods
+    // =========================================================================
+
     /**
      * Add a code
      *

@@ -1,12 +1,13 @@
 <?php
-
 namespace verbb\giftvoucher\controllers;
+
+use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\GiftVoucher;
 
 use Craft;
 use craft\db\Table;
 use craft\web\Controller;
-use verbb\giftvoucher\elements\Code;
-use verbb\giftvoucher\GiftVoucher;
+
 use yii\web\Response;
 
 class BaseController extends Controller
@@ -18,27 +19,11 @@ class BaseController extends Controller
     {
         $settings = GiftVoucher::$plugin->getSettings();
 
-        $this->renderTemplate(
-            'gift-voucher/settings',
-            [
-                'settings' => $settings,
-            ]
-        );
+        $this->renderTemplate('gift-voucher/settings', [
+            'settings' => $settings,
+        ]);
     }
 
-    /**
-     * Saves a plugin’s settings.
-     *
-     * This method is required here now because of the field layout ID
-     * I could have used some events to populate the field layout by POST request
-     * in beforeSaveSettings event but it seemed a little bit nasty to me ¯\_(ツ)_/¯
-     *
-     * @throws \Throwable
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
-     * @return Response|null
-     */
     public function actionSavePluginSettings()
     {
         $this->requirePostRequest();
@@ -57,20 +42,17 @@ class BaseController extends Controller
             Craft::$app->getSession()->setError(Craft::t('app', 'Couldn’t save plugin settings.'));
 
             // Send the plugin back to the template
-            Craft::$app->getUrlManager()->setRouteParams(
-                [
-                    'plugin' => $plugin
-                ]
-            );
+            Craft::$app->getUrlManager()->setRouteParams([
+                'plugin' => $plugin
+            ]);
 
             return null;
         }
 
         // re-save all codes to insert their new field layout
         // maybe you want to move that in a service as well
-        /** @var \verbb\giftvoucher\models\Settings $existingSettings */
         $existingSettings = $plugin->getSettings();
-        if((int)$existingSettings->fieldLayoutId !== (int)$settings['fieldLayoutId']){
+        if ((int)$existingSettings->fieldLayoutId !== (int)$settings['fieldLayoutId']) {
             // field layout has changed
             // update all code field layouts
             $db = Craft::$app->getDb();
@@ -78,15 +60,8 @@ class BaseController extends Controller
 
             try {
                 $db->createCommand()
-                    ->update(
-                        Table::ELEMENTS,
-                        [
-                            'fieldLayoutId' => $settings['fieldLayoutId']
-                        ],
-                        [
-                            'type' => Code::class
-                        ]
-                    )->getRawSql();
+                    ->update(Table::ELEMENTS, ['fieldLayoutId' => $settings['fieldLayoutId']], ['type' => Code::class])
+                    ->getRawSql();
             } catch (\Throwable $e) {
                 $transaction->rollBack();
 

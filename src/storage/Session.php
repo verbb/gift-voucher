@@ -1,21 +1,13 @@
 <?php
-/**
- * Craft CMS Plugins for Craft CMS 3.x
- *
- * Created with PhpStorm.
- *
- * @link      https://github.com/Anubarak/
- * @email     anubarak1993@gmail.com
- * @copyright Copyright (c) 2019 Robin Schambach
- */
-
 namespace verbb\giftvoucher\storage;
+
+use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\helpers\CodeHelper;
 
 use Craft;
 use craft\base\Component;
+
 use craft\commerce\elements\Order;
-use verbb\giftvoucher\elements\Code;
-use verbb\giftvoucher\helpers\CodeHelper;
 
 /**
  * Class Session
@@ -27,16 +19,25 @@ use verbb\giftvoucher\helpers\CodeHelper;
  */
 class Session extends Component implements CodeStorageInterface
 {
+    // Properties
+    // =========================================================================
+
     /**
      * The key for code storing
      */
     public const CODE_KEY = 'giftVoucher.giftVoucherCodes';
+    
     /** @var \craft\web\Request */
     public $request;
+
+
+    // Public Methods
+    // =========================================================================
 
     public function init()
     {
         $this->request = Craft::$app->getRequest();
+
         parent::init();
     }
 
@@ -55,6 +56,7 @@ class Session extends Component implements CodeStorageInterface
     public function add($code, Order $order): bool
     {
         $code = CodeHelper::getCode($code);
+
         if ($code !== null && $this->_isActive() === true) {
             $codeKeys = $this->getCodeKeys($order);
             $codeKeys[] = $code->codeKey;
@@ -84,8 +86,10 @@ class Session extends Component implements CodeStorageInterface
     {
         $code = CodeHelper::getCode($code);
         $success = false;
+        
         if ($code !== null && $this->_isActive() === true) {
             $codeKeys = $this->getCodeKeys($order);
+
             foreach ($codeKeys as $key => $codeKey) {
                 if ($codeKey === $code->codeKey) {
                     $success = true;
@@ -112,7 +116,7 @@ class Session extends Component implements CodeStorageInterface
      */
     public function getCodeKeys(Order $order): array
     {
-        if($this->_isActive() === true){
+        if ($this->_isActive() === true) {
             return Craft::$app->getSession()->get(self::CODE_KEY, []);
         }
 
@@ -146,7 +150,7 @@ class Session extends Component implements CodeStorageInterface
      */
     public function getCodes(Order $order): array
     {
-        if($this->_isActive() === true && empty(($codes = $this->getCodeKeys($order))) === false){
+        if ($this->_isActive() === true && empty(($codes = $this->getCodeKeys($order))) === false) {
             return Code::find()->codeKey($codes)->all();
         }
 
@@ -168,14 +172,17 @@ class Session extends Component implements CodeStorageInterface
     public function setCodes(array $codes, Order $order): bool
     {
         $success = false;
-        if($this->_isActive() === true){
+
+        if ($this->_isActive() === true) {
             $codeKeys = [];
             $success = true;
+
             foreach ($codes as $code){
                 $codeElement = CodeHelper::getCode($code);
-                if($codeElement !== null){
+                
+                if ($codeElement !== null){
                     $codeKeys[] = $codeElement->codeKey;
-                }else{
+                } else {
                     $success = false;
                 }
             }

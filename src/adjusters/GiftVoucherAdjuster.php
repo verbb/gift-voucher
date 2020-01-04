@@ -1,5 +1,4 @@
 <?php
-
 namespace verbb\giftvoucher\adjusters;
 
 use Craft;
@@ -20,10 +19,14 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
 
     const EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED = 'afterVoucherAdjustmentsCreated';
     const ADJUSTMENT_TYPE = 'discount';
+
+
     // Properties
     // =========================================================================
 
     private $_orderTotal;
+
+
     // Public Methods
     // =========================================================================
 
@@ -69,13 +72,11 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         }
 
         // Raise the 'afterVoucherAdjustmentsCreated' event
-        $event = new VoucherAdjustmentsEvent(
-            [
-                'order'            => $order,
-                'giftVoucherCodes' => $giftVoucherCodes,
-                'adjustments'      => $adjustments,
-            ]
-        );
+        $event = new VoucherAdjustmentsEvent([
+            'order' => $order,
+            'giftVoucherCodes' => $giftVoucherCodes,
+            'adjustments' => $adjustments,
+        ]);
 
         $this->trigger(self::EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED, $event);
 

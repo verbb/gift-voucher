@@ -1,13 +1,13 @@
 <?php
 namespace verbb\giftvoucher\controllers;
 
+use verbb\giftvoucher\GiftVoucher;
+
 use Craft;
 use craft\web\Controller;
 
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\controllers\BaseFrontEndController;
-
-use verbb\giftvoucher\GiftVoucher;
 
 class CartController extends BaseFrontEndController
 {

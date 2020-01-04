@@ -23,72 +23,38 @@ trait PluginTrait
     // Public Methods
     // =========================================================================
 
-    /**
-     * Get Codes Service
-     *
-     * @return CodesService
-     */
-    public function getCodes(): CodesService
+    public function getCodes()
     {
         return $this->get('codes');
     }
 
-    /**
-     * Get the PDF Service
-     *
-     * @return PdfService
-     */
-    public function getPdf(): PdfService
+    public function getPdf()
     {
         return $this->get('pdf');
     }
 
-    /**
-     * Get the Redemption Service
-     *
-     * @return RedemptionsService
-     */
-    public function getRedemptions(): RedemptionsService
+    public function getRedemptions()
     {
         return $this->get('redemptions');
     }
 
-    /**
-     * Get the Voucher Service
-     *
-     * @return VouchersService
-     */
-    public function getVouchers(): VouchersService
+    public function getVouchers()
     {
         return $this->get('vouchers');
     }
 
-    /**
-     * Get the VoucherTypes Service
-     *
-     * @return VoucherTypesService
-     */
-    public function getVoucherTypes(): VoucherTypesService
+    public function getVoucherTypes()
     {
         return $this->get('voucherTypes');
     }
 
-    /**
-     * Get the code Storage
-     *
-     * @return \verbb\giftvoucher\storage\CodeStorageInterface
-     *
-     * @author Robin Schambach
-     * @since  2.0.16
-     */
-    public function getCodeStorage(): CodeStorageInterface
+    public function getCodeStorage()
     {
         return $this->get('codeStorage');
     }
 
     private function _setPluginComponents()
     {
-        /** @var \verbb\giftvoucher\models\Settings $settings */
         $settings = $this->getSettings();
 
         $this->setComponents([

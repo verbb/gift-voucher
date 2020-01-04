@@ -1,19 +1,13 @@
 <?php
-/**
- * Craft CMS Plugins for Craft CMS 3.x
- *
- * Created with PhpStorm.
- *
- * @link      https://github.com/Anubarak/
- * @email     anubarak1993@gmail.com
- * @copyright Copyright (c) 2019 Robin Schambach
- */
-
 namespace verbb\giftvoucher\storage;
+
+use verbb\giftvoucher\helpers\CodeHelper;
 
 use Craft;
 use craft\base\Component;
-use verbb\giftvoucher\helpers\CodeHelper;
+
+use craft\commerce\elements\Order;
+
 use yii\helpers\ArrayHelper;
 
 /**
@@ -21,8 +15,14 @@ use yii\helpers\ArrayHelper;
  */
 class Order extends Component implements CodeStorageInterface
 {
+    // Properties
+    // =========================================================================
 
     public $fieldHandle;
+
+
+    // Public Methods
+    // =========================================================================
 
     /**
      * Add a code
@@ -38,10 +38,11 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function add($code, \craft\commerce\elements\Order $order): bool
+    public function add($code, Order $order): bool
     {
         $code = CodeHelper::getCode($code);
-        if($code !== null && $this->fieldHandle !== null){
+        
+        if ($code !== null && $this->fieldHandle !== null) {
             $codes = $order->getFieldValue($this->fieldHandle)->ids();
             $codes[] = (int)$code->id;
             $codes = array_unique($codes);
@@ -68,16 +69,18 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function remove($code, \craft\commerce\elements\Order $order): bool
+    public function remove($code, Order $order): bool
     {
         $code = CodeHelper::getCode($code);
-        if($code !== null && $this->fieldHandle !== null){
+        
+        if ($code !== null && $this->fieldHandle !== null) {
             $codes = $order->getFieldValue($this->fieldHandle)->ids();
 
             // can't use ArrayHelper due to "id" vs (int)$id ¯\_(ツ)_/¯
             $codeId = (int)$code->id;
-            foreach ($codes as $key => $c){
-                if((int)$c === $codeId){
+
+            foreach ($codes as $key => $c) {
+                if ((int)$c === $codeId) {
                     unset($codes[$key]);
                 }
             }
@@ -102,9 +105,9 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function getCodes(\craft\commerce\elements\Order $order): array
+    public function getCodes(Order $order): array
     {
-        if($this->fieldHandle !== null){
+        if ($this->fieldHandle !== null) {
             return $order->getFieldValue($this->fieldHandle)->all();
         }
 
@@ -121,11 +124,12 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function getCodeKeys(\craft\commerce\elements\Order $order): array
+    public function getCodeKeys(Order $order): array
     {
         $codes = $this->getCodes($order);
         $codeKeys = [];
-        foreach ($codes as $code){
+
+        foreach ($codes as $code) {
             $codeKeys[] = $code->codeKey;
         }
 
@@ -146,15 +150,17 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function setCodes(array $codes, \craft\commerce\elements\Order $order): bool
+    public function setCodes(array $codes, Order $order): bool
     {
-        if($this->fieldHandle === null){
+        if ($this->fieldHandle === null) {
             return false;
         }
+
         $codeIds = [];
         foreach ($codes as $code){
             $code = CodeHelper::getCode($code);
-            if($code !== null){
+
+            if ($code !== null) {
                 $codeIds[] = (int)$code->id;
             }
         }
