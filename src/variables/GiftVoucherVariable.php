@@ -1,22 +1,22 @@
 <?php
+
 namespace verbb\giftvoucher\variables;
 
-use verbb\giftvoucher\GiftVoucher;
-use verbb\giftvoucher\elements\db\CodeQuery;
-use verbb\giftvoucher\elements\db\VoucherQuery;
-use verbb\giftvoucher\elements\Code;
-use verbb\giftvoucher\elements\Voucher;
-
 use Craft;
-
-use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
+use craft\commerce\Plugin as Commerce;
+use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\elements\db\CodeQuery;
+use verbb\giftvoucher\elements\db\VoucherQuery;
+use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\GiftVoucher;
 
 class GiftVoucherVariable
 {
     // Public Methods
     // =========================================================================
+
 
     public function getPlugin(): GiftVoucher
     {
@@ -57,12 +57,18 @@ class GiftVoucherVariable
 
     public function getVoucherCodes()
     {
-        return Craft::$app->getSession()->get('giftVoucher.giftVoucherCodes');
+        $cart = Commerce::getInstance()->getCarts()->getCart();
+        return GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($cart);
     }
 
     public function isVoucher(LineItem $lineItem)
     {
-        return (bool)(get_class($lineItem->purchasable) === Voucher::class);
+        return (bool) (get_class($lineItem->purchasable) === Voucher::class);
+    }
+
+    public function isVoucherAdjustment($adjuster)
+    {
+        return $adjuster->sourceSnapshot['codeKey'] ?? false;
     }
 
     public function isVoucherAdjustment($adjuster)

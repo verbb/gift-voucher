@@ -4,26 +4,33 @@ namespace verbb\giftvoucher\elements;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\db\CodeQuery;
 use verbb\giftvoucher\events\GenerateCodeEvent;
-use verbb\giftvoucher\models\VoucherTypeModel;
 use verbb\giftvoucher\records\CodeRecord;
-
 use Craft;
 use craft\base\Element;
 use craft\db\Query;
-use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Delete;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
-
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
-
-use Exception;
 use yii\base\InvalidConfigException;
 
+/**
+ * Class Code
+ * @package verbb\giftvoucher\elements
+ *
+ * @property mixed  $amount
+ * @property string $voucherName
+ * @property null   $lineItem
+ * @property mixed  $redemptions
+ * @property null   $voucherType
+ * @property null   $voucher
+ * @property mixed  $name
+ * @property null   $order
+ */
 class Code extends Element
 {
     // Constants
@@ -64,7 +71,9 @@ class Code extends Element
         }
 
         if ($this->voucherId) {
-            return $this->_voucher = Voucher::findOne($this->voucherId);
+            // find disabled vouchers as well, this is only for the CP
+            $this->_voucher = Voucher::find()->id($this->voucherId)->anyStatus()->one();
+            return $this->_voucher;
         }
 
         return null;
@@ -115,6 +124,11 @@ class Code extends Element
     public function getAmount()
     {
         return $this->currentAmount;
+    }
+
+    public function getFieldLayout()
+    {
+        return parent::getFieldLayout() ?? GiftVoucher::getInstance()->getSettings()->getFieldLayout();
     }
 
     public function getCpEditUrl(): string
@@ -193,6 +207,16 @@ class Code extends Element
         return $actions;
     }
 
+    /**
+     * Codes can now have content as well
+     *
+     * @return bool
+     */
+    public static function hasContent(): bool
+    {
+        return true;
+    }
+
     public static function eagerLoadingMap(array $sourceElements, string $handle)
     {
         $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
@@ -253,6 +277,9 @@ class Code extends Element
         return $rules;
     }
 
+    /**
+     * @return \craft\elements\db\ElementQueryInterface|\verbb\giftvoucher\elements\db\CodeQuery
+     */
     public static function find(): ElementQueryInterface
     {
         return new CodeQuery(static::class);
@@ -287,7 +314,7 @@ class Code extends Element
             // set the codeKey to the Code as well to use it directly
             $this->codeKey = $codeRecord->codeKey;
         }
-        
+
         $codeRecord->originalAmount = $this->originalAmount;
         $codeRecord->currentAmount = $this->currentAmount;
         $codeRecord->expiryDate = $this->expiryDate;
@@ -304,6 +331,8 @@ class Code extends Element
         }
 
         $codeRecord->save(false);
+
+        parent::afterSave($isNew);
     }
 
 

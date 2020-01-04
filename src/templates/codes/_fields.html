@@ -26,7 +26,7 @@
         label: 'Voucher' | t('gift-voucher'),
         instructions: 'Select a voucher to be associated with this voucher code.' | t('gift-voucher'),
         elementType: voucherElementType,
-        elements: code.voucherId ? craft.giftVoucher.vouchers.id(code.voucherId).all() : null,
+        elements: code.voucherId ? craft.giftVoucher.vouchers.id(code.voucherId).anyStatus().all() : null,
         id: 'voucher',
         errors: code.getErrors('voucherId'),
         class: 'ltr',
