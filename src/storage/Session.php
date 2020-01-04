@@ -116,20 +116,6 @@ class Session extends Component implements CodeStorageInterface
     }
 
     /**
-     * Check if the session is even active
-     *
-     * @return bool
-     *
-     * @throws \craft\errors\MissingComponentException
-     * @since  18.12.2019
-     * @author Robin Schambach
-     */
-    private function _isActive(): bool
-    {
-        return $this->request->getIsConsoleRequest() === false && Craft::$app->getSession()->getIsActive();
-    }
-
-    /**
      * Get all Codes
      *
      * @param \craft\commerce\elements\Order $order
@@ -184,4 +170,23 @@ class Session extends Component implements CodeStorageInterface
 
         return $success;
     }
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Check if the session is even active
+     *
+     * @return bool
+     *
+     * @throws \craft\errors\MissingComponentException
+     * @since  18.12.2019
+     * @author Robin Schambach
+     */
+    private function _isActive(): bool
+    {
+        return $this->request->getIsConsoleRequest() === false && Craft::$app->getSession()->getIsActive();
+    }
+    
 }
