@@ -1,5 +1,36 @@
 # Changelog
 
+## 2.1.0 - 2020-01-04
+
+### Added
+- Add the ability to set field layouts for Voucher Codes. (thanks @Anubarak).
+- Add a field layout designer to the settings for Voucher Codes. (thanks @Anubarak).
+- Add an event `PopulateCodeFromLineItemEvent` to set additional fields/properties when a new Code is created based on a Voucher/LineItem. (thanks @Anubarak).
+- Add an event to validate LineItem options for custom fields in the Code. (thanks @Anubarak).
+- Add a migration to include an initial empty `content` record for all existing Voucher Codes. (thanks @Anubarak).
+- Add a new setting `fieldsPath` that represents the path of custom fields in the LineItems options. (thanks @Anubarak).
+- Add additional Tabs for custom fields in the Voucher Code if there are any. (thanks @Anubarak).
+- Add a component `codeStorage` for storing and receiving codes that are used. (thanks @Anubarak).
+- Add an interface for `codeStorage` and the possibility to use custom classes/components. (thanks @Anubarak).
+- Add a class `Session` for storing the used codes for an order in the session. (thanks @Anubarak).
+- Add a class `Order` for storing the used codes for an order in the field layout in a Codes field. (thanks @Anubarak).
+- Add a new Code relation field type. (thanks @Anubarak).
+- Add template hook `cp.gift-voucher.voucher.edit.details` (thanks @samuelbirch).
+
+### Changed
+- All codeKeys are now grabbed via `GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);`. (thanks @Anubarak).
+- All codeKeys are now set via `GiftVoucher::getInstance()->getCodeStorage()->set($codeKeys, $order);` or the `add` or `remove` function.
+- This will make sure you can add a VoucherCode in the CP. (thanks @Anubarak).
+- Use a custom controller to store the plugins settings ensuring the new Field Layout setting is stored properly. (thanks @Anubarak).
+
+### Fixed
+- Fixed minor session issue. (thanks @Anubarak).
+- Display inactive Vouchers in the CP. (thanks @Anubarak).
+- Fixed a Bug that could occur when re-saving an order via job, Craft already closes the session before running the job -> the adjuster has no valid session. (thanks @Anubarak).
+- Fix missing date columns in code element index.
+- Fix voucher discount being applied after tax.
+- Fix incorrect multi-site URL redirection when switching sites for a voucher.
+
 ## 2.0.13 - 2019-08-25
 
 ### Fixed
