@@ -1,12 +1,13 @@
 <?php
-
 namespace verbb\giftvoucher\models;
+
+use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\storage\Session;
 
 use Craft;
 use craft\base\Model;
 use craft\models\FieldLayout;
-use verbb\giftvoucher\elements\Code;
-use verbb\giftvoucher\storage\Session;
+
 use yii\base\InvalidConfigException;
 
 class Settings extends Model
@@ -23,37 +24,15 @@ class Settings extends Model
     public $pdfAllowRemoteImages = false;
     public $pdfPaperSize = 'letter';
     public $pdfPaperOrientation = 'portrait';
-    /**
-     * The field layout id used for Codes
-     *
-     * @var int|null $fieldLayoutId
-     */
     public $fieldLayoutId;
-    /**
-     * The field layout of a Code
-     *
-     * @var \craft\models\FieldLayout|null
-     */
     private $fieldLayout;
-    /**
-     * The path of the custom fields, default 'fields'
-     *
-     * @var string|null $fieldsPath
-     */
     public $fieldsPath = 'fields';
-    /**
-     * The class that handles Codes
-     *
-     * @var string|array $codeStorage
-     */
     public $codeStorage = Session::class;
 
-    /**
-     * Returns the owner's field layout.
-     *
-     * @return \craft\models\FieldLayout
-     * @throws \yii\base\InvalidConfigException if the configured field layout ID is invalid
-     */
+
+    // Public Methods
+    // =========================================================================
+
     public function getFieldLayout(): FieldLayout
     {
         if ($this->fieldLayout !== null) {

@@ -28,6 +28,7 @@ class VoucherTypeModel extends Model
 
     private $_siteSettings;
 
+
     // Public Methods
     // =========================================================================
 

@@ -1,17 +1,20 @@
 <?php
 namespace verbb\giftvoucher\services;
 
-use craft\base\Element;
-use craft\helpers\ArrayHelper;
 use verbb\giftvoucher\events\PopulateCodeFromLineItemEvent;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\models\RedemptionModel;
+
 use Craft;
+use craft\base\Element;
+use craft\helpers\ArrayHelper;
+
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
+
 use yii\base\Component;
 use yii\base\Event;
 use yii\base\ModelEvent;
@@ -23,6 +26,7 @@ class CodesService extends Component
      * to give users a chance to modify the field layout
      */
     const EVENT_POPULATE_CODE_FROM_LINE_ITEM = 'populateCodeFromLineItem';
+
 
     // Public Methods
     // =========================================================================
@@ -142,7 +146,7 @@ class CodesService extends Component
         $fieldLayoutId = $settings->fieldLayoutId;
         $validFields = [];
 
-        if(empty($fieldsPath) === false && $settings->fieldLayoutId !== null){
+        if (empty($fieldsPath) === false && $settings->fieldLayoutId !== null) {
             // set the field layout id
             $code->fieldLayoutId = $fieldLayoutId;
             // grab the options from the lineItems, those may contain the field values
@@ -157,11 +161,13 @@ class CodesService extends Component
             // and only if that's the case we want to set them otherwise users will see exceptions
             // that's why we loop every valid field in the layout
             $fieldLayout = $code->getFieldLayout();
-            if($fieldLayout !== null && ($fields = $fieldLayout->getFields())){
+
+            if ($fieldLayout !== null && ($fields = $fieldLayout->getFields())) {
                 /** @var \craft\base\Field $field */
                 foreach ($fields as $field){
                     $fieldHandle = $field->handle;
-                    if(isset($customFields[$fieldHandle])){
+
+                    if (isset($customFields[$fieldHandle])) {
                         $code->setFieldValue($fieldHandle, $customFields[$fieldHandle]);
                         $validFields[$fieldHandle] = $customFields[$fieldHandle];
                     }
@@ -182,17 +188,20 @@ class CodesService extends Component
         /** @var LineItem $lineItem */
         $lineItem = $event->sender;
         $purchasable = $lineItem->getPurchasable();
+
         // make sure it's a Voucher
-        if($purchasable instanceof Voucher){
+        if ($purchasable instanceof Voucher) {
             // try to create a new Code based on the LineItem
             $code = new Code();
             $code->voucherId = $purchasable->id;
             $this->populateCodeByLineItem($code, $lineItem);
             $code->setScenario(Element::SCENARIO_LIVE);
+            
             // if validation fails it means you can't create a code with the current settings
-            if($code->validate() === false){
+            if ($code->validate() === false) {
                 // invalidate it -> let users know about missing/wrong fields
                 $lineItem->addErrors($code->getErrors());
+                
                 $event->isValid = false;
             }
         }
