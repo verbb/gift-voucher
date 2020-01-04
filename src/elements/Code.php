@@ -351,6 +351,8 @@ class Code extends Element
             'orderLink' => ['label' => Craft::t('gift-voucher', 'Order')],
             'currentAmount' => ['label' => Craft::t('gift-voucher', 'Amount')],
             'expiryDate' => ['label' => Craft::t('gift-voucher', 'Expiry Date')],
+            'dateCreated' => ['label' => Craft::t('gift-voucher', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('gift-voucher', 'Date Updated')],
         ];
     }
 
