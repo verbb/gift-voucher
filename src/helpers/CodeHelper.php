@@ -15,7 +15,7 @@ class CodeHelper
      * @author Robin Schambach
      * @since  18.12.2019
      */
-    public static function getCode($code): ?Code
+    public static function getCode($code): Code
     {
         if (is_string($code) === true) {
             return Code::findOne(['codeKey' => $code]);
