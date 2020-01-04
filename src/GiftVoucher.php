@@ -130,7 +130,7 @@ class GiftVoucher extends Plugin
     protected function createSettingsModel(): Settings
     {
         return new Settings();
-    }
+    } 
 
 
     // Private Methods
