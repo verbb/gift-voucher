@@ -83,7 +83,7 @@
                                 <div class="status {{ status }}"></div>{{ site.name | t('site') }}
                             </a>
                         {% else %}
-                            {% set url = url('gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}/#{site.handle}') %}
+                            {% set url = url("gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}/#{site.handle}") %}
 
                             <a href="{{ url }}">
                                 <div class="status {{ status }}"></div>{{ site.name | t('site') }}
