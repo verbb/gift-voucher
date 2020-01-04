@@ -17,7 +17,7 @@ class Session extends Component implements CodeStorageInterface
     /**
      * The key for code storing
      */
-    public const CODE_KEY = 'giftVoucher.giftVoucherCodes';
+    const CODE_KEY = 'giftVoucher.giftVoucherCodes';
     
     /** @var \craft\web\Request */
     public $request;
