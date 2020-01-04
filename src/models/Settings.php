@@ -25,9 +25,10 @@ class Settings extends Model
     public $pdfPaperSize = 'letter';
     public $pdfPaperOrientation = 'portrait';
     public $fieldLayoutId;
-    private $fieldLayout;
     public $fieldsPath = 'fields';
     public $codeStorage = Session::class;
+
+    private $fieldLayout;
 
 
     // Public Methods

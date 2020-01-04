@@ -33,7 +33,9 @@ class BaseController extends Controller
         // set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
         $fieldLayout->type = Code::class;
+        
         Craft::$app->getFields()->saveLayout($fieldLayout);
+
         $settings['fieldLayoutId'] = $fieldLayout->id;
 
         $plugin->getSettings()->setAttributes($settings, false);
@@ -52,6 +54,7 @@ class BaseController extends Controller
         // re-save all codes to insert their new field layout
         // maybe you want to move that in a service as well
         $existingSettings = $plugin->getSettings();
+
         if ((int)$existingSettings->fieldLayoutId !== (int)$settings['fieldLayoutId']) {
             // field layout has changed
             // update all code field layouts
