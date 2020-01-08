@@ -215,7 +215,7 @@ class GiftVoucher extends Plugin
 
                 $event->types = $types;
             } elseif ($settings->registerAdjuster === 'afterTax') {
-                $types[] = GiftVoucherAdjuster::class;
+                $event->types[] = GiftVoucherAdjuster::class;
             }
         });
     }

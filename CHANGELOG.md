@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.2 - 2020-01-09
+
+### Fixed
+- Fix `registerAdjuster` = `afterTax` not working correctly.
+
 ## 2.1.1 - 2020-01-09
 
 ### Added
