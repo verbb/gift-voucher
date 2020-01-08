@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.1 - 2020-01-09
+
+### Added
+- Add `registerAdjuster` plugin setting to control when the adjuster should be applied. Valid options are `beforeTax` (default) and `afterTax`.
+
 ## 2.1.0 - 2020-01-04
 
 ### Added

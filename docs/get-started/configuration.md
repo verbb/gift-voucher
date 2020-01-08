@@ -15,6 +15,7 @@ return [
         'pdfAllowRemoteImages' => false,
         'pdfPaperSize' => 'letter',
         'pdfPaperOrientation' => 'portrait',
+        'registerAdjuster' => 'beforeTax',
     ]
 ];
 ```
@@ -29,6 +30,7 @@ return [
 - `pdfAllowRemoteImages` - Whether to allow remote images in the PDF.
 - `pdfPaperSize` - Sets the paper size for the PDF.
 - `pdfPaperOrientation` - Sets the paper orientation for the PDF.
+- `registerAdjuster` - Controls when the adjuster should be applied. Valid options are `beforeTax` (default) and `afterTax`.
 
 ## Control Panel
 
