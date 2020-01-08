@@ -27,6 +27,7 @@ class Settings extends Model
     public $fieldLayoutId;
     public $fieldsPath = 'fields';
     public $codeStorage = Session::class;
+    public $registerAdjuster = 'beforeTax';
 
     private $fieldLayout;
 

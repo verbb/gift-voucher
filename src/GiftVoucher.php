@@ -198,19 +198,25 @@ class GiftVoucher extends Plugin
     private function _registerAdjusters()
     {
         Event::on(OrderAdjustments::class, OrderAdjustments::EVENT_REGISTER_ORDER_ADJUSTERS, function(RegisterComponentTypesEvent $event) {
+            $settings = $this->getSettings();
+
             // Re-order the built-in adjusters to ensure gift vouchers are applied before tax.
-            $types = $event->types;
+            if ($settings->registerAdjuster === 'beforeTax') {
+                $types = $event->types;
 
-            // Find the Tax adjuster, it should go before that, but if its not found (Commerce Lite), append
-            $taxKey = array_search(Tax::class, $event->types);
+                // Find the Tax adjuster, it should go before that, but if its not found (Commerce Lite), append
+                $taxKey = array_search(Tax::class, $event->types);
 
-            if ($taxKey) {
-                array_splice($types, $taxKey, 0, GiftVoucherAdjuster::class);
-            } else {
+                if ($taxKey) {
+                    array_splice($types, $taxKey, 0, GiftVoucherAdjuster::class);
+                } else {
+                    $types[] = GiftVoucherAdjuster::class;
+                }
+
+                $event->types = $types;
+            } elseif ($settings->registerAdjuster === 'afterTax') {
                 $types[] = GiftVoucherAdjuster::class;
             }
-
-            $event->types = $types;
         });
     }
 
