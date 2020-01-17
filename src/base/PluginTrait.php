@@ -11,6 +11,13 @@ use verbb\giftvoucher\services\VoucherTypesService;
 use verbb\giftvoucher\storage\CodeStorageInterface;
 
 use Craft;
+use craft\log\FileTarget;
+use craft\web\View;
+
+use yii\base\Event;
+use yii\log\Logger;
+
+use verbb\base\BaseHelper;
 
 trait PluginTrait
 {
@@ -53,6 +60,20 @@ trait PluginTrait
         return $this->get('codeStorage');
     }
 
+    public static function log($message)
+    {
+        Craft::getLogger()->log($message, Logger::LEVEL_INFO, 'gift-voucher');
+    }
+
+    public static function error($message)
+    {
+        Craft::getLogger()->log($message, Logger::LEVEL_ERROR, 'gift-voucher');
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
     private function _setPluginComponents()
     {
         $settings = $this->getSettings();
@@ -65,6 +86,16 @@ trait PluginTrait
             'vouchers' => VouchersService::class,
             'voucherTypes' => VoucherTypesService::class,
             'codeStorage' => $settings->codeStorage,
+        ]);
+
+        BaseHelper::registerModule();
+    }
+
+    private function _setLogging()
+    {
+        Craft::getLogger()->dispatcher->targets[] = new FileTarget([
+            'logFile' => Craft::getAlias('@storage/logs/gift-voucher.log'),
+            'categories' => ['gift-voucher'],
         ]);
     }
 

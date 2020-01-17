@@ -1,6 +1,6 @@
 {% extends 'gift-voucher/_layouts' %}
 {% import '_includes/forms' as forms %}
-{% import 'gift-voucher/_macros' as macros %}
+{% import 'verbb-base/_macros' as macros %}
 
 {% set crumbs = [
     { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher/settings') },
@@ -21,6 +21,7 @@
     {% endfor %}
 
     {{ forms.selectField({
+        first: true,
         label: 'Voucher Expiry' | t('gift-voucher'),
         instructions: 'How many months should a gift voucher be valid after the purchase date?' | t('gift-voucher'),
         name: 'expiry',
