@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.0 - 2020-01-29
+
+### Added
+- Craft 3.4 compatibility.
+- Commerce 3.0 compatibility.
+
 ## 2.1.2 - 2020-01-09
 
 ### Fixed
