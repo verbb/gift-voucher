@@ -52,6 +52,7 @@ class DownloadsController extends Controller
 
         if ($codeId) {
             $codes = [Craft::$app->getElements()->getElementById($codeId)];
+            $order = $codes[0]->order;
         }
 
         $pdf = GiftVoucher::getInstance()->getPdf()->renderPdf($codes, $order, $lineItem, $option);
