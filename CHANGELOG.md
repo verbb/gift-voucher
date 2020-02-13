@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.1 - 2020-02-13
+
+### Fixed
+- Fix missing order properties for PDFs generated in CP. (thanks @jmauzyk).
+- Fix `populateLineItem` to work with Commerce 3.x.
+
 ## 2.2.0 - 2020-01-29
 
 ### Added
