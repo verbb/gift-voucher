@@ -508,6 +508,8 @@ class Voucher extends Purchasable
 
             if (isset($options['amount'])) {
                 $lineItem->price = $options['amount'];
+                $lineItem->salePrice = $options['amount'];
+                $lineItem->saleAmount = 0;
             }
         }
     }
