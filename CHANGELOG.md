@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.2 - 2020-03-16
+
+### Fixed
+- Fix order and voucher columns showing incorrect values in the voucher codes element index.
+- Add “Original Amount” to voucher codes element index.
+- Fix currency symbol in voucher codes element index in some cases.
+
 ## 2.2.1 - 2020-02-13
 
 ### Fixed
