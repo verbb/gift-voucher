@@ -383,24 +383,34 @@ class Code extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
-            case 'voucher':
+            case 'voucher': {
                 if ($this->getVoucher()) {
                     return '<a href="' . $this->getVoucher()->getCpEditUrl() . '">' . $this->getVoucher() . '</a>';
                 }
 
                 return '-';
-            case 'orderLink':
+            }
+            case 'orderLink': {
+
                 if ($this->getOrder()) {
                     return '<a href="' . $this->getOrder()->getCpEditUrl() . '">' . $this->getOrder() . '</a>';
                 }
 
                 return '-';
-            case 'originalAmount':
-                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->currentAmount);
-            case 'currentAmount':
-                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->currentAmount);
-            case 'expiryDate':
+            }
+            case 'originalAmount': {
+                $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+
+                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
+            }
+            case 'currentAmount': {
+                $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+
+                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
+            }
+            case 'expiryDate': {
                 return (!$this->expiryDate) ? '∞' : parent::tableAttributeHtml($attribute);
+            }
             default: {
                 return parent::tableAttributeHtml($attribute);
             }
