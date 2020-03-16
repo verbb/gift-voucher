@@ -386,10 +386,14 @@ class Code extends Element
                 if ($this->getVoucher()) {
                     return '<a href="' . $this->getVoucher()->getCpEditUrl() . '">' . $this->getVoucher() . '</a>';
                 }
+
+                return '-';
             case 'orderLink':
                 if ($this->getOrder()) {
                     return '<a href="' . $this->getOrder()->getCpEditUrl() . '">' . $this->getOrder() . '</a>';
                 }
+
+                return '-';
             case 'currentAmount':
                 return Craft::$app->getLocale()->getFormatter()->asCurrency($this->currentAmount);
             case 'expiryDate':
