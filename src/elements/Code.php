@@ -349,7 +349,8 @@ class Code extends Element
             'voucher' => ['label' => Craft::t('gift-voucher', 'Voucher')],
             'voucherType' => ['label' => Craft::t('gift-voucher', 'Voucher Type')],
             'orderLink' => ['label' => Craft::t('gift-voucher', 'Order')],
-            'currentAmount' => ['label' => Craft::t('gift-voucher', 'Amount')],
+            'originalAmount' => ['label' => Craft::t('gift-voucher', 'Original Amount')],
+            'currentAmount' => ['label' => Craft::t('gift-voucher', 'Current Amount')],
             'expiryDate' => ['label' => Craft::t('gift-voucher', 'Expiry Date')],
             'dateCreated' => ['label' => Craft::t('gift-voucher', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('gift-voucher', 'Date Updated')],
@@ -394,6 +395,8 @@ class Code extends Element
                 }
 
                 return '-';
+            case 'originalAmount':
+                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->currentAmount);
             case 'currentAmount':
                 return Craft::$app->getLocale()->getFormatter()->asCurrency($this->currentAmount);
             case 'expiryDate':
