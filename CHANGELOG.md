@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.2.3 - 2020-04-15
+
+### Changed
+- File logging now checks if the overall Craft app uses file logging.
+- Log files now only include `GET` and `POST` additional variables.
+
+### Fixed 
+- Only allow editing of voucher types if editable.
+
 ## 2.2.2 - 2020-03-16
 
 ### Fixed
