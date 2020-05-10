@@ -147,7 +147,7 @@ class GiftVoucher extends Plugin
         Event::on(LineItem::class, LineItem::EVENT_BEFORE_VALIDATE, [$this->getCodes(), 'handleValidateLineItem']);
 
         // Klaviyo Connect Plugin
-        if (class_exists(Track::class)) {
+        if (Craft::$app->plugins->getPlugin('klaviyoconnect') && class_exists(Track::class)) {
             Event::on(Track::class, Track::ADD_LINE_ITEM_CUSTOM_PROPERTIES, [$this->getKlaviyoConnect(), 'addLineItemCustomProperties']);
         }
     }
