@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0 - 2020-05-10
+
+### Added
+- Add project config support for voucher types.
+
+### Fixed
+- Check to ensure Klaviyo Connect plugin is installed before doing any more checks. (thanks @brianjhanson)
+
 ## 2.2.4 - 2020-04-16
 
 ### Fixed
