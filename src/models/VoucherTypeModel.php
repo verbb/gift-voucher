@@ -25,6 +25,7 @@ class VoucherTypeModel extends Model
     public $skuFormat;
     public $template;
     public $fieldLayoutId;
+    public $uid;
 
     private $_siteSettings;
 

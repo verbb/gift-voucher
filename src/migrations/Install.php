@@ -23,6 +23,7 @@ class Install extends Migration
     {
         $this->dropForeignKeys();
         $this->dropTables();
+        $this->dropProjectConfig();
 
         return true;
     }
@@ -154,5 +155,10 @@ class Install extends Migration
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchers}}', $this);
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes}}', $this);
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
+    }
+
+    public function dropProjectConfig()
+    {
+        Craft::$app->projectConfig->remove('gift-voucher');
     }
 }

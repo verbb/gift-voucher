@@ -2,16 +2,26 @@
 namespace verbb\giftvoucher\services;
 
 use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\errors\VoucherTypeNotFoundException;
 use verbb\giftvoucher\events\VoucherTypeEvent;
 use verbb\giftvoucher\models\VoucherTypeModel;
 use verbb\giftvoucher\models\VoucherTypeSiteModel;
 use verbb\giftvoucher\records\VoucherTypeRecord;
 use verbb\giftvoucher\records\VoucherTypeSiteRecord;
 
+
 use Craft;
 use craft\db\Query;
+use craft\events\ConfigEvent;
+use craft\events\DeleteSiteEvent;
+use craft\events\FieldEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
+use craft\helpers\ArrayHelper;
+use craft\helpers\Db;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
+use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 use craft\queue\jobs\ResaveElements;
 
 use yii\base\Component;
@@ -24,6 +34,7 @@ class VoucherTypesService extends Component
 
     const EVENT_BEFORE_SAVE_VOUCHERTYPE = 'beforeSaveVoucherType';
     const EVENT_AFTER_SAVE_VOUCHERTYPE = 'afterSaveVoucherType';
+    const CONFIG_VOUCHERTYPES_KEY = 'giftVoucher.voucherTypes';
 
 
     // Properties
@@ -35,6 +46,7 @@ class VoucherTypesService extends Component
     private $_allVoucherTypeIds;
     private $_editableVoucherTypeIds;
     private $_siteSettingsByVoucherId = [];
+    private $_savingVoucherTypes = [];
 
 
     // Public Methods
@@ -166,20 +178,49 @@ class VoucherTypesService extends Component
             return false;
         }
 
-        if (!$isNewVoucherType) {
-            $voucherTypeRecord = VoucherTypeRecord::findOne($voucherType->id);
+        if ($isNewVoucherType) {
+            $voucherType->uid = StringHelper::UUID();
+        } else {
+            $existingVoucherTypeRecord = VoucherTypeRecord::find()
+                ->where(['id' => $voucherType->id])
+                ->one();
 
-            if (!$voucherTypeRecord) {
-                throw new Exception("No voucher type exists with the ID '{$voucherType->id}'");
+            if (!$existingVoucherTypeRecord) {
+                throw new VoucherTypeNotFoundException("No voucher type exists with the ID '{$voucherType->id}'");
             }
 
-        } else {
-            $voucherTypeRecord = new VoucherTypeRecord();
+            $voucherType->uid = $existingVoucherTypeRecord->uid;
         }
 
-        $voucherTypeRecord->name = $voucherType->name;
-        $voucherTypeRecord->handle = $voucherType->handle;
-        $voucherTypeRecord->skuFormat = $voucherType->skuFormat;
+        $this->_savingVoucherTypes[$voucherType->uid] = $voucherType;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+
+        $configData = [
+            'name' => $voucherType->name,
+            'handle' => $voucherType->handle,
+            'skuFormat' => $voucherType->skuFormat,
+            'siteSettings' => [],
+        ];
+
+        $generateLayoutConfig = function(FieldLayout $fieldLayout): array {
+            $fieldLayoutConfig = $fieldLayout->getConfig();
+
+            if ($fieldLayoutConfig) {
+                if (empty($fieldLayout->id)) {
+                    $layoutUid = StringHelper::UUID();
+                    $fieldLayout->uid = $layoutUid;
+                } else {
+                    $layoutUid = Db::uidById('{{%fieldlayouts}}', $fieldLayout->id);
+                }
+
+                return [$layoutUid => $fieldLayoutConfig];
+            }
+
+            return [];
+        };
+
+        $configData['voucherFieldLayouts'] = $generateLayoutConfig($voucherType->getFieldLayout());
 
         // Get the site settings
         $allSiteSettings = $voucherType->getSiteSettings();
@@ -191,26 +232,67 @@ class VoucherTypesService extends Component
             }
         }
 
+        foreach ($allSiteSettings as $siteId => $settings) {
+            $siteUid = Db::uidById('{{%sites}}', $siteId);
+            $configData['siteSettings'][$siteUid] = [
+                'hasUrls' => $settings['hasUrls'],
+                'uriFormat' => $settings['uriFormat'],
+                'template' => $settings['template'],
+            ];
+        }
+
+        $configPath = self::CONFIG_VOUCHERTYPES_KEY . '.' . $voucherType->uid;
+        $projectConfig->set($configPath, $configData);
+
+        if ($isNewVoucherType) {
+            $voucherType->id = Db::idByUid('{{%giftvoucher_vouchertypes}}', $voucherType->uid);
+        }
+
+        return true;
+    }
+
+    public function handleChangedVoucherType(ConfigEvent $event)
+    {
+        $voucherTypeUid = $event->tokenMatches[0];
+        $data = $event->newValue;
+
+        // Make sure fields and sites are processed
+        ProjectConfigHelper::ensureAllSitesProcessed();
+        ProjectConfigHelper::ensureAllFieldsProcessed();
+
         $db = Craft::$app->getDb();
         $transaction = $db->beginTransaction();
 
         try {
-            // Voucher Field Layout
-            $fieldLayout = $voucherType->getVoucherFieldLayout();
-            Craft::$app->getFields()->saveLayout($fieldLayout);
-            $voucherType->fieldLayoutId = $fieldLayout->id;
-            $voucherTypeRecord->fieldLayoutId = $fieldLayout->id;
+            $siteData = $data['siteSettings'];
 
-            // Save the voucher type
-            $voucherTypeRecord->save(false);
+            // Basic data
+            $voucherTypeRecord = $this->_getVoucherTypeRecord($voucherTypeUid);
+            $isNewVoucherType = $voucherTypeRecord->getIsNewRecord();
+            $fieldsService = Craft::$app->getFields();
 
-            // Now that we have a voucher type ID, save it on the model
-            if (!$voucherType->id) {
-                $voucherType->id = $voucherTypeRecord->id;
+            $voucherTypeRecord->uid = $voucherTypeUid;
+            $voucherTypeRecord->name = $data['name'];
+            $voucherTypeRecord->handle = $data['handle'];
+            $voucherTypeRecord->skuFormat = $data['skuFormat'];
+
+            if (!empty($data['voucherFieldLayouts']) && !empty($config = reset($data['voucherFieldLayouts']))) {
+                // Save the main field layout
+                $layout = FieldLayout::createFromConfig($config);
+                $layout->id = $voucherTypeRecord->fieldLayoutId;
+                $layout->type = Voucher::class;
+                $layout->uid = key($data['voucherFieldLayouts']);
+                
+                $fieldsService->saveLayout($layout);
+
+                $voucherTypeRecord->fieldLayoutId = $layout->id;
+            } else if ($voucherTypeRecord->fieldLayoutId) {
+                // Delete the main field layout
+                $fieldsService->deleteLayoutById($voucherTypeRecord->fieldLayoutId);
+                $voucherTypeRecord->fieldLayoutId = null;
             }
 
-            // Might as well update our cache of the voucher type while we have it.
-            $this->_voucherTypesById[$voucherType->id] = $voucherType;
+            $voucherTypeRecord->save(false);
 
             // Update the site settings
             // -----------------------------------------------------------------
@@ -222,73 +304,169 @@ class VoucherTypesService extends Component
             if (!$isNewVoucherType) {
                 // Get the old voucher type site settings
                 $allOldSiteSettingsRecords = VoucherTypeSiteRecord::find()
-                    ->where(['voucherTypeId' => $voucherType->id])
+                    ->where(['voucherTypeId' => $voucherTypeRecord->id])
                     ->indexBy('siteId')
                     ->all();
             }
 
-            foreach ($allSiteSettings as $siteId => $siteSettings) {
+            $siteIdMap = Db::idsByUids('{{%sites}}', array_keys($siteData));
+
+            /** @var VoucherTypeSiteRecord $siteSettings */
+            foreach ($siteData as $siteUid => $siteSettings) {
+                $siteId = $siteIdMap[$siteUid];
+
                 // Was this already selected?
                 if (!$isNewVoucherType && isset($allOldSiteSettingsRecords[$siteId])) {
                     $siteSettingsRecord = $allOldSiteSettingsRecords[$siteId];
                 } else {
                     $siteSettingsRecord = new VoucherTypeSiteRecord();
-                    $siteSettingsRecord->voucherTypeId = $voucherType->id;
+                    $siteSettingsRecord->voucherTypeId = $voucherTypeRecord->id;
                     $siteSettingsRecord->siteId = $siteId;
                 }
 
-                $siteSettingsRecord->hasUrls = $siteSettings->hasUrls;
-                $siteSettingsRecord->uriFormat = $siteSettings->uriFormat;
-                $siteSettingsRecord->template = $siteSettings->template;
+                if ($siteSettingsRecord->hasUrls = $siteSettings['hasUrls']) {
+                    $siteSettingsRecord->uriFormat = $siteSettings['uriFormat'];
+                    $siteSettingsRecord->template = $siteSettings['template'];
+                } else {
+                    $siteSettingsRecord->uriFormat = null;
+                    $siteSettingsRecord->template = null;
+                }
 
                 if (!$siteSettingsRecord->getIsNewRecord()) {
                     // Did it used to have URLs, but not anymore?
-                    if ($siteSettingsRecord->isAttributeChanged('hasUrls', false) && !$siteSettings->hasUrls) {
+                    if ($siteSettingsRecord->isAttributeChanged('hasUrls', false) && !$siteSettings['hasUrls']) {
                         $sitesNowWithoutUrls[] = $siteId;
                     }
 
                     // Does it have URLs, and has its URI format changed?
-                    if ($siteSettings->hasUrls && $siteSettingsRecord->isAttributeChanged('uriFormat', false)) {
+                    if ($siteSettings['hasUrls'] && $siteSettingsRecord->isAttributeChanged('uriFormat', false)) {
                         $sitesWithNewUriFormats[] = $siteId;
                     }
                 }
 
                 $siteSettingsRecord->save(false);
-
-                // Set the ID on the model
-                $siteSettings->id = $siteSettingsRecord->id;
             }
 
             if (!$isNewVoucherType) {
                 // Drop any site settings that are no longer being used, as well as the associated voucher/element
                 // site rows
-                $siteIds = array_keys($allSiteSettings);
+                $affectedSiteUids = array_keys($siteData);
 
+                /** @noinspection PhpUndefinedVariableInspection */
                 foreach ($allOldSiteSettingsRecords as $siteId => $siteSettingsRecord) {
-                    if (!in_array($siteId, $siteIds, false)) {
+                    $siteUid = array_search($siteId, $siteIdMap, false);
+                    if (!in_array($siteUid, $affectedSiteUids, false)) {
                         $siteSettingsRecord->delete();
                     }
                 }
             }
 
+            // Finally, deal with the existing vouchers...
+            // -----------------------------------------------------------------
+
             if (!$isNewVoucherType) {
-                foreach ($allSiteSettings as $siteId => $siteSettings) {
-                    Craft::$app->getQueue()->push(new ResaveElements([
-                        'description' => Craft::t('app', 'Resaving {type} vouchers ({site})', [
-                            'type' => $voucherType->name,
-                            'site' => $siteSettings->getSite()->name,
-                        ]),
-                        'elementType' => Voucher::class,
-                        'criteria' => [
-                            'siteId' => $siteId,
-                            'typeId' => $voucherType->id,
-                            'status' => null,
-                            'enabledForSite' => false,
-                        ]
-                    ]));
+                // Get all of the voucher IDs in this group
+                $voucherIds = Voucher::find()
+                    ->typeId($voucherTypeRecord->id)
+                    ->anyStatus()
+                    ->limit(null)
+                    ->ids();
+
+                // Are there any sites left?
+                if (!empty($siteData)) {
+                    // Drop the old voucher URIs for any site settings that don't have URLs
+                    if (!empty($sitesNowWithoutUrls)) {
+                        $db->createCommand()
+                            ->update(
+                                '{{%elements_sites}}',
+                                ['uri' => null],
+                                [
+                                    'elementId' => $voucherIds,
+                                    'siteId' => $sitesNowWithoutUrls,
+                                ])
+                            ->execute();
+                    } else if (!empty($sitesWithNewUriFormats)) {
+                        foreach ($voucherIds as $voucherId) {
+                            App::maxPowerCaptain();
+
+                            // Loop through each of the changed sites and update all of the vouchers’ slugs and
+                            // URIs
+                            foreach ($sitesWithNewUriFormats as $siteId) {
+                                $voucher = Voucher::find()
+                                    ->id($voucherId)
+                                    ->siteId($siteId)
+                                    ->anyStatus()
+                                    ->one();
+
+                                if ($voucher) {
+                                    Craft::$app->getElements()->updateElementSlugAndUri($voucher, false, false);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+        // Clear caches
+        $this->_allVoucherTypeIds = null;
+        $this->_editableVoucherTypeIds = null;
+        $this->_fetchedAllVoucherTypes = false;
+        
+        unset(
+            $this->_voucherTypesById[$voucherTypeRecord->id],
+            $this->_voucherTypesByHandle[$voucherTypeRecord->handle],
+            $this->_siteSettingsByVoucherId[$voucherTypeRecord->id]
+        );
+
+        // Fire an 'afterSaveVoucherType' event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_VOUCHERTYPE)) {
+            $this->trigger(self::EVENT_AFTER_SAVE_VOUCHERTYPE, new VoucherTypeEvent([
+                'voucherType' => $this->getVoucherTypeById($voucherTypeRecord->id),
+                'isNew' => empty($this->_savingVoucherTypes[$voucherTypeUid]),
+            ]));
+        }
+    }
+
+    public function deleteVoucherTypeById(int $id): bool
+    {
+        $voucherType = $this->getVoucherTypeById($id);
+        Craft::$app->getProjectConfig()->remove(self::CONFIG_VOUCHERTYPES_KEY . '.' . $voucherType->uid);
+        return true;
+    }
+
+    public function handleDeletedVoucherType(ConfigEvent $event)
+    {
+        $uid = $event->tokenMatches[0];
+        $voucherTypeRecord = $this->_getVoucherTypeRecord($uid);
+
+        if (!$voucherTypeRecord->id) {
+            return;
+        }
+
+        $db = Craft::$app->getDb();
+        $transaction = $db->beginTransaction();
+
+        try {
+            $vouchers = Voucher::find()
+                ->typeId($voucherTypeRecord->id)
+                ->anyStatus()
+                ->limit(null)
+                ->all();
+
+            foreach ($vouchers as $voucher) {
+                Craft::$app->getElements()->deleteElement($voucher);
+            }
+
+            $fieldLayoutId = $voucherTypeRecord->fieldLayoutId;
+            Craft::$app->getFields()->deleteLayoutById($fieldLayoutId);
+
+            $voucherTypeRecord->delete();
             $transaction->commit();
         } catch (\Throwable $e) {
             $transaction->rollBack();
@@ -296,50 +474,54 @@ class VoucherTypesService extends Component
             throw $e;
         }
 
-        // Fire an 'afterSaveVoucherType' event
-        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_VOUCHERTYPE)) {
-            $this->trigger(self::EVENT_AFTER_SAVE_VOUCHERTYPE, new VoucherTypeEvent([
-                'voucherType' => $voucherType,
-                'isNew' => $isNewVoucherType,
-            ]));
-        }
-
-        return true;
+        // Clear caches
+        $this->_allVoucherTypeIds = null;
+        $this->_editableVoucherTypeIds = null;
+        $this->_fetchedAllVoucherTypes = false;
+        unset(
+            $this->_voucherTypesById[$voucherTypeRecord->id],
+            $this->_voucherTypesByHandle[$voucherTypeRecord->handle],
+            $this->_siteSettingsByVoucherId[$voucherTypeRecord->id]
+        );
     }
 
-    public function deleteVoucherTypeById(int $id): bool
+    public function pruneDeletedSite(DeleteSiteEvent $event)
     {
-        $db = Craft::$app->getDb();
-        $transaction = $db->beginTransaction();
+        $siteUid = $event->site->uid;
 
-        try {
-            $voucherType = $this->getVoucherTypeById($id);
+        $projectConfig = Craft::$app->getProjectConfig();
+        $voucherTypes = $projectConfig->get(self::CONFIG_VOUCHERTYPES_KEY);
 
-            $criteria = Voucher::find();
-            $criteria->typeId = $voucherType->id;
-            $criteria->status = null;
-            $criteria->limit = null;
-            $vouchers = $criteria->all();
-
-            foreach ($vouchers as $voucher) {
-                Craft::$app->getElements()->deleteElement($voucher);
+        // Loop through the voucher types and prune the UID from field layouts.
+        if (is_array($voucherTypes)) {
+            foreach ($voucherTypes as $voucherTypeUid => $voucherType) {
+                $projectConfig->remove(self::CONFIG_VOUCHERTYPES_KEY . '.' . $voucherTypeUid . '.siteSettings.' . $siteUid);
             }
+        }
+    }
 
-            $fieldLayoutId = $voucherType->getVoucherFieldLayout()->id;
-            Craft::$app->getFields()->deleteLayoutById($fieldLayoutId);
+    public function pruneDeletedField(FieldEvent $event)
+    {
+        /** @var Field $field */
+        $field = $event->field;
+        $fieldUid = $field->uid;
 
-            $voucherTypeRecord = VoucherTypeRecord::findOne($voucherType->id);
-            $affectedRows = $voucherTypeRecord->delete();
+        $projectConfig = Craft::$app->getProjectConfig();
+        $voucherTypes = $projectConfig->get(self::CONFIG_VOUCHERTYPES_KEY);
 
-            if ($affectedRows) {
-                $transaction->commit();
+        // Loop through the voucher types and prune the UID from field layouts.
+        if (is_array($voucherTypes)) {
+            foreach ($voucherTypes as $voucherTypeUid => $voucherType) {
+                if (!empty($voucherType['voucherFieldLayouts'])) {
+                    foreach ($voucherType['voucherFieldLayouts'] as $layoutUid => $layout) {
+                        if (!empty($layout['tabs'])) {
+                            foreach ($layout['tabs'] as $tabUid => $tab) {
+                                $projectConfig->remove(self::CONFIG_VOUCHERTYPES_KEY . '.' . $voucherTypeUid . '.voucherFieldLayouts.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid);
+                            }
+                        }
+                    }
+                }
             }
-
-            return (bool)$affectedRows;
-        } catch (\Throwable $e) {
-            $transaction->rollBack();
-
-            throw $e;
         }
     }
 
@@ -364,6 +546,11 @@ class VoucherTypesService extends Component
         $this->_memoizeVoucherType(new VoucherTypeModel($result));
 
         return $this->_voucherTypesById[$voucherTypeId];
+    }
+
+    public function getVoucherTypeByUid(string $uid)
+    {
+        return ArrayHelper::firstWhere($this->getAllVoucherTypes(), 'uid', $uid, true);
     }
 
     public function isVoucherTypeTemplateValid(VoucherTypeModel $voucherType, int $siteId): bool
@@ -394,28 +581,24 @@ class VoucherTypesService extends Component
     {
         if ($event->isNew) {
             $primarySiteSettings = (new Query())
-                ->select(['voucherTypeId', 'uriFormat', 'template', 'hasUrls'])
-                ->from(['{{%giftvoucher_vouchertypes_sites}}'])
+                ->select([
+                    'voucherTypes.uid voucherTypeUid',
+                    'vouchertypes_sites.uriFormat',
+                    'vouchertypes_sites.template',
+                    'vouchertypes_sites.hasUrls'])
+                ->from(['{{%giftvoucher_vouchertypes_sites}} vouchertypes_sites'])
+                ->innerJoin(['{{%giftvoucher_vouchertypes}} voucherTypes'], '[[vouchertypes_sites.voucherTypeId]] = [[voucherTypes.id]]')
                 ->where(['siteId' => $event->oldPrimarySiteId])
                 ->one();
 
             if ($primarySiteSettings) {
-                $newSiteSettings = [];
-
-                $newSiteSettings[] = [
-                    $primarySiteSettings['voucherTypeId'],
-                    $event->site->id,
-                    $primarySiteSettings['uriFormat'],
-                    $primarySiteSettings['template'],
-                    $primarySiteSettings['hasUrls']
+                $newSiteSettings = [
+                    'uriFormat' => $primarySiteSettings['uriFormat'],
+                    'template' => $primarySiteSettings['template'],
+                    'hasUrls' => $primarySiteSettings['hasUrls']
                 ];
 
-                Craft::$app->getDb()->createCommand()
-                    ->batchInsert(
-                        '{{%giftvoucher_vouchertypes_sites}}',
-                        ['voucherTypeId', 'siteId', 'uriFormat', 'template', 'hasUrls'],
-                        $newSiteSettings)
-                    ->execute();
+                Craft::$app->getProjectConfig()->set(self::CONFIG_VOUCHERTYPES_KEY . '.' . $primarySiteSettings['voucherTypeUid'] . '.siteSettings.' . $event->site->uid, $newSiteSettings);
             }
         }
     }
@@ -433,12 +616,18 @@ class VoucherTypesService extends Component
     {
         return (new Query())
             ->select([
-                'id',
-                'fieldLayoutId',
-                'name',
-                'handle',
-                'skuFormat'
+                'voucherTypes.id',
+                'voucherTypes.fieldLayoutId',
+                'voucherTypes.name',
+                'voucherTypes.handle',
+                'voucherTypes.skuFormat',
+                'voucherTypes.uid',
             ])
-            ->from(['{{%giftvoucher_vouchertypes}}']);
+            ->from(['{{%giftvoucher_vouchertypes}} voucherTypes']);
+    }
+
+    private function _getVoucherTypeRecord(string $uid): VoucherTypeRecord
+    {
+        return VoucherTypeRecord::findOne(['uid' => $uid]) ?? new VoucherTypeRecord();
     }
 }

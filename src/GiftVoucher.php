@@ -1,32 +1,37 @@
 <?php
 namespace verbb\giftvoucher;
 
-use craft\commerce\models\LineItem;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\base\PluginTrait;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\fields\Codes;
 use verbb\giftvoucher\fields\Vouchers;
+use verbb\giftvoucher\helpers\ProjectConfigData;
 use verbb\giftvoucher\models\Settings;
+use verbb\giftvoucher\services\VoucherTypesService as VoucherTypes;
 use verbb\giftvoucher\variables\GiftVoucherVariable;
+
 use Craft;
 use craft\base\Plugin;
+use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Elements;
 use craft\services\Fields;
+use craft\services\ProjectConfig;
 use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 
 use craft\commerce\adjusters\Tax;
-use craft\commerce\services\Purchasables;
 use craft\commerce\elements\Order;
+use craft\commerce\models\LineItem;
 use craft\commerce\services\OrderAdjustments;
+use craft\commerce\services\Purchasables;
 
 use yii\base\Event;
 
@@ -38,7 +43,7 @@ class GiftVoucher extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '2.0.3';
+    public $schemaVersion = '2.0.4';
     public $hasCpSettings = true;
     public $hasCpSection = true;
 
@@ -67,6 +72,7 @@ class GiftVoucher extends Plugin
         $this->_registerCpRoutes();
         $this->_registerPermissions();
         $this->_registerAdjusters();
+        $this->_registerProjectConfigEventListeners();
     }
 
     public function afterInstall()
@@ -113,7 +119,7 @@ class GiftVoucher extends Plugin
             ];
         }
 
-        if (Craft::$app->getUser()->getIsAdmin()) {
+        if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             $navItems['subnav']['settings'] = [
                 'label' => Craft::t('gift-voucher', 'Settings'),
                 'url' => 'gift-voucher/settings',
@@ -225,6 +231,23 @@ class GiftVoucher extends Plugin
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
             $variable = $event->sender;
             $variable->set('giftVoucher', GiftVoucherVariable::class);
+        });
+    }
+
+    private function _registerProjectConfigEventListeners()
+    {
+        $projectConfigService = Craft::$app->getProjectConfig();
+
+        $voucherTypeService = $this->getVoucherTypes();
+        $projectConfigService->onAdd(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleChangedVoucherType'])
+            ->onUpdate(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleChangedVoucherType'])
+            ->onRemove(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleDeletedVoucherType']);
+        
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$voucherTypeService, 'pruneDeletedField']);
+        Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$voucherTypeService, 'pruneDeletedSite']);
+
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
+            $event->config['giftVoucher'] = ProjectConfigData::rebuildProjectConfig();
         });
     }
 
