@@ -12,7 +12,8 @@
 
 {% block blockContent %}
 
-<input type="hidden" name="action" value="gift-voucher/base/save-plugin-settings">
+<input type="hidden" name="action" value="plugins/save-plugin-settings">
+<input type="hidden" name="pluginHandle" value="gift-voucher">
 
 {% namespace 'settings' %}
     {% set months = [{ label: 'No expiry' | t('gift-voucher'), value: 0 }] %}
@@ -102,11 +103,12 @@
         required: true,
         warning: macros.configWarning('fieldsPath', 'gift-voucher'),
     }) }}
-{% endnamespace %}
 
-    <h3>{{ 'Voucher Code Field Layout'|t('gift-voucher') }}</h3>
-    {% include "_includes/fieldlayoutdesigner" with {
-        fieldLayout: settings.getFieldLayout(),
+    <h3>{{ 'Voucher Code Field Layout' | t('gift-voucher') }}</h3>
+
+    {% include '_includes/fieldlayoutdesigner' with {
+        fieldLayout: craft.app.fields.getLayoutByType('verbb\\giftvoucher\\elements\\Code'),
     } only %}
+{% endnamespace %}
 
 {% endblock %}

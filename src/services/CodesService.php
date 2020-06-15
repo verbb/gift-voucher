@@ -10,7 +10,11 @@ use verbb\giftvoucher\models\RedemptionModel;
 
 use Craft;
 use craft\base\Element;
+use craft\events\ConfigEvent;
 use craft\helpers\ArrayHelper;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
+use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
@@ -26,6 +30,8 @@ class CodesService extends Component
      * to give users a chance to modify the field layout
      */
     const EVENT_POPULATE_CODE_FROM_LINE_ITEM = 'populateCodeFromLineItem';
+
+    const CONFIG_FIELDLAYOUT_KEY = 'giftVoucher.codes.fieldLayouts';
 
 
     // Public Methods
@@ -248,5 +254,61 @@ class CodesService extends Component
         }
 
         return true;
+    }
+
+    public function handleChangedFieldLayout(ConfigEvent $event)
+    {
+        $data = $event->newValue;
+
+        ProjectConfigHelper::ensureAllFieldsProcessed();
+        $fieldsService = Craft::$app->getFields();
+
+        if (empty($data) || empty($config = reset($data))) {
+            // Delete the field layout
+            $fieldsService->deleteLayoutsByType(Code::class);
+            return;
+        }
+
+        // Save the field layout
+        $layout = FieldLayout::createFromConfig(reset($data));
+        $layout->id = $fieldsService->getLayoutByType(Code::class)->id;
+        $layout->type = Code::class;
+        $layout->uid = key($data);
+        $fieldsService->saveLayout($layout);
+    }
+
+    public function pruneDeletedField(FieldEvent $event)
+    {
+        /** @var Field $field */
+        $field = $event->field;
+        $fieldUid = $field->uid;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $layoutData = $projectConfig->get(self::CONFIG_FIELDLAYOUT_KEY);
+
+        // Prune the UID from field layouts.
+        if (is_array($layoutData)) {
+            foreach ($layoutData as $layoutUid => $layout) {
+                if (!empty($layout['tabs'])) {
+                    foreach ($layout['tabs'] as $tabUid => $tab) {
+                        $projectConfig->remove(self::CONFIG_FIELDLAYOUT_KEY . '.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid);
+                    }
+                }
+            }
+        }
+    }
+
+    public function handleDeletedFieldLayout(ConfigEvent $event)
+    {
+        Craft::$app->getFields()->deleteLayoutsByType(Code::class);
+    }
+
+    public function saveFieldLayout()
+    {
+        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost('settings');
+
+        $configData = [StringHelper::UUID() => $fieldLayout->getConfig()];
+
+        Craft::$app->getProjectConfig()->set(self::CONFIG_FIELDLAYOUT_KEY, $configData);
     }
 }

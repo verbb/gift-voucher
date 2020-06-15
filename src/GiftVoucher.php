@@ -9,11 +9,13 @@ use verbb\giftvoucher\fields\Codes;
 use verbb\giftvoucher\fields\Vouchers;
 use verbb\giftvoucher\helpers\ProjectConfigData;
 use verbb\giftvoucher\models\Settings;
+use verbb\giftvoucher\services\CodesService;
 use verbb\giftvoucher\services\VoucherTypesService as VoucherTypes;
 use verbb\giftvoucher\variables\GiftVoucherVariable;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -21,6 +23,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Elements;
 use craft\services\Fields;
+use craft\services\Plugins;
 use craft\services\ProjectConfig;
 use craft\services\Sites;
 use craft\services\UserPermissions;
@@ -43,7 +46,7 @@ class GiftVoucher extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '2.0.4';
+    public $schemaVersion = '2.0.5';
     public $hasCpSettings = true;
     public $hasCpSection = true;
 
@@ -72,6 +75,7 @@ class GiftVoucher extends Plugin
         $this->_registerCpRoutes();
         $this->_registerPermissions();
         $this->_registerAdjusters();
+        $this->_registerCraftEventListeners();
         $this->_registerProjectConfigEventListeners();
     }
 
@@ -234,15 +238,31 @@ class GiftVoucher extends Plugin
         });
     }
 
+    private function _registerCraftEventListeners()
+    {
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
+            Event::on(Plugins::class, Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS, function(PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    $this->getCodes()->saveFieldLayout();
+                }
+            });
+        }
+    }
+
     private function _registerProjectConfigEventListeners()
     {
         $projectConfigService = Craft::$app->getProjectConfig();
-
         $voucherTypeService = $this->getVoucherTypes();
+        $codesService = $this->getCodes();
+
         $projectConfigService->onAdd(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleChangedVoucherType'])
             ->onUpdate(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleChangedVoucherType'])
             ->onRemove(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleDeletedVoucherType']);
         
+        $projectConfigService->onAdd(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
+            ->onUpdate(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
+            ->onRemove(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleDeletedFieldLayout']);
+
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$voucherTypeService, 'pruneDeletedField']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$voucherTypeService, 'pruneDeletedSite']);
 

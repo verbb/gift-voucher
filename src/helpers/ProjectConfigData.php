@@ -1,6 +1,8 @@
 <?php
 namespace verbb\giftvoucher\helpers;
 
+use verbb\giftvoucher\elements\Code;
+
 use Craft;
 use craft\db\Query;
 use craft\helpers\Json;
@@ -19,6 +21,16 @@ class ProjectConfigData
         $output = [];
 
         $output['voucherTypes'] = self::_getVoucherTypeData();
+
+        $codeFieldLayout = Craft::$app->getFields()->getLayoutByType(Code::class);
+
+        if ($codeFieldLayout->uid) {
+            $output['codes'] = [
+                'fieldLayouts' => [
+                    $codeFieldLayout->uid => $codeFieldLayout->getConfig()
+                ]
+            ];
+        }
 
         return $output;
     }

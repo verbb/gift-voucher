@@ -1,9 +1,12 @@
 <?php
 namespace verbb\giftvoucher\migrations;
 
+use verbb\giftvoucher\elements\Code;
+
 use Craft;
 use craft\db\Migration;
 use craft\helpers\MigrationHelper;
+use craft\records\FieldLayout;
 
 class Install extends Migration
 {
@@ -15,6 +18,14 @@ class Install extends Migration
         $this->createTables();
         $this->createIndexes();
         $this->addForeignKeys();
+
+        // Don't make the same config changes twice
+        $installed = (Craft::$app->projectConfig->get('plugins.gift-voucher', true) !== null);
+        $configExists = (Craft::$app->projectConfig->get('gift-voucher', true) !== null);
+
+        if (!$installed && !$configExists) {
+            $this->insert(FieldLayout::tableName(), ['type' => Code::class]);
+        }
 
         return true;
     }

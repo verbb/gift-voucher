@@ -29,27 +29,6 @@ class Settings extends Model
     public $codeStorage = Session::class;
     public $registerAdjuster = 'beforeTax';
 
+    // TODO: Remove at next breakpoint
     private $fieldLayout;
-
-
-    // Public Methods
-    // =========================================================================
-
-    public function getFieldLayout(): FieldLayout
-    {
-        if ($this->fieldLayout !== null) {
-            return $this->fieldLayout;
-        }
-
-        // if no field layout ID was set yet, return an empty FieldLayout
-        if ($this->fieldLayoutId === null) {
-            return new FieldLayout(['type' => Code::class]);
-        }
-
-        if (($fieldLayout = Craft::$app->getFields()->getLayoutById($this->fieldLayoutId)) === null) {
-            throw new InvalidConfigException('Invalid field layout ID: ' . $this->fieldLayoutId);
-        }
-
-        return $this->fieldLayout = $fieldLayout;
-    }
 }

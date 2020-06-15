@@ -260,7 +260,7 @@ class Code extends Element
 
     public function getFieldLayout()
     {
-        return parent::getFieldLayout() ?? GiftVoucher::getInstance()->getSettings()->getFieldLayout();
+        return Craft::$app->getFields()->getLayoutByType(self::class);
     }
 
     public function getRedemptions()
