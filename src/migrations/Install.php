@@ -129,23 +129,23 @@ class Install extends Migration
 
     protected function addForeignKeys()
     {
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'id'), '{{%giftvoucher_codes}}', 'id', '{{%elements}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'lineItemId'), '{{%giftvoucher_codes}}', 'lineItemId', '{{%commerce_lineitems}}', 'id', 'SET NULL', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'orderId'), '{{%giftvoucher_codes}}', 'orderId', '{{%commerce_orders}}', 'id', 'SET NULL', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_codes}}', 'voucherId'), '{{%giftvoucher_codes}}', 'voucherId', '{{%giftvoucher_vouchers}}', 'id', 'SET NULL', null);
+        $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'id', '{{%elements}}', ['id'], 'CASCADE');
+        $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'lineItemId', '{{%commerce_lineitems}}', ['id'], 'SET NULL');
+        $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'orderId', '{{%commerce_orders}}', ['id'], 'SET NULL');
+        $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'voucherId', '{{%giftvoucher_vouchers}}', ['id'], 'SET NULL');
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_redemptions}}', 'codeId'), '{{%giftvoucher_redemptions}}', 'codeId', '{{%giftvoucher_codes}}', 'id', 'SET NULL', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_redemptions}}', 'orderId'), '{{%giftvoucher_redemptions}}', 'orderId', '{{%commerce_orders}}', 'id', 'SET NULL', null);
+        $this->addForeignKey(null, '{{%giftvoucher_redemptions}}', 'codeId', '{{%giftvoucher_codes}}', ['id'], 'SET NULL');
+        $this->addForeignKey(null, '{{%giftvoucher_redemptions}}', 'orderId', '{{%commerce_orders}}', ['id'], 'SET NULL');
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchers}}', 'id'), '{{%giftvoucher_vouchers}}', 'id', '{{%elements}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchers}}', 'shippingCategoryId'), '{{%giftvoucher_vouchers}}', 'shippingCategoryId', '{{%commerce_shippingcategories}}', 'id', null, null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchers}}', 'taxCategoryId'), '{{%giftvoucher_vouchers}}', 'taxCategoryId', '{{%commerce_taxcategories}}', 'id', null, null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchers}}', 'typeId'), '{{%giftvoucher_vouchers}}', 'typeId', '{{%giftvoucher_vouchertypes}}', 'id', 'CASCADE', null);
+        $this->addForeignKey(null, '{{%giftvoucher_vouchers}}', ['id'], '{{%elements}}', ['id'], 'CASCADE');
+        $this->addForeignKey(null, '{{%giftvoucher_vouchers}}', ['shippingCategoryId'], '{{%commerce_shippingcategories}}', ['id']);
+        $this->addForeignKey(null, '{{%giftvoucher_vouchers}}', ['taxCategoryId'], '{{%commerce_taxcategories}}', ['id']);
+        $this->addForeignKey(null, '{{%giftvoucher_vouchers}}', ['typeId'], '{{%giftvoucher_vouchertypes}}', ['id'], 'CASCADE');
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchertypes}}', 'fieldLayoutId'), '{{%giftvoucher_vouchertypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL', null);
+        $this->addForeignKey(null, '{{%giftvoucher_vouchertypes}}', ['fieldLayoutId'], '{{%fieldlayouts}}', ['id'], 'SET NULL');
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchertypes_sites}}', 'siteId'), '{{%giftvoucher_vouchertypes_sites}}', 'siteId', '{{%sites}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchertypes_sites}}', 'voucherTypeId'), '{{%giftvoucher_vouchertypes_sites}}', 'voucherTypeId', '{{%giftvoucher_vouchertypes}}', 'id', 'CASCADE', null);
+        $this->addForeignKey(null, '{{%giftvoucher_vouchertypes_sites}}', ['siteId'], '{{%sites}}', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, '{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId'], '{{%giftvoucher_vouchertypes}}', ['id'], 'CASCADE');
     }
 
     protected function dropForeignKeys()
