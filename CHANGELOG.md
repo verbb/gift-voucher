@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.1 - 2020-06-15
+
+### Fixed
+- Fix potential error when trying to save a voucher code without an amount.
+- Fix incorrect handling for code field layout.
+
 ## 2.3.0 - 2020-05-10
 
 ### Added
