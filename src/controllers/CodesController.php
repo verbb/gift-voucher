@@ -115,6 +115,16 @@ class CodesController extends Controller
             $code->originalAmount = $code->currentAmount;
         }
 
+        // Sanity checks
+        if ($code->currentAmount === '') {
+            $code->addError('currentAmount', Craft::t('gift-voucher', 'Amount is required.'));
+
+            Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t save code.'));
+            Craft::$app->getUrlManager()->setRouteParams(['code' => $code]);
+
+            return null;
+        }
+
         // populate fields
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $code->setFieldValuesFromRequest($fieldsLocation);
