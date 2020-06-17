@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.0 - 2020-06-18
+> {warning} Please note a breaking change in removing `fieldsPath`. If you use this setting to add custom field content to your voucher codes when adding to the cart, you will need to change this. Please see the docs - https://verbb.io/craft-plugins/gift-voucher/docs/template-guides/single-voucher#line-item-options
+
+### Changed
+- Removed `fieldsPath` config setting. If you are using this setting for adding custom field content to your voucher codes, please update your templates. Use `input type="text" name="options[fieldHandle]"` instead of `input type="text" name="options[<fieldsPath>][fieldHandle]"`.
+
 ## 2.3.1 - 2020-06-15
 
 ### Fixed
