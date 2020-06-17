@@ -148,18 +148,14 @@ class CodesService extends Component
     public function populateCodeByLineItem(Code $code, LineItem $lineItem): array
     {
         $settings = GiftVoucher::getInstance()->getSettings();
-        $fieldsPath = $settings->fieldsPath;
         $fieldLayoutId = $settings->fieldLayoutId;
         $validFields = [];
 
-        if (empty($fieldsPath) === false && $settings->fieldLayoutId !== null) {
-            // set the field layout id
+        if ($settings->fieldLayoutId !== null) {
+            // Set the field layout id
             $code->fieldLayoutId = $fieldLayoutId;
-            // grab the options from the lineItems, those may contain the field values
+            // Grab the options from the lineItems, those may contain the field values
             $options = $lineItem->getOptions();
-            // get the correct path specified by users
-            $customFields = ArrayHelper::getValue($options, $fieldsPath, []);
-
 
             // okay that might seems a little bit creepy but imagine the case the field layout changes
             // between storing the line item and creating the code or if the user changes the `fieldsPath` setting
@@ -173,9 +169,9 @@ class CodesService extends Component
                 foreach ($fields as $field){
                     $fieldHandle = $field->handle;
 
-                    if (isset($customFields[$fieldHandle])) {
-                        $code->setFieldValue($fieldHandle, $customFields[$fieldHandle]);
-                        $validFields[$fieldHandle] = $customFields[$fieldHandle];
+                    if (isset($options[$fieldHandle])) {
+                        $code->setFieldValue($fieldHandle, $options[$fieldHandle]);
+                        $validFields[$fieldHandle] = $options[$fieldHandle];
                     }
                 }
             }

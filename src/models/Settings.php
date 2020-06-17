@@ -25,10 +25,10 @@ class Settings extends Model
     public $pdfPaperSize = 'letter';
     public $pdfPaperOrientation = 'portrait';
     public $fieldLayoutId;
-    public $fieldsPath = 'fields';
     public $codeStorage = Session::class;
     public $registerAdjuster = 'beforeTax';
 
     // TODO: Remove at next breakpoint
     private $fieldLayout;
+    public $fieldsPath = 'fields';
 }
