@@ -25,7 +25,8 @@
         "collapsable": false,
         "children": [
             "template-guides/available-variables",
-            "template-guides/voucher-template",
+            "template-guides/vouchers-index",
+            "template-guides/single-voucher",
             "template-guides/displaying-voucher-codes",
             "template-guides/redeeming-voucher-codes",
             "template-guides/pdf-template"

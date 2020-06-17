@@ -49,6 +49,22 @@ The parent order that this voucher was purchased from
 
 A collection of [Codes](docs:developers/code). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
 
+## Custom Fields
+
+If you have added any custom fields to your Code field layout (in the Gift Voucher plugin settings), you can also use those custom fields in your templates.
+
+```twig
+{% for code in codes %}
+    {{ code.currentAmount | currency }}
+    {{ code.voucher.title }}
+
+    {# A custom plain text field with the handle `message` #}
+    {{ code.message }}
+{% endfor %}
+```
+
+Make sure you follow our [guide](docs:template-guides/single-voucher) for adding custom fields to vouchers when adding them to the cart. Otherwise, you custom fields won't have any content when codes are generated.
+
 ## Example template
 
 Below we've prepared a ready-to-go template, complete with provided CSS to get you started quickly.
