@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.4.1 - 2020-06-22
+
+### Fixed
+- Add migration for potentially missing code field layout.
+- Fix usage of deprecated `saleAmount`.
+- Return cart errors for ajax-applying of voucher codes.
+
 ## 2.4.0 - 2020-06-18
 > {warning} Please note a breaking change in removing `fieldsPath`. If you use this setting to add custom field content to your voucher codes when adding to the cart, you will need to change this. Please see the docs - https://verbb.io/craft-plugins/gift-voucher/docs/template-guides/single-voucher#line-item-options
 
