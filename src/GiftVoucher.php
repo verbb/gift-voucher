@@ -46,7 +46,7 @@ class GiftVoucher extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '2.0.6';
+    public $schemaVersion = '2.0.7';
     public $hasCpSettings = true;
     public $hasCpSection = true;
 
@@ -193,7 +193,7 @@ class GiftVoucher extends Plugin
             $voucherTypePermissions = [];
 
             foreach ($voucherTypes as $id => $voucherType) {
-                $suffix = ':' . $id;
+                $suffix = ':' . $uid;
                 $voucherTypePermissions['giftVoucher-manageVoucherType' . $suffix] = ['label' => Craft::t('gift-voucher', 'Manage “{type}” vouchers', ['type' => $voucherType->name])];
             }
 
