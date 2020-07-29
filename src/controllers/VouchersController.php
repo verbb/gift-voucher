@@ -3,6 +3,7 @@ namespace verbb\giftvoucher\controllers;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\helpers\VoucherHelper;
 
 use Craft;
 use craft\base\Element;
@@ -19,6 +20,7 @@ use craft\web\Controller;
 
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -108,7 +110,7 @@ class VouchersController extends Controller
         return $this->renderTemplate('gift-voucher/vouchers/_edit', $variables);
     }
 
-    public function actionDeleteVoucher()
+    public function actionDelete()
     {
         $this->requirePostRequest();
 
@@ -143,36 +145,97 @@ class VouchersController extends Controller
         return $this->redirectToPostedUrl($voucher);
     }
 
-    public function actionSave()
+    public function actionSave(bool $duplicate = false)
     {
         $this->requirePostRequest();
 
+        // Get the requested voucher
         $request = Craft::$app->getRequest();
+        $oldVoucher = VoucherHelper::voucherFromPost($request);
+        $this->enforceVoucherPermissions($oldVoucher);
+        $elementsService = Craft::$app->getElements();
 
-        $voucher = $this->_setVoucherFromPost();
+        $transaction = Craft::$app->getDb()->beginTransaction();
+        try {
+            // If we're duplicating the voucher, swap $voucher with the duplicate
+            if ($duplicate) {
+                try {
+                    $voucher = $elementsService->duplicateElement($oldVoucher);
+                } catch (InvalidElementException $e) {
+                    $transaction->rollBack();
 
-        $this->enforceVoucherPermissions($voucher);
+                    /** @var Voucher $clone */
+                    $clone = $e->element;
 
-        if ($voucher->enabled && $voucher->enabledForSite) {
-            $voucher->setScenario(Element::SCENARIO_LIVE);
-        }
+                    if ($request->getAcceptsJson()) {
+                        return $this->asJson([
+                            'success' => false,
+                            'errors' => $clone->getErrors(),
+                        ]);
+                    }
 
-        if (!Craft::$app->getElements()->saveElement($voucher)) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'success' => false,
-                    'errors' => $voucher->getErrors(),
-                ]);
+                    Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t duplicate voucher.'));
+
+                    // Send the original voucher back to the template, with any validation errors on the clone
+                    $oldVoucher->addErrors($clone->getErrors());
+
+                    Craft::$app->getUrlManager()->setRouteParams([
+                        'voucher' => $oldVoucher
+                    ]);
+
+                    return null;
+                } catch (\Throwable $e) {
+                    throw new ServerErrorHttpException(Craft::t('gift-voucher', 'An error occurred when duplicating the voucher.'), 0, $e);
+                }
+            } else {
+                $voucher = $oldVoucher;
             }
 
-            Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t save voucher.'));
+            // Now populate the rest of it from the post data
+            VoucherHelper::populateVoucherFromPost($voucher, $request);
 
-            // Send the category back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'voucher' => $voucher
-            ]);
+            // Save the voucher (finally!)
+            if ($voucher->enabled && $voucher->enabledForSite) {
+                $voucher->setScenario(Element::SCENARIO_LIVE);
+            }
 
-            return null;
+            $success = $elementsService->saveElement($voucher);
+
+            if (!$success && $duplicate && $voucher->getScenario() === Element::SCENARIO_LIVE) {
+                // Try again with the voucher disabled
+                $voucher->enabled = false;
+                $voucher->setScenario(Model::SCENARIO_DEFAULT);
+                $success = $elementsService->saveElement($voucher);
+            }
+
+            if (!$success) {
+                $transaction->rollBack();
+
+                if ($request->getAcceptsJson()) {
+                    return $this->asJson([
+                        'success' => false,
+                        'errors' => $voucher->getErrors(),
+                    ]);
+                }
+
+                Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t save voucher.'));
+
+                if ($duplicate) {
+                    // Add validation errors on the original voucher
+                    $oldVoucher->addErrors($voucher->getErrors());
+                }
+
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'voucher' => $oldVoucher
+                ]);
+
+                return null;
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
         }
 
         if ($request->getAcceptsJson()) {
@@ -186,7 +249,7 @@ class VouchersController extends Controller
             ]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('app', 'Voucher saved.'));
+        Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Voucher saved.'));
 
         return $this->redirectToPostedUrl($voucher);
     }
@@ -301,12 +364,6 @@ class VouchersController extends Controller
                 $variables['voucher'] = new Voucher();
                 $variables['voucher']->typeId = $variables['voucherType']->id;
                 
-                $taxCategories = $variables['voucherType']->getTaxCategories();
-                $variables['voucher']->taxCategoryId = key($taxCategories);
-                
-                $shippingCategories = $variables['voucherType']->getShippingCategories();
-                $variables['voucher']->shippingCategoryId = key($shippingCategories);
-
                 $variables['voucher']->typeId = $variables['voucherType']->id;
                 $variables['voucher']->enabled = true;
                 $variables['voucher']->siteId = $site->id;
