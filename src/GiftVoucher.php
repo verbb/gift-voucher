@@ -192,8 +192,8 @@ class GiftVoucher extends Plugin
 
             $voucherTypePermissions = [];
 
-            foreach ($voucherTypes as $id => $voucherType) {
-                $suffix = ':' . $uid;
+            foreach ($voucherTypes as $voucherType) {
+                $suffix = ':' . $voucherType->uid;
                 $voucherTypePermissions['giftVoucher-manageVoucherType' . $suffix] = ['label' => Craft::t('gift-voucher', 'Manage “{type}” vouchers', ['type' => $voucherType->name])];
             }
 
