@@ -704,14 +704,6 @@
 		"oAP": "/build/src/fields",
 		"oF": 0
 		},
-	"/src/GiftVoucher.php": {
-		"cB": 0,
-		"ft": 8192,
-		"hM": 0,
-		"oA": 2,
-		"oAP": "/src/GiftVoucher.php",
-		"oF": 0
-		},
 	"/src/helpers": {
 		"ft": 65536,
 		"oA": 1,
