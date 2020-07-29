@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.2 - 2020-07-29
+
+### Fixed
+- Fix voucher site dropdown not working for multi-sites.
+- Fix share and preview button alignment for vouchers.
+- Fix live preview not working for vouchers.
+- Fix save-as-new-voucher not working correctly.
+- Fix voucher permissions to use UID instead of ID.
+
 ## 2.4.1 - 2020-06-22
 
 ### Fixed
