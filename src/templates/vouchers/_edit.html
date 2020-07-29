@@ -13,23 +13,54 @@
 {% import 'gift-voucher/vouchers/_fields' as voucherFields %}
 
 {% block header %}
-    {{ block('pageTitle') }}
-    {{ block('contextMenu') }}
-    <div class="flex-grow"></div>
+    <div class="flex flex-nowrap">
+        {{ block('pageTitle') }}
+        {{ block('contextMenu') }}
+    </div>
 
-    {% if showPreviewBtn or shareUrl is defined %}
-        {% if showPreviewBtn %}
-            <div class="btn livepreviewbtn">{{ 'Live Preview' | t('app') }}</div>
+    <div class="flex">
+        {% if showPreviewBtn or shareUrl is defined %}
+            <div class="btngroup">
+                {% if showPreviewBtn %}
+                    <div id="preview-btn" class="btn livepreviewbtn">{{ 'Preview' | t('app') }}</div>
+                {% endif %}
+
+                {% if shareUrl is defined %}
+                    <a id="share-btn" href="{{ shareUrl }}" class="btn sharebtn" target="_blank">{{ 'Share' | t('app') }}</a>
+                {% endif %}
+            </div>
         {% endif %}
 
-        {% if shareUrl is defined %}
-            <a href="{{ shareUrl }}" class="btn sharebtn" target="_blank">{{ 'Share' | t('app') }}</a>
-        {% endif %}
+        {{ block('actionButton') }}
+    </div>
+{% endblock %}
 
-        <div class="flex-grow"></div>
+{% block contextMenu %}
+    {% if craft.app.getIsMultiSite() %}
+        <div class="btn menubtn sitemenubtn" data-icon="world">{{ voucher.site.name | t('site') }}</div>
+        <div class="menu">
+            <ul class="padded">
+                {% for siteId in siteIds %}
+                    {% set site = craft.app.sites.getSiteById(siteId) %}
+                    {% set status = siteId in enabledSiteIds ? 'enabled' : 'disabled' %}
+
+                    <li>
+                        {% if siteId == voucher.siteId %}
+                            <a class="sel" data-site-id="{{ siteId }}">
+                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
+                            </a>
+                        {% else %}
+                            {% set url = url("gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}/#{site.handle}") %}
+
+                            <a href="{{ url }}" data-site-id="{{ siteId }}">
+                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
-
-    {{ block('actionButton') }}
 {% endblock %}
 
 {% block actionButton %}
@@ -47,8 +78,8 @@
 
                 {% if voucher.id %}
                     <li>
-                        <a class="formsubmit" data-param="voucherId" data-value="" data-redirect="{{ continueEditingUrl | hash }}">
-                            {{ 'Save as a new voucher' | t('gift-voucher') }}
+                        <a class="formsubmit" data-action="gift-voucher/vouchers/duplicate" data-redirect="{{ '{cpEditUrl}' | hash }}">
+                            {{ 'Save as a new {type}' | t('gift-voucher', { type: voucher.lowerDisplayName() }) }}
                         </a>
                     </li>
                 {% endif %}
@@ -68,39 +99,19 @@
     </div>
 {% endblock %}
 
-{% block contextMenu %}
-    {% if craft.app.getIsMultiSite() %}
-        <div class="btn menubtn" data-icon="world">{{ voucher.site.name | t('site') }}</div>
-        <div class="menu">
-            <ul class="padded">
-                {% for siteId in siteIds %}
-                    {% set site = craft.app.sites.getSiteById(siteId) %}
-                    {% set status = siteId in enabledSiteIds ? 'enabled' : 'disabled' %}
-
-                    <li>
-                        {% if siteId == voucher.siteId %}
-                            <a class="sel">
-                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
-                            </a>
-                        {% else %}
-                            {% set url = url("gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}/#{site.handle}") %}
-
-                            <a href="{{ url }}">
-                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
-                            </a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
 	<input type="hidden" name="action" value="gift-voucher/vouchers/save">
+    <input type="hidden" name="typeId" value="{{ voucherType.id }}">
 	{{ redirectInput('gift-voucher/vouchers') }}
-	<input type="hidden" name="typeId" value="{{ voucherType.id }}">
-	{% if voucher.id %}<input type="hidden" name="voucherId" value="{{ voucher.id }}">{% endif %}
+    {{ csrfInput() }}
+    	
+    {% if voucher.id %}
+        <input type="hidden" name="voucherId" value="{{ voucher.id }}">
+    {% endif %}
+
+    {% if craft.app.getIsMultiSite() %}
+        <input type="hidden" name="siteId" value="{{ voucher.siteId }}">
+    {% endif %}
 
 	<div id="fields">
         {{ voucherFields.titleField(voucher) }}
@@ -162,8 +173,6 @@
     <hr>
 
     {% if voucher.id %}
-        <hr>
-
         <div class="meta read-only">
             <div class="data">
                 <h5 class="heading">{{ 'Date Created' | t('gift-voucher') }}</h5>

@@ -6,6 +6,10 @@ use verbb\giftvoucher\elements\Voucher;
 
 use Craft;
 use craft\base\Element;
+use craft\errors\ElementNotFoundException;
+use craft\errors\InvalidElementException;
+use craft\errors\MissingComponentException;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\helpers\Localization;
@@ -14,6 +18,8 @@ use craft\models\Site;
 use craft\web\Controller;
 
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -22,12 +28,6 @@ use yii\web\ServerErrorHttpException;
 
 class VouchersController extends Controller
 {
-    // Properties
-    // =========================================================================
-
-    protected $allowAnonymous = ['view-shared-voucher'];
-
-
     // Public Methods
     // =========================================================================
 
@@ -45,40 +45,24 @@ class VouchersController extends Controller
 
     public function actionEdit(string $voucherTypeHandle, int $voucherId = null, string $siteHandle = null, Voucher $voucher = null): Response
     {
-        $voucherType = null;
-
-        $variables = [
-            'voucherTypeHandle' => $voucherTypeHandle,
-            'voucherId' => $voucherId,
-            'voucher' => $voucher
-        ];
-
-        // Make sure a correct voucher type handle was passed so we can check permissions
-        if ($voucherTypeHandle) {
-            $voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeByHandle($voucherTypeHandle);
-        }
-
-        if (!$voucherType) {
-            throw new Exception('The voucher type was not found.');
-        }
-
-        $this->requirePermission('giftVoucher-manageVoucherType:' . $voucherType->id);
-        $variables['voucherType'] = $voucherType;
+        $variables = compact('voucherTypeHandle', 'voucherId', 'voucher');
 
         if ($siteHandle !== null) {
             $variables['site'] = Craft::$app->getSites()->getSiteByHandle($siteHandle);
 
             if (!$variables['site']) {
-                throw new Exception('Invalid site handle: '.$siteHandle);
+                throw new NotFoundHttpException('Invalid site handle: ' . $siteHandle);
             }
         }
 
-        $this->_prepareVariableArray($variables);
+        $this->_prepEditVoucherVariables($variables);
 
-        if (!empty($variables['voucher']->id)) {
-            $variables['title'] = $variables['voucher']->title;
-        } else {
+        $voucher = $variables['voucher'];
+
+        if ($voucher->id === null) {
             $variables['title'] = Craft::t('gift-voucher', 'Create a new voucher');
+        } else {
+            $variables['title'] = $voucher->title;
         }
 
         // Can't just use the entry's getCpEditUrl() because that might include the site handle when we don't want it
@@ -87,27 +71,38 @@ class VouchersController extends Controller
         // Set the "Continue Editing" URL
         $variables['continueEditingUrl'] = $variables['baseCpEditUrl'] . (Craft::$app->getIsMultiSite() && Craft::$app->getSites()->currentSite->id !== $variables['site']->id ? '/' . $variables['site']->handle : '');
 
-        $this->_maybeEnableLivePreview($variables);
+        $this->_prepVariables($variables);
 
-        $variables['tabs'] = [];
+        // Enable Live Preview?
+        if (!Craft::$app->getRequest()->isMobileBrowser(true) && GiftVoucher::$plugin->getVoucherTypes()->isVoucherTypeTemplateValid($variables['voucherType'], $variables['site']->id)) {
+            $this->getView()->registerJs('Craft.LivePreview.init(' . Json::encode([
+                    'fields' => '#title-field, #fields > div > div > .field',
+                    'extraFields' => '#details',
+                    'previewUrl' => $voucher->getUrl(),
+                    'previewAction' => Craft::$app->getSecurity()->hashData('gift-voucher/vouchers-preview/preview-voucher'),
+                    'previewParams' => [
+                        'typeId' => $variables['voucherType']->id,
+                        'voucherId' => $voucher->id,
+                        'siteId' => $voucher->siteId,
+                    ]
+                ]) . ');');
 
-        foreach ($variables['voucherType']->getFieldLayout()->getTabs() as $index => $tab) {
-            // Do any of the fields on this tab have errors?
-            $hasErrors = false;
+            $variables['showPreviewBtn'] = true;
 
-            if ($variables['voucher']->hasErrors()) {
-                foreach ($tab->getFields() as $field) {
-                    if ($hasErrors = $variables['voucher']->hasErrors($field->handle . '.*')) {
-                        break;
-                    }
+            // Should we show the Share button too?
+            if ($voucher->id !== null) {
+                // If the voucher is enabled, use its main URL as its share URL.
+                if ($voucher->getStatus() == Voucher::STATUS_LIVE) {
+                    $variables['shareUrl'] = $voucher->getUrl();
+                } else {
+                    $variables['shareUrl'] = UrlHelper::actionUrl('gift-voucher/vouchers-preview/share-voucher', [
+                        'voucherId' => $voucher->id,
+                        'siteId' => $voucher->siteId
+                    ]);
                 }
             }
-
-            $variables['tabs'][] = [
-                'label' => Craft::t('site', $tab->name),
-                'url' => '#' . $tab->getHtmlId(),
-                'class' => $hasErrors ? 'error' : null
-            ];
+        } else {
+            $variables['showPreviewBtn'] = false;
         }
 
         return $this->renderTemplate('gift-voucher/vouchers/_edit', $variables);
@@ -118,7 +113,7 @@ class VouchersController extends Controller
         $this->requirePostRequest();
 
         $voucherId = Craft::$app->getRequest()->getRequiredParam('voucherId');
-        $voucher = Voucher::findOne($voucherId);
+        $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId);
 
         if (!$voucher) {
             throw new Exception(Craft::t('gift-voucher', 'No voucher exists with the ID “{id}”.',['id' => $voucherId]));
@@ -128,7 +123,7 @@ class VouchersController extends Controller
 
         if (!Craft::$app->getElements()->deleteElement($voucher)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {
-                $this->asJson(['success' => false]);
+                return $this->asJson(['success' => false]);
             }
 
             Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t delete voucher.'));
@@ -140,7 +135,7 @@ class VouchersController extends Controller
         }
 
         if (Craft::$app->getRequest()->getAcceptsJson()) {
-            $this->asJson(['success' => true]);
+            return $this->asJson(['success' => true]);
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Voucher deleted.'));
@@ -196,57 +191,9 @@ class VouchersController extends Controller
         return $this->redirectToPostedUrl($voucher);
     }
 
-    public function actionPreviewVoucher(): Response
+    public function actionDuplicate()
     {
-
-        $this->requirePostRequest();
-
-        $voucher = $this->_setVoucherFromPost();
-
-        $this->enforceVoucherPermissions($voucher);
-
-        return $this->_showVoucher($voucher);
-    }
-
-    public function actionShareVoucher($voucherId, $siteId): Response
-    {
-        $voucher = GiftVoucher::getInstance()->getVouchers()->getVoucherById($voucherId, $siteId);
-
-        if (!$voucher) {
-            throw new HttpException(404);
-        }
-
-        $this->enforceVoucherPermissions($voucher);
-
-        if (!GiftVoucher::$plugin->getVoucherTypes()->isVoucherTypeTemplateValid($voucher->getType(), $voucher->siteId)) {
-            throw new HttpException(404);
-        }
-
-        $this->requirePermission('giftVoucher-manageVoucherType:' . $voucher->typeId);
-
-        // Create the token and redirect to the voucher URL with the token in place
-        $token = Craft::$app->getTokens()->createToken([
-            'gift-voucher/vouchers/view-shared-voucher', ['voucherId' => $voucher->id, 'siteId' => $siteId]
-        ]);
-
-        $url = UrlHelper::urlWithToken($voucher->getUrl(), $token);
-
-        return $this->redirect($url);
-    }
-
-    public function actionViewSharedVoucher($voucherId, $site = null)
-    {
-        $this->requireToken();
-
-        $voucher = GiftVoucher::getInstance()->getVouchers()->getVoucherById($voucherId, $site);
-
-        if (!$voucher) {
-            throw new HttpException(404);
-        }
-
-        $this->_showVoucher($voucher);
-
-        return null;
+        return $this->runAction('save', ['duplicate' => true]);
     }
 
 
@@ -255,54 +202,55 @@ class VouchersController extends Controller
 
     protected function enforceVoucherPermissions(Voucher $voucher)
     {
-        if (!$voucher->getType()) {
-            Craft::error('Attempting to access a voucher that doesn’t have a type', __METHOD__);
-            throw new HttpException(404);
-        }
-
-        $this->requirePermission('giftVoucher-manageVoucherType:' . $voucher->getType()->id);
+        $this->requirePermission('giftVoucher-manageVoucherType:' . $voucher->getType()->uid);
     }
 
 
     // Private Methods
     // =========================================================================
 
-    private function _showVoucher(Voucher $voucher): Response
+    private function _prepVariables(array &$variables)
     {
+        $variables['tabs'] = [];
 
-        $voucherType = $voucher->getType();
+        $voucherType = $variables['voucherType'];
+        $voucher = $variables['voucher'];
 
-        if (!$voucherType) {
-            throw new ServerErrorHttpException('Voucher type not found.');
+        foreach ($voucherType->getFieldLayout()->getTabs() as $index => $tab) {
+            // Do any of the fields on this tab have errors?
+            $hasErrors = false;
+
+            if ($voucher->hasErrors()) {
+                foreach ($tab->getFields() as $field) {
+                    if ($hasErrors = $voucher->hasErrors($field->handle . '.*')) {
+                        break;
+                    }
+                }
+            }
+
+            $variables['tabs'][] = [
+                'label' => Craft::t('site', $tab->name),
+                'url' => '#' . $tab->getHtmlId(),
+                'class' => $hasErrors ? 'error' : null
+            ];
         }
-
-        $siteSettings = $voucherType->getSiteSettings();
-
-        if (!isset($siteSettings[$voucher->siteId]) || !$siteSettings[$voucher->siteId]->hasUrls) {
-            throw new ServerErrorHttpException('The voucher ' . $voucher->id . ' doesn\'t have a URL for the site ' . $voucher->siteId . '.');
-        }
-
-        $site = Craft::$app->getSites()->getSiteById($voucher->siteId);
-
-        if (!$site) {
-            throw new ServerErrorHttpException('Invalid site ID: ' . $voucher->siteId);
-        }
-
-        Craft::$app->language = $site->language;
-
-        // Have this voucher override any freshly queried vouchers with the same ID/site
-        Craft::$app->getElements()->setPlaceholderElement($voucher);
-
-        $this->getView()->getTwig()->disableStrictVariables();
-
-        return $this->renderTemplate($siteSettings[$voucher->siteId]->template, [
-            'voucher' => $voucher
-        ]);
     }
 
-    private function _prepareVariableArray(&$variables)
+    private function _prepEditVoucherVariables(array &$variables)
     {
-        // Locale related checks
+        if (!empty($variables['voucherTypeHandle'])) {
+            $variables['voucherType'] = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeByHandle($variables['voucherTypeHandle']);
+        } else if (!empty($variables['voucherTypeId'])) {
+            $variables['voucherType'] = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($variables['voucherTypeId']);
+        }
+
+        if (empty($variables['voucherType'])) {
+            throw new NotFoundHttpException('Voucher Type not found');
+        }
+
+        // Get the site
+        // ---------------------------------------------------------------------
+
         if (Craft::$app->getIsMultiSite()) {
             // Only use the sites that the user has access to
             $variables['siteIds'] = Craft::$app->getSites()->getEditableSiteIds();
@@ -311,15 +259,17 @@ class VouchersController extends Controller
         }
 
         if (!$variables['siteIds']) {
-            throw new ForbiddenHttpException('User not permitted to edit content in any sites supported by this section');
+            throw new ForbiddenHttpException('User not permitted to edit content in any sites supported by this voucher type');
         }
 
         if (empty($variables['site'])) {
-            $site = $variables['site'] = Craft::$app->getSites()->currentSite;
+            $variables['site'] = Craft::$app->getSites()->currentSite;
 
             if (!in_array($variables['site']->id, $variables['siteIds'], false)) {
-                $site = $variables['site'] = Craft::$app->getSites()->getSiteById($variables['siteIds'][0]);
+                $variables['site'] = Craft::$app->getSites()->getSiteById($variables['siteIds'][0]);
             }
+
+            $site = $variables['site'];
         } else {
             // Make sure they were requesting a valid site
             /** @var Site $site */
@@ -329,26 +279,43 @@ class VouchersController extends Controller
             }
         }
 
-        // Voucher related checks
+        if (!empty($variables['voucherTypeHandle'])) {
+            $variables['voucherType'] = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeByHandle($variables['voucherTypeHandle']);
+        }
+
+        if (empty($variables['voucherType'])) {
+            throw new HttpException(400, Craft::t('gift-voucher', 'Wrong voucher type specified'));
+        }
+
+        // Get the voucher
+        // ---------------------------------------------------------------------
+
         if (empty($variables['voucher'])) {
             if (!empty($variables['voucherId'])) {
-                $variables['voucher'] = Craft::$app->getElements()->getElementById($variables['voucherId'], Voucher::class, $site->id);
+                $variables['voucher'] = GiftVoucher::$plugin->getVouchers()->getVoucherById($variables['voucherId'], $variables['site']->id);
 
                 if (!$variables['voucher']) {
-                    throw new Exception('Missing voucher data.');
+                    throw new NotFoundHttpException('Voucher not found');
                 }
             } else {
                 $variables['voucher'] = new Voucher();
                 $variables['voucher']->typeId = $variables['voucherType']->id;
+                
+                $taxCategories = $variables['voucherType']->getTaxCategories();
+                $variables['voucher']->taxCategoryId = key($taxCategories);
+                
+                $shippingCategories = $variables['voucherType']->getShippingCategories();
+                $variables['voucher']->shippingCategoryId = key($shippingCategories);
 
-                if (!empty($variables['siteId'])) {
-                    $variables['voucher']->site = $variables['siteId'];
-                }
+                $variables['voucher']->typeId = $variables['voucherType']->id;
+                $variables['voucher']->enabled = true;
+                $variables['voucher']->siteId = $site->id;
             }
         }
 
-        // Enable locales
         if ($variables['voucher']->id) {
+            $this->enforceVoucherPermissions($variables['voucher']);
+
             $variables['enabledSiteIds'] = Craft::$app->getElements()->getEnabledSiteIdsForElement($variables['voucher']->id);
         } else {
             $variables['enabledSiteIds'] = [];
@@ -357,95 +324,5 @@ class VouchersController extends Controller
                 $variables['enabledSiteIds'][] = $site;
             }
         }
-    }
-
-    private function _maybeEnableLivePreview(array &$variables)
-    {
-        if (!Craft::$app->getRequest()->isMobileBrowser(true) && GiftVoucher::$plugin->getVoucherTypes()->isVoucherTypeTemplateValid($variables['voucherType'], $variables['site']->id)) {
-            $this->getView()->registerJs('Craft.LivePreview.init('.Json::encode([
-                    'fields' => '#title-field, #fields > div > div > .field',
-                    'extraFields' => '#meta-pane',
-                    'previewUrl' => $variables['voucher']->getUrl(),
-                    'previewAction' => 'gift-voucher/vouchers/preview-voucher',
-                    'previewParams' => [
-                        'typeId' => $variables['voucherType']->id,
-                        'voucherId' => $variables['voucher']->id,
-                        'siteId' => $variables['voucher']->siteId,
-                    ]
-                ]).');');
-
-            $variables['showPreviewBtn'] = true;
-
-            // Should we show the Share button too?
-            if ($variables['voucher']->id) {
-                // If the voucher is enabled, use its main URL as its share URL.
-                if ($variables['voucher']->getStatus() === Voucher::STATUS_LIVE) {
-                    $variables['shareUrl'] = $variables['voucher']->getUrl();
-                } else {
-                    $variables['shareUrl'] = UrlHelper::actionUrl('gift-voucher/vouchers/share-voucher', [
-                        'voucherId' => $variables['voucher']->id,
-                        'siteId' => $variables['voucher']->siteId
-                    ]);
-                }
-            }
-        } else {
-            $variables['showPreviewBtn'] = false;
-        }
-    }
-
-    private function _setVoucherFromPost(): Voucher
-    {
-        $request = Craft::$app->getRequest();
-        $voucherId = $request->getBodyParam('voucherId');
-        $siteId = $request->getBodyParam('siteId');
-
-        if ($voucherId) {
-            $voucher = GiftVoucher::getInstance()->getVouchers()->getVoucherById($voucherId, $siteId);
-
-            if (!$voucher) {
-                throw new Exception(Craft::t('gift-voucher', 'No voucher with the ID “{id}”', ['id' => $voucherId]));
-            }
-        } else {
-            $voucher = new Voucher();
-        }
-
-        $voucher->typeId = $request->getBodyParam('typeId');
-        $voucher->siteId = $siteId ?? $voucher->siteId;
-        $voucher->enabled = (bool)$request->getBodyParam('enabled');
-
-        $voucher->price = Localization::normalizeNumber($request->getBodyParam('price'));
-        $voucher->sku = $request->getBodyParam('sku');
-
-        $voucher->customAmount = $request->getBodyParam('customAmount');
-
-        if ($voucher->customAmount) {
-            $voucher->price = 0;
-        }
-
-        if (($postDate = Craft::$app->getRequest()->getBodyParam('postDate')) !== null) {
-            $voucher->postDate = DateTimeHelper::toDateTime($postDate) ?: null;
-        }
-
-        if (($expiryDate = Craft::$app->getRequest()->getBodyParam('expiryDate')) !== null) {
-            $voucher->expiryDate = DateTimeHelper::toDateTime($expiryDate) ?: null;
-        }
-
-        // $voucher->promotable = (bool)$request->getBodyParam('promotable');
-        $voucher->taxCategoryId = $request->getBodyParam('taxCategoryId');
-        $voucher->shippingCategoryId = $request->getBodyParam('shippingCategoryId');
-        $voucher->slug = $request->getBodyParam('slug');
-
-        $voucher->enabledForSite = (bool)$request->getBodyParam('enabledForSite', $voucher->enabledForSite);
-        $voucher->title = $request->getBodyParam('title', $voucher->title);
-
-        $voucher->setFieldValuesFromRequest('fields');
-
-        // Last checks
-        if (empty($voucher->sku)) {
-            $voucherType = $voucher->getType();
-            $voucher->sku = Craft::$app->getView()->renderObjectTemplate($voucherType->skuFormat, $voucher);
-        }
-
-        return $voucher;
     }
 }
