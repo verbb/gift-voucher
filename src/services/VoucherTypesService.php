@@ -70,11 +70,11 @@ class VoucherTypesService extends Component
     {
         if (null === $this->_editableVoucherTypeIds) {
             $this->_editableVoucherTypeIds = [];
-            $allVoucherTypeIds = $this->getAllVoucherTypeIds();
+            $allVoucherTypes = $this->getAllVoucherTypes();
 
-            foreach ($allVoucherTypeIds as $voucherTypeId) {
-                if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $voucherTypeId)) {
-                    $this->_editableVoucherTypeIds[] = $voucherTypeId;
+            foreach ($allVoucherTypes as $voucherType) {
+                if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $voucherType->uid)) {
+                    $this->_editableVoucherTypeIds[] = $voucherType->id;
                 }
             }
         }
