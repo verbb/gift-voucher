@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4.3 - 2020-08-20
+
+### Fixed
+- Fix `getEditableVoucherTypeIds` not returning correctly.
+
 ## 2.4.2.1 - 2020-07-30
 
 ### Fixed
