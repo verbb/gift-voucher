@@ -279,24 +279,9 @@ class VouchersController extends Controller
         $voucherType = $variables['voucherType'];
         $voucher = $variables['voucher'];
 
-        foreach ($voucherType->getFieldLayout()->getTabs() as $index => $tab) {
-            // Do any of the fields on this tab have errors?
-            $hasErrors = false;
-
-            if ($voucher->hasErrors()) {
-                foreach ($tab->getFields() as $field) {
-                    if ($hasErrors = $voucher->hasErrors($field->handle . '.*')) {
-                        break;
-                    }
-                }
-            }
-
-            $variables['tabs'][] = [
-                'label' => Craft::t('site', $tab->name),
-                'url' => '#' . $tab->getHtmlId(),
-                'class' => $hasErrors ? 'error' : null
-            ];
-        }
+        $form = $voucherType->getVoucherFieldLayout()->createForm($voucher);
+        $variables['tabs'] = $form->getTabMenu();
+        $variables['fieldsHtml'] = $form->render();
     }
 
     private function _prepEditVoucherVariables(array &$variables)

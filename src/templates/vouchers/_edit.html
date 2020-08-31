@@ -114,20 +114,7 @@
     {% endif %}
 
 	<div id="fields">
-        {{ voucherFields.titleField(voucher) }}
-
-        <div>
-            {% set allVoucherTab = voucherType.getFieldLayout().getTabs() %}
-
-            {% for tab in voucherType.getFieldLayout().getTabs() %}
-                <div id="{{ tab.getHtmlId() }}" {% if not loop.first %} class="hidden" {% endif %}>
-                    {% include '_includes/fields' with {
-                        fields: tab.getFields(),
-                        element: voucher,
-                    } only %}
-                </div>
-            {% endfor %}
-        </div>
+        {{ fieldsHtml | raw }}
     </div>
 
     {% if not voucher.slug %}

@@ -15,12 +15,15 @@ use verbb\giftvoucher\variables\GiftVoucherVariable;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\fieldlayoutelements\TitleField;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
 use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
@@ -77,6 +80,7 @@ class GiftVoucher extends Plugin
         $this->_registerAdjusters();
         $this->_registerCraftEventListeners();
         $this->_registerProjectConfigEventListeners();
+        $this->_defineFieldLayoutElements();
     }
 
     public function afterInstall()
@@ -289,6 +293,20 @@ class GiftVoucher extends Plugin
 
                 'gift-voucher/settings' => 'gift-voucher/base/settings',
             ]);
+        });
+    }
+
+    private function _defineFieldLayoutElements()
+    {
+        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_STANDARD_FIELDS, function(DefineFieldLayoutFieldsEvent $e) {
+            /** @var FieldLayout $fieldLayout */
+            $fieldLayout = $e->sender;
+
+            switch ($fieldLayout->type) {
+                case Voucher::class:
+                    $e->fields[] = TitleField::class;
+                    break;
+            }
         });
     }
 

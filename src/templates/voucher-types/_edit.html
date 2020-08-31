@@ -139,9 +139,9 @@
 
     <hr>
 
-    {% include '_includes/fieldlayoutdesigner' with {
+    {{ forms.fieldLayoutDesignerField({
         fieldLayout: voucherType.getVoucherFieldLayout(),
-    } only %}
+    }) }}
 
 {% endblock %}
 
