@@ -71,7 +71,7 @@
 
         {# include the field layout :) #}
         {% for tab in code.getFieldLayout().getTabs() %}
-            <div id="{{ tab.getHtmlId() }}" class="hidden">
+            <div id="{{ tab.getHtmlId() }}" class="flex-fields hidden">
                 {% for formElement in tab.elements %}
                     {{ formElement.formHtml(code) | raw }}
                 {% endfor %}
