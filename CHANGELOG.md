@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.5.0 - 2020-08-31
+
+### Added
+- Add support for Craft 3.5 field designer for code elements.
+- Add support for Craft 3.5 field designer for voucher elements.
+
+### Changed
+- Now requires Craft 3.5+.
+- Now requires Craft Commerce 3.2+.
+
 ## 2.4.3 - 2020-08-20
 
 ### Fixed
