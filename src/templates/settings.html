@@ -91,9 +91,9 @@
 
     <h3>{{ 'Voucher Code Field Layout' | t('gift-voucher') }}</h3>
 
-    {% include '_includes/fieldlayoutdesigner' with {
+    {{ forms.fieldLayoutDesignerField({
         fieldLayout: craft.app.fields.getLayoutByType('verbb\\giftvoucher\\elements\\Code'),
-    } only %}
+    }) }}
 {% endnamespace %}
 
 {% endblock %}

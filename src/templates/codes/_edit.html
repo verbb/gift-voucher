@@ -72,11 +72,9 @@
         {# include the field layout :) #}
         {% for tab in code.getFieldLayout().getTabs() %}
             <div id="{{ tab.getHtmlId() }}" class="hidden">
-                {% include "_includes/fields" with {
-                    fields:  tab.getFields(),
-                    element: code,
-                    static:  (static is defined ? static : false)
-                } only %}
+                {% for formElement in tab.elements %}
+                    {{ formElement.formHtml(code) | raw }}
+                {% endfor %}
             </div>
         {% endfor %}
     </div>
