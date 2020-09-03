@@ -91,7 +91,11 @@
                     </td>
 
                     <td class="nowrap" width="10%">
-                        ${{ redemption.amount }}
+                        {{ redemption.amount|commerceCurrency(
+                            redemption.getOrder().currency,
+                            convert=true
+                            )
+                        }}
                     </td>
                 </tr>
             {% endfor %}
