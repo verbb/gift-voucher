@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.1 - 2020-09-18 [CRITICAL]
+
+### Fixed
+- Fix a potential security vulnerability where the last-created voucher could be redeemed by any user.
+- Replace hard coded currency with order currency. (thanks @yingban).
+
 ## 2.5.0 - 2020-08-31
 
 ### Added
