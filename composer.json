@@ -2,7 +2,7 @@
     "name": "verbb/gift-voucher",
     "description": "Plugin for Craft Commerce implementing gift vouchers.",
     "type": "craft-plugin",
-    "version": "2.4.3",
+    "version": "2.4.4",
     "keywords": [
         "craft",
         "cms",
