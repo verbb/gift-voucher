@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.3 - 2020-09-18 [CRITICAL]
+
+### Fixed
+- Fix a potential security vulnerability where the last-created voucher could be redeemed by any user.
+
 ## 2.1.2 - 2020-01-09
 
 ### Fixed
