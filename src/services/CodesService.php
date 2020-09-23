@@ -148,31 +148,20 @@ class CodesService extends Component
     public function populateCodeByLineItem(Code $code, LineItem $lineItem): array
     {
         $settings = GiftVoucher::getInstance()->getSettings();
-        $fieldLayoutId = $settings->fieldLayoutId;
+        $fieldLayout = $code->getFieldLayout();
         $validFields = [];
 
-        if ($settings->fieldLayoutId !== null) {
-            // Set the field layout id
-            $code->fieldLayoutId = $fieldLayoutId;
-            // Grab the options from the lineItems, those may contain the field values
-            $options = $lineItem->getOptions();
+        // Grab the options from the lineItems, those may contain the field values
+        $options = $lineItem->getOptions();
 
-            // okay that might seems a little bit creepy but imagine the case the field layout changes
-            // between storing the line item and creating the code or if the user changes the `fieldsPath` setting
-            // we need to make sure the fields inserted in the options contain valid, still existing fields
-            // and only if that's the case we want to set them otherwise users will see exceptions
-            // that's why we loop every valid field in the layout
-            $fieldLayout = $code->getFieldLayout();
+        if ($fieldLayout !== null && ($fields = $fieldLayout->getFields())) {
+            /** @var \craft\base\Field $field */
+            foreach ($fields as $field){
+                $fieldHandle = $field->handle;
 
-            if ($fieldLayout !== null && ($fields = $fieldLayout->getFields())) {
-                /** @var \craft\base\Field $field */
-                foreach ($fields as $field){
-                    $fieldHandle = $field->handle;
-
-                    if (isset($options[$fieldHandle])) {
-                        $code->setFieldValue($fieldHandle, $options[$fieldHandle]);
-                        $validFields[$fieldHandle] = $options[$fieldHandle];
-                    }
+                if (isset($options[$fieldHandle])) {
+                    $code->setFieldValue($fieldHandle, $options[$fieldHandle]);
+                    $validFields[$fieldHandle] = $options[$fieldHandle];
                 }
             }
         }

@@ -24,11 +24,11 @@ class Settings extends Model
     public $pdfAllowRemoteImages = false;
     public $pdfPaperSize = 'letter';
     public $pdfPaperOrientation = 'portrait';
-    public $fieldLayoutId;
     public $codeStorage = Session::class;
     public $registerAdjuster = 'beforeTax';
 
     // TODO: Remove at next breakpoint
     private $fieldLayout;
     public $fieldsPath = 'fields';
+    // public $fieldLayoutId;
 }
