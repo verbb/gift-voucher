@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4.6 - 2020-09-23
+
+### Fixed
+- Fix error when checking out, due to to project config containing potentially incorrect `fieldLayoutId` values for codes.
+
 ## 2.4.5 - 2020-09-23
 
 ### Fixed
