@@ -301,10 +301,18 @@ class CodesService extends Component
 
     public function saveFieldLayout()
     {
+        $projectConfig = Craft::$app->getProjectConfig();
+        $fieldLayoutUid = StringHelper::UUID();
+
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost('settings');
+        $layoutData = $projectConfig->get(self::CONFIG_FIELDLAYOUT_KEY) ?? [];
 
-        $configData = [StringHelper::UUID() => $fieldLayout->getConfig()];
+        if ($layoutData) {
+            $fieldLayoutUid = array_keys($layoutData)[0];
+        }
 
-        Craft::$app->getProjectConfig()->set(self::CONFIG_FIELDLAYOUT_KEY, $configData);
+        $configData = [$fieldLayoutUid => $fieldLayout->getConfig()];
+
+        $projectConfig->set(self::CONFIG_FIELDLAYOUT_KEY, $configData);
     }
 }
