@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4.5 - 2020-09-23
+
+### Fixed
+- Prevent code field layout ID from being creating multiple times when saving plugin settings.
+
 ## 2.4.4 - 2020-09-18 [CRITICAL]
 
 ### Fixed
