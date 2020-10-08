@@ -449,11 +449,25 @@ class Voucher extends Purchasable
             $this->trigger(self::EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT, $voucherFieldsEvent);
         }
 
-        // Capture specified Voucher field data
-        $voucherFieldData = $this->getSerializedFieldValues($voucherFieldsEvent->fields);
+        $voucherAttributes = $this->attributes();
+
+        // Remove custom fields
+        if (($fieldLayout = $this->getFieldLayout()) !== null) {
+            foreach ($fieldLayout->getFields() as $field) {
+                ArrayHelper::removeValue($voucherAttributes, $field->handle);
+            }
+        }
+
+        // Add back the custom fields they want
+        foreach ($voucherFieldsEvent->fields as $field) {
+            $voucherAttributes[] = $field;
+        }
+
+        $variantData = $this->toArray($voucherAttributes, [], false);
+
         $voucherDataEvent = new CustomizeVoucherSnapshotDataEvent([
             'voucher' => $this,
-            'fieldData' => $voucherFieldData,
+            'fieldData' => $variantData,
         ]);
 
         // Allow plugins to modify captured Voucher data
@@ -461,9 +475,7 @@ class Voucher extends Purchasable
             $this->trigger(self::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, $voucherDataEvent);
         }
 
-        $data['fields'] = $voucherDataEvent->fieldData;
-
-        return array_merge($this->getAttributes(), $data);
+        return array_merge($voucherDataEvent->fieldData, $data);
     }
 
     public function getPrice(): float
