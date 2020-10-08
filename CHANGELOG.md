@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.5.2 - 2020-10-08
+
+### Changed
+- Custom fields are no longer serialized in the snapshot of a voucher. Please use `EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT` and `EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT` events to opt-in any custom fields you want serialized in the snapshot. This follows Commerce's behaviour.
+
+### Fixed
+- Fix incorrectly serializing Super Table queries when taking a snapshot of Gift Vouchers when adding to the cart.
+- Fix `EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT` event not actually doing much.
+- Prevent code field layout ID from being creating multiple times when saving plugin settings.
+
 ## 2.5.1 - 2020-09-18 [CRITICAL]
 
 ### Fixed
