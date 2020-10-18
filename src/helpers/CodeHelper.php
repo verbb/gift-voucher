@@ -10,12 +10,10 @@ class CodeHelper
      *
      * @param $code
      *
-     * @return \verbb\giftvoucher\elements\Code|null
-     *
      * @author Robin Schambach
      * @since  18.12.2019
      */
-    public static function getCode($code): Code
+    public static function getCode($code)
     {
         if (is_string($code) === true) {
             return Code::findOne(['codeKey' => $code]);
