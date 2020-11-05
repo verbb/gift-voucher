@@ -17,7 +17,8 @@
             "feature-tour/voucher-codes",
             "feature-tour/redemptions",
             "feature-tour/custom-amounts",
-            "feature-tour/pdf-vouchers"
+            "feature-tour/pdf-vouchers",
+            "feature-tour/shipping-categories"
         ]
     },
     {
