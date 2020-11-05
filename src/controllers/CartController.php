@@ -26,6 +26,13 @@ class CartController extends BaseFrontEndController
         $this->_cart = Commerce::getInstance()->getCarts()->getCart();
         $this->_cartVariable = Commerce::getInstance()->getSettings()->cartVariable;
 
+        $request = Craft::$app->getRequest();
+
+        // Allow passing in a specific Order
+        if ($orderId = $request->getParam('orderId')) {
+            $this->_cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+        }
+
         parent::init();
     }
 
