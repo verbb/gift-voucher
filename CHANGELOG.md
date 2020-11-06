@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.3 - 2020-11-06
+
+### Added
+- Add support to apply gift voucher from the control panel, when editing an incomplete order.
+- Add ability to attach gift voucher PDFs to Commerce emails.
+
+### Fixed
+- Fix an error when no code is found when applying voucher codes.
+
 ## 2.5.2 - 2020-10-08
 
 ### Changed
