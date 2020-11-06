@@ -45,3 +45,15 @@ Gift Vouchers support for multiple vouchers needs a way to remove already entere
 ### Combining Coupons and Vouchers
 
 Because they're often considered similar in the eyes of customers, you can use the same field in your templates to handle either a gift voucher, or a coupon code. Just use the previous examples, and it'll automatically check if the provided text is a coupon code, and if so, try and apply it against the order.
+
+However, you may want to provide some feedback on the discount (coupon) and the voucher. In order to do this, ensure you're checking for both `voucherCode` and `couponCode` errors.
+
+```twig
+{% if cart.getFirstError('voucherCode') %}
+    <span class="flash">{{ cart.getFirstError('voucherCode') }}</span>
+{% endif %}
+
+{% if cart.getFirstError('couponCode') %}
+    <span class="flash">{{ cart.getFirstError('couponCode') }}</span>
+{% endif %}
+```

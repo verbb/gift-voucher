@@ -30,7 +30,8 @@
             "template-guides/single-voucher",
             "template-guides/displaying-voucher-codes",
             "template-guides/redeeming-voucher-codes",
-            "template-guides/pdf-template"
+            "template-guides/pdf-template",
+            "template-guides/auto-redeem-voucher-code"
         ]
     },
     {
