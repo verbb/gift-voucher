@@ -27,6 +27,7 @@ class Settings extends Model
     public $fieldLayoutId;
     public $codeStorage = Session::class;
     public $registerAdjuster = 'beforeTax';
+    public $attachPdfToEmails = [];
 
     // TODO: Remove at next breakpoint
     private $fieldLayout;

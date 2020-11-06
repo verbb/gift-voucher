@@ -1,0 +1,40 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{% set emails = craft.commerce.getEmails.getAllEmails() %}
+
+{% if emails %}
+    <p>{{ 'Use the below options to select which emails (if any) you‘d like to attach PDF gift vouchers to. This will be in addition to any PDF‘s already setup for your email.' | t('gift-voucher') }}</p>
+
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Email' | t('gift-voucher') }}</th>
+                <th scope="col">{{ 'Attach PDF?' | t('gift-voucher') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for email in emails %}
+                <tr data-id="{{ email.id }}">
+                    <th>
+                        <span class="status {{ email.enabled ? 'enabled' }}"></span>
+
+                        <a href="{{ url('commerce/settings/emails/' ~ email.id) }}">
+                            {{ email.name | t('site') }}
+                        </a>
+                    </th>
+
+                    <td>
+                        {{ forms.lightswitchField({
+                            name: 'attachPdfToEmails[' ~ email.uid ~ ']',
+                            value: 1,
+                            on: settings.attachPdfToEmails[email.uid] ?? false,
+                        }) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="zilch">{{ 'No Commerce emails yet.' | t('gift-voucher') }}</div>
+{% endif %}

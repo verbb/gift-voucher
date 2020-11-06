@@ -1,0 +1,81 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{% set months = [{ label: 'No expiry' | t('gift-voucher'), value: 0 }] %}
+{% for i in range(1, 24) %}
+    {% set months = months | merge([{ label: i, value: i }]) %}
+{% endfor %}
+
+{{ forms.selectField({
+    first: true,
+    label: 'Voucher Expiry' | t('gift-voucher'),
+    instructions: 'How many months should a gift voucher be valid after the purchase date?' | t('gift-voucher'),
+    name: 'expiry',
+    value: settings.expiry,
+    options: months,
+    errors: settings.getErrors('expiry'),
+    required: true,
+    warning: macros.configWarning('expiry', 'gift-voucher'),
+}) }}
+
+{{ forms.textField({
+    label: 'Voucher Code Character Length' | t('gift-voucher'),
+    instructions: 'Control the length of characters for the generated voucher code.' | t('gift-voucher'),
+    name: 'codeKeyLength',
+    value: settings.codeKeyLength,
+    errors: settings.getErrors('codeKeyLength'),
+    required: true,
+    warning: macros.configWarning('codeKeyLength', 'gift-voucher'),
+}) }}
+
+{{ forms.textField({
+    label: 'Voucher Code Characters' | t('gift-voucher'),
+    instructions: 'Select a collection of characters for the generated voucher code.' | t('gift-voucher'),
+    name: 'codeKeyCharacters',
+    value: settings.codeKeyCharacters,
+    errors: settings.getErrors('codeKeyCharacters'),
+    required: true,
+    warning: macros.configWarning('codeKeyCharacters', 'gift-voucher'),
+}) }}
+
+{{ forms.textField({
+    label: 'Voucher PDF Template' | t('gift-voucher'),
+    instructions: 'The path to the template used for generating purchased voucher codes PDFs.' | t('gift-voucher'),
+    id: 'voucherCodesPdfPath',
+    name: 'voucherCodesPdfPath',
+    value: settings.voucherCodesPdfPath,
+    errors: settings.getErrors('voucherCodesPdfPath'),
+    required: true,
+    warning: macros.configWarning('voucherCodesPdfPath', 'gift-voucher'),
+}) }}
+
+{{ forms.textField({
+    label: 'Voucher PDF Filename Format' | t('gift-voucher'),
+    instructions: 'What the purchased codes PDF filenames should look like (sans extension). You can include tags that output order properties, such as {ex1} or {ex2}.' | t('gift-voucher', {
+        ex1: '<code>{number}</code>',
+        ex2: '<code>{myOrderCustomField}</code>'
+    }),
+    id: 'voucherCodesPdfFilenameFormat',
+    name: 'voucherCodesPdfFilenameFormat',
+    value: settings.voucherCodesPdfFilenameFormat,
+    class: 'code ltr',
+    errors: settings.getErrors('voucherCodesPdfFilenameFormat'),
+    required: true,
+    warning: macros.configWarning('voucherCodesPdfFilenameFormat', 'gift-voucher'),
+}) }}
+
+{{ forms.checkboxField({
+    label: 'Don’t allow voucher codes to be used if discounts are applied on the order' | t('gift-voucher'),
+    id: 'stopProcessing',
+    name: 'stopProcessing',
+    value: 1,
+    checked: settings.stopProcessing,
+    errors: settings.getErrors('stopProcessing'),
+    warning: macros.configWarning('stopProcessing', 'gift-voucher'),
+}) }}
+
+<h3>{{ 'Voucher Code Field Layout' | t('gift-voucher') }}</h3>
+
+{{ forms.fieldLayoutDesignerField({
+    fieldLayout: craft.app.fields.getLayoutByType('verbb\\giftvoucher\\elements\\Code'),
+}) }}
