@@ -75,7 +75,7 @@ class CodesService extends Component
 
                     if ($code) {
                         $code->currentAmount += $adjustment->amount;
-                        Craft::$app->getElements()->saveElement($code);
+                        Craft::$app->getElements()->saveElement($code, false);
 
                         // Track code redemption
                         $redemption = new RedemptionModel();
@@ -223,7 +223,7 @@ class CodesService extends Component
         return $codeKey;
     }
 
-    public function matchCode($codeKey, &$error)
+    public function matchCode($codeKey, &$error = '')
     {
         $code = Code::findOne(['codeKey' => $codeKey]);
 
