@@ -63,7 +63,11 @@ class GiftVoucherVariable
 
     public function isVoucher(LineItem $lineItem)
     {
-        return (bool) (get_class($lineItem->purchasable) === Voucher::class);
+        if ($lineItem->purchasable) {
+            return (bool) (get_class($lineItem->purchasable) === Voucher::class);
+        }
+
+        return false;
     }
 
     public function isVoucherAdjustment($adjuster)
