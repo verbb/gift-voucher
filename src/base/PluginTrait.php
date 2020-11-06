@@ -59,6 +59,11 @@ trait PluginTrait
     {
         return $this->get('codeStorage');
     }
+    
+    public function getKlaviyoConnect()
+    {
+        return $this->get('klaviyoConnect');
+    }
 
     public static function log($message)
     {
