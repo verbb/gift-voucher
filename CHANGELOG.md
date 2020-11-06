@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.4 - 2020-11-07
+
+### Fixed
+- Fix potential error with `isVoucher` and line item purchasables.
+
 ## 2.5.3 - 2020-11-06
 
 ### Added
