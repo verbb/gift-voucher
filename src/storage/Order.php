@@ -6,7 +6,7 @@ use verbb\giftvoucher\helpers\CodeHelper;
 use Craft;
 use craft\base\Component;
 
-use craft\commerce\elements\Order;
+use craft\commerce\elements\Order as OrderElement;
 
 use yii\helpers\ArrayHelper;
 
@@ -35,10 +35,10 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function add($code, Order $order): bool
+    public function add($code, OrderElement $order): bool
     {
         $code = CodeHelper::getCode($code);
-        
+
         if ($code !== null && $this->fieldHandle !== null) {
             $codes = $order->getFieldValue($this->fieldHandle)->ids();
             $codes[] = (int)$code->id;
@@ -66,10 +66,10 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function remove($code, Order $order): bool
+    public function remove($code, OrderElement $order): bool
     {
         $code = CodeHelper::getCode($code);
-        
+
         if ($code !== null && $this->fieldHandle !== null) {
             $codes = $order->getFieldValue($this->fieldHandle)->ids();
 
@@ -102,7 +102,7 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function getCodes(Order $order): array
+    public function getCodes(OrderElement $order): array
     {
         if ($this->fieldHandle !== null) {
             return $order->getFieldValue($this->fieldHandle)->all();
@@ -121,7 +121,7 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function getCodeKeys(Order $order): array
+    public function getCodeKeys(OrderElement $order): array
     {
         $codes = $this->getCodes($order);
         $codeKeys = [];
@@ -147,7 +147,7 @@ class Order extends Component implements CodeStorageInterface
      * @author Robin Schambach
      * @since  2.0.16
      */
-    public function setCodes(array $codes, Order $order): bool
+    public function setCodes(array $codes, OrderElement $order): bool
     {
         if ($this->fieldHandle === null) {
             return false;
