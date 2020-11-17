@@ -10,7 +10,7 @@ use craft\commerce\elements\Order;
 
 use yii\helpers\ArrayHelper;
 
-class Order extends Component implements CodeStorageInterface
+class OrderCodeStorage extends Component implements CodeStorageInterface
 {
     // Properties
     // =========================================================================
