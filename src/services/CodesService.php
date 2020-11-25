@@ -44,51 +44,61 @@ class CodesService extends Component
 
     public static function handleCompletedOrder(Event $event)
     {
-        /** @var Order $order */
-        $order = $event->sender;
-        $lineItems = $order->getLineItems();
+        try {
+            /** @var Order $order */
+            $order = $event->sender;
+            $lineItems = $order->getLineItems();
 
-        foreach ($lineItems as $lineItem) {
-            $itemId = $lineItem->purchasableId;
-            $element = Craft::$app->getElements()->getElementById($itemId);
-            $quantity = $lineItem->qty;
+            foreach ($lineItems as $lineItem) {
+                $itemId = $lineItem->purchasableId;
+                $element = Craft::$app->getElements()->getElementById($itemId);
+                $quantity = $lineItem->qty;
 
-            if ($element instanceof Voucher) {
-                for ($i = 0; $i < $quantity; $i++) {
-                   GiftVoucher::getInstance()->getCodes()->codeVoucherByOrder($element, $order, $lineItem);
-                }
-            }
-        }
-
-        // Handle redemption of vouchers (when someone is using a code)
-        $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
-
-        if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
-            foreach ($order->getAdjustments() as $adjustment) {
-                if ($adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE) {
-                    $code = null;
-
-                    if (isset($adjustment->sourceSnapshot['codeKey'])) {
-                        $codeKey = $adjustment->sourceSnapshot['codeKey'];
-                        $code = Code::findOne(['codeKey' => $codeKey]);
-                    }
-
-                    if ($code) {
-                        $code->currentAmount += $adjustment->amount;
-                        Craft::$app->getElements()->saveElement($code, false);
-
-                        // Track code redemption
-                        $redemption = new RedemptionModel();
-                        $redemption->codeId = $code->id;
-                        $redemption->orderId = $order->id;
-                        $redemption->amount = (float)$adjustment->amount * -1;
-                        GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption);
+                if ($element instanceof Voucher) {
+                    for ($i = 0; $i < $quantity; $i++) {
+                       GiftVoucher::getInstance()->getCodes()->codeVoucherByOrder($element, $order, $lineItem);
                     }
                 }
             }
 
-            // Delete the code
-            GiftVoucher::getInstance()->getCodeStorage()->setCodes([], $order);
+            // Handle redemption of vouchers (when someone is using a code)
+            $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
+
+            if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
+                foreach ($order->getAdjustments() as $adjustment) {
+                    if ($adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE) {
+                        $code = null;
+
+                        if (isset($adjustment->sourceSnapshot['codeKey'])) {
+                            $codeKey = $adjustment->sourceSnapshot['codeKey'];
+                            $code = Code::findOne(['codeKey' => $codeKey]);
+                        }
+
+                        if ($code) {
+                            $code->currentAmount += $adjustment->amount;
+                            Craft::$app->getElements()->saveElement($code, false);
+
+                            // Track code redemption
+                            $redemption = new RedemptionModel();
+                            $redemption->codeId = $code->id;
+                            $redemption->orderId = $order->id;
+                            $redemption->amount = (float)$adjustment->amount * -1;
+                            GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption);
+                        }
+                    }
+                }
+
+                // Delete the code
+                GiftVoucher::getInstance()->getCodeStorage()->setCodes([], $order);
+            }
+        } catch (\Throwable $e) {
+            $error = Craft::t('app', 'Unable to complete gift voucher order: “{message}” {file}:{line}', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            GiftVoucher::error($error);
         }
     }
 
