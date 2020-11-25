@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.5 - 2020-11-26
+
+### Fixed
+- Ensure critical errors are logged during the order complete event.
+- Fix critical errors preventing orders from completeing correctly.
+
 ## 2.5.4 - 2020-11-07
 
 ### Fixed
