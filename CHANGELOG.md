@@ -4,7 +4,7 @@
 
 ### Fixed
 - Ensure critical errors are logged during the order complete event.
-- Fix critical errors preventing orders from completeing correctly.
+- Fix critical errors preventing orders from completing correctly.
 
 ## 2.5.4 - 2020-11-07
 
