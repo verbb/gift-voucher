@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.5.6 - 2020-12-12
+
+### Added
+- Add more logging around post-checkout functionality.
+
+### Changed
+- Post-checkout functionality is now performed on `EVENT_AFTER_COMPLETE_ORDER` rather than `EVENT_BEFORE_COMPLETE_ORDER`.
+
+### Fixed
+- Fix permission translation error.
+
 ## 2.5.5 - 2020-11-26
 
 ### Fixed
