@@ -132,7 +132,7 @@ class VouchersPreviewController extends Controller
 
     protected function enforceVoucherPermissions(Voucher $voucher)
     {
-        $this->requirePermission('commerce-manageVoucherType:' . $voucher->getType()->uid);
+        $this->requirePermission('giftVoucher-manageVoucherType:' . $voucher->getType()->uid);
     }
 
     private function _showVoucher(Voucher $voucher): Response
