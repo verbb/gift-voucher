@@ -12,6 +12,7 @@ use Craft;
 use craft\base\Element;
 use craft\events\ConfigEvent;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Json;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
@@ -47,16 +48,26 @@ class CodesService extends Component
         try {
             /** @var Order $order */
             $order = $event->sender;
-            $lineItems = $order->getLineItems();
 
-            foreach ($lineItems as $lineItem) {
-                $itemId = $lineItem->purchasableId;
-                $element = Craft::$app->getElements()->getElementById($itemId);
+            foreach ($order->lineItems as $lineItem) {
+                $purchasable = $lineItem->purchasable ?? null;
                 $quantity = $lineItem->qty;
 
-                if ($element instanceof Voucher) {
+                if ($purchasable && $purchasable instanceof Voucher) {
                     for ($i = 0; $i < $quantity; $i++) {
-                       GiftVoucher::getInstance()->getCodes()->codeVoucherByOrder($element, $order, $lineItem);
+                        GiftVoucher::log(Craft::t('app', 'Adding {id} to code storage', [
+                            'id' => $lineItem->id,
+                        ]));
+
+                        $success = GiftVoucher::getInstance()->getCodes()->codeVoucherByOrder($purchasable, $order, $lineItem);
+
+                        if (!$success) {
+                            $error = Craft::t('app', 'Unable to save voucher: “{errors}”.', [
+                                'errors' => Json::encode($purchasable->getErrors()),
+                            ]);
+
+                            GiftVoucher::error($error);
+                        }
                     }
                 }
             }
@@ -83,13 +94,32 @@ class CodesService extends Component
                             $redemption->codeId = $code->id;
                             $redemption->orderId = $order->id;
                             $redemption->amount = (float)$adjustment->amount * -1;
-                            GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption);
+                            
+                            if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
+                                $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
+                                    'errors' => Json::encode($redemption->getErrors()),
+                                ]);
+
+                                GiftVoucher::error($error);
+                            }
+                        } else {
+                            $error = Craft::t('app', 'Unable to find matching code in adjustment snapshot: “{adjustment}”.', [
+                                'adjustment' => Json::encode($adjustment),
+                            ]);
+
+                            GiftVoucher::error($error);
                         }
                     }
                 }
 
                 // Delete the code
                 GiftVoucher::getInstance()->getCodeStorage()->setCodes([], $order);
+            } else {
+                $error = Craft::t('app', 'No vouchers in code storage for order {id}', [
+                    'id' => $order->id,
+                ]);
+
+                GiftVoucher::error($error);
             }
         } catch (\Throwable $e) {
             $error = Craft::t('app', 'Unable to complete gift voucher order: “{message}” {file}:{line}', [
@@ -144,7 +174,15 @@ class CodesService extends Component
         // line item and completing the order ¯\_(ツ)_/¯
         // $code->setScenario(Element::SCENARIO_LIVE);
 
-        return Craft::$app->getElements()->saveElement($code);
+        $success = Craft::$app->getElements()->saveElement($code);
+
+        if (!$success) {
+            GiftVoucher::error(Craft::t('app', 'Unable to save code: “{errors}”.', [
+                'errors' => Json::encode($code->getErrors()),
+            ]));
+        }
+
+        return $success;
     }
 
     /**
