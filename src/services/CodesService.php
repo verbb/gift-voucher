@@ -119,7 +119,7 @@ class CodesService extends Component
                     'id' => $order->id,
                 ]);
 
-                GiftVoucher::error($error);
+                GiftVoucher::log($error);
             }
         } catch (\Throwable $e) {
             $error = Craft::t('app', 'Unable to complete gift voucher order: “{message}” {file}:{line}', [
