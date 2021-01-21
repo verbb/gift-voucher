@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.7 - 2021-01-22
+
+### Fixed
+- Fix gift vouchers attaching to emails, even when disabled.
+- Change logging from `error` to `info` when an order doesn’t contain a gift voucher.
+
 ## 2.5.6 - 2020-12-12
 
 ### Added
