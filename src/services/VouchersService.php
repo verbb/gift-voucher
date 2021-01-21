@@ -74,7 +74,9 @@ class VouchersService extends Component
             }
 
             // Check this is an email we want to attach the voucher PDF to
-            if (!isset($settings->attachPdfToEmails[$commerceEmail->uid])) {
+            $matchedEmail = $settings->attachPdfToEmails[$commerceEmail->uid] ?? null;
+
+            if (!$matchedEmail) {
                 return;
             }
 
