@@ -68,6 +68,8 @@ class VoucherHelper
             $voucher->expiryDate = DateTimeHelper::toDateTime($expiryDate) ?: null;
         }
 
+        $voucher->promotable = (bool)$request->getBodyParam('promotable');
+        $voucher->availableForPurchase = (bool)$request->getBodyParam('availableForPurchase');
         $voucher->taxCategoryId = $request->getBodyParam('taxCategoryId');
         $voucher->shippingCategoryId = $request->getBodyParam('shippingCategoryId');
         $voucher->slug = $request->getBodyParam('slug');

@@ -26,6 +26,8 @@ class VoucherQuery extends ElementQuery
     public $typeId;
     public $postDate;
     public $expiryDate;
+    public $promotable;
+    public $availableForPurchase;
 
 
     // Public Methods
@@ -139,6 +141,20 @@ class VoucherQuery extends ElementQuery
         return $this;
     }
 
+    public function promotable(bool $value = true)
+    {
+        $this->promotable = $value;
+
+        return $this;
+    }
+
+    public function availableForPurchase(bool $value = true)
+    {
+        $this->availableForPurchase = $value;
+
+        return $this;
+    }
+
 
     // Protected Methods
     // =========================================================================
@@ -160,10 +176,24 @@ class VoucherQuery extends ElementQuery
             'giftvoucher_vouchers.postDate',
             'giftvoucher_vouchers.expiryDate',
             'giftvoucher_vouchers.sku',
-            // 'giftvoucher_vouchers.promotable',
             'giftvoucher_vouchers.price',
             'giftvoucher_vouchers.customAmount'
         ]);
+
+        $giftVoucher = Craft::$app->getPlugins()->getStoredPluginInfo('gift-voucher');
+
+        if ($giftVoucher && version_compare($giftVoucher['version'], '2.0.8', '>=')) {
+            $this->query->addSelect(['giftvoucher_vouchers.promotable']);
+            $this->query->addSelect(['giftvoucher_vouchers.availableForPurchase']);
+
+            if ($this->promotable !== null) {
+                $this->subQuery->andWhere(['giftvoucher_vouchers.promotable' => $this->promotable]);
+            }
+
+            if ($this->availableForPurchase !== null) {
+                $this->subQuery->andWhere(['giftvoucher_vouchers.availableForPurchase' => $this->availableForPurchase]);
+            }
+        }
 
         if ($this->postDate) {
             $this->subQuery->andWhere(Db::parseDateParam('giftvoucher_vouchers.postDate', $this->postDate));

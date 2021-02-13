@@ -75,6 +75,8 @@ class Install extends Migration
             'shippingCategoryId' => $this->integer()->notNull(),
             'postDate' => $this->dateTime(),
             'expiryDate' => $this->dateTime(),
+            'promotable' => $this->boolean(),
+            'availableForPurchase' => $this->boolean(),
             'sku' => $this->string()->notNull(),
             'price' => $this->decimal(12, 2)->notNull(),
             'customAmount' => $this->boolean(),

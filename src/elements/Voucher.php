@@ -52,6 +52,8 @@ class Voucher extends Purchasable
     public $sku;
     public $price;
     public $customAmount;
+    public $promotable = true;
+    public $availableForPurchase = true;
 
     private $_voucherType;
     private $_existingCodes;
@@ -222,6 +224,10 @@ class Voucher extends Purchasable
 
     public function getIsAvailable(): bool
     {
+        if (!$this->availableForPurchase) {
+            return false;
+        }
+
         return $this->getStatus() === static::STATUS_LIVE;
     }
 
@@ -399,7 +405,8 @@ class Voucher extends Purchasable
         $voucherRecord->postDate = $this->postDate;
         $voucherRecord->expiryDate = $this->expiryDate;
         $voucherRecord->typeId = $this->typeId;
-        // $voucherRecord->promotable = $this->promotable;
+        $voucherRecord->promotable = (bool)$this->promotable;
+        $voucherRecord->availableForPurchase = (bool)$this->availableForPurchase;
         $voucherRecord->taxCategoryId = $this->taxCategoryId;
         $voucherRecord->shippingCategoryId = $this->shippingCategoryId;
         $voucherRecord->price = $this->price;
@@ -510,7 +517,7 @@ class Voucher extends Purchasable
 
     public function getIsPromotable(): bool
     {
-        return true;
+        return (bool)$this->promotable;
     }
 
     public function populateLineItem(LineItem $lineItem)
@@ -588,29 +595,31 @@ class Voucher extends Purchasable
         $voucherType = $this->getType();
 
         switch ($attribute) {
-            case 'type':
+            case 'type': {
                 return ($voucherType ? Craft::t('site', $voucherType->name) : '');
-
-            case 'taxCategory':
+            }
+            case 'taxCategory': {
                 $taxCategory = $this->getTaxCategory();
 
                 return ($taxCategory ? Craft::t('site', $taxCategory->name) : '');
-
-            case 'shippingCategory':
+            }
+            case 'shippingCategory': {
                 $shippingCategory = $this->getShippingCategory();
 
                 return ($shippingCategory ? Craft::t('site', $shippingCategory->name) : '');
-
-            case 'defaultPrice':
+            }
+            case 'defaultPrice': {
                 $code = Commerce::$plugin->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
                 return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
-
-            case 'promotable':
-                return ($this->$attribute ? '<span data-icon="check" title="'.Craft::t('gift-voucher', 'Yes').'"></span>' : '');
-
-            default:
-                return parent::tableAttributeHtml($attribute);
+            }
+            case 'availableForPurchase':
+            case 'promotable': {
+                return ($this->$attribute ? '<span data-icon="check" title="' . Craft::t('gift-voucher', 'Yes') . '"></span>' : '');
+            }
+            default: {
+                return parent::tableAttributeHtml($attribute);                
+            }
         }
     }
 

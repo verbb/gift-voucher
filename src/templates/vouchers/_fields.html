@@ -48,8 +48,24 @@
 {% macro behavioralMetaFields(voucher) %}
     {%- import '_includes/forms' as forms -%}
 
+    {{ forms.lightswitchField({
+        label: 'Promotable' | t('gift-voucher'),
+        id: 'promotable',
+        name: 'promotable',
+        small: true,
+        on: voucher.promotable,
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: 'Available for purchase' | t('gift-voucher'),
+        id: 'available-for-purchase',
+        name: 'availableForPurchase',
+        small: true,
+        on: voucher.availableForPurchase,
+    }) }}
+
     {{ forms.selectField({
-        label: 'Tax Category' | t('gift-voucher'),
+        label: 'Tax' | t('gift-voucher'),
         name: 'taxCategoryId',
         value: voucher.taxCategoryId,
         required: true,
@@ -62,7 +78,7 @@
     {% endfor %}
 
     {{ forms.selectField({
-        label: 'Shipping Category' | t('gift-voucher'),
+        label: 'Shipping' | t('gift-voucher'),
         name: 'shippingCategoryId',
         value: voucher.shippingCategoryId,
         required: true,
