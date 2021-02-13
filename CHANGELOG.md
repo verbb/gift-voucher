@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.8 - 2021-02-13
+
+### Added
+- Add `promotable` and `availableForPurchase` options to vouchers.
+
 ## 2.5.7 - 2021-01-22
 
 ### Fixed
