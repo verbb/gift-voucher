@@ -4,6 +4,8 @@ namespace verbb\giftvoucher\services;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\events\PdfEvent;
+use verbb\giftvoucher\events\PdfRenderOptionsEvent;
 
 use Craft;
 use craft\helpers\FileHelper;
@@ -12,13 +14,13 @@ use craft\web\View;
 
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
-use craft\commerce\events\PdfEvent;
 use craft\commerce\models\LineItem;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
 use yii\base\Component;
+use yii\base\ErrorException;
 use yii\base\Exception;
 
 class PdfService extends Component
@@ -28,6 +30,7 @@ class PdfService extends Component
 
     const EVENT_BEFORE_RENDER_PDF = 'beforeRenderPdf';
     const EVENT_AFTER_RENDER_PDF = 'afterRenderPdf';
+    const EVENT_MODIFY_RENDER_OPTIONS = 'modifyRenderOptions';
 
 
     // Public Methods
@@ -76,7 +79,7 @@ class PdfService extends Component
             $format = $request->getParam('format');
         }
 
-        if (null === $templatePath){
+        if (!$templatePath) {
             $templatePath = $settings->voucherCodesPdfPath;
         }
 
@@ -91,11 +94,14 @@ class PdfService extends Component
             $codes = $codesQuery->all();
         }
 
+        $variables = compact('order', 'codes', 'lineItem', 'option');
+
         // Trigger a 'beforeRenderPdf' event
         $event = new PdfEvent([
             'order' => $order,
             'option' => $option,
             'template' => $templatePath,
+            'variables' => $variables,
         ]);
         $this->trigger(self::EVENT_BEFORE_RENDER_PDF, $event);
 
@@ -103,12 +109,16 @@ class PdfService extends Component
             return $event->pdf;
         }
 
+        $variables = $event->variables;
+        $variables['order'] = $event->order;
+        $variables['option'] = $event->option;
+
         // Set Craft to the site template mode
         $view = Craft::$app->getView();
         $oldTemplateMode = $view->getTemplateMode();
         $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
-        if (!$templatePath || !$view->doesTemplateExist($templatePath)) {
+        if (!$event->template || !$view->doesTemplateExist($event->template)) {
             // Restore the original template mode
             $view->setTemplateMode($oldTemplateMode);
 
@@ -116,17 +126,19 @@ class PdfService extends Component
         }
 
         try {
-            $html = $view->renderTemplate($templatePath, compact('order', 'codes', 'lineItem', 'option'));
+            $html = $view->renderTemplate($templatePath, $variables);
         } catch (\Exception $e) {
-            // Set the pdf html to the render error.
+            GiftVoucher::error('An error occurred while generating this PDF: ' . $e->getMessage());
+
             if ($order) {
-                Craft::error('Voucher PDF render error. Order number: ' . $order->getShortNumber() . '. ' . $e->getMessage());
+                GiftVoucher::error('Voucher PDF render error. Order number: ' . $order->getShortNumber() . '. ' . $e->getMessage());
             }
 
             if ($codes) {
-                Craft::error('Voucher PDF render error. Code key: ' . $codes[0]->codeKey . '. ' . $e->getMessage());
+                GiftVoucher::error('Voucher PDF render error. Code key: ' . $codes[0]->codeKey . '. ' . $e->getMessage());
             }
 
+            // Set the pdf html to the render error.
             Craft::$app->getErrorHandler()->logException($e);
             $html = Craft::t('gift-voucher', 'An error occurred while generating this PDF.');
         }
@@ -146,6 +158,18 @@ class PdfService extends Component
         FileHelper::isWritable($dompdfTempDir);
         FileHelper::isWritable($dompdfLogFile);
 
+        if (!FileHelper::isWritable($dompdfLogFile)) {
+            throw new ErrorException("Unable to write to file: $dompdfLogFile");
+        }
+
+        if (!FileHelper::isWritable($dompdfFontCache)) {
+            throw new ErrorException("Unable to write to folder: $dompdfFontCache");
+        }
+
+        if (!FileHelper::isWritable($dompdfTempDir)) {
+            throw new ErrorException("Unable to write to folder: $dompdfTempDir");
+        }
+
         $isRemoteEnabled = $settings->pdfAllowRemoteImages;
 
         $options = new Options();
@@ -154,12 +178,20 @@ class PdfService extends Component
         $options->setLogOutputFile($dompdfLogFile);
         $options->setIsRemoteEnabled($isRemoteEnabled);
 
+        // Set additional render options
+        if ($this->hasEventHandlers(self::EVENT_MODIFY_RENDER_OPTIONS)) {
+            $this->trigger(self::EVENT_MODIFY_RENDER_OPTIONS, new PdfRenderOptionsEvent([
+                'options' => $options,
+            ]));
+        }
+
+        // Set the options
+        $dompdf->setOptions($options);
+
         // Paper Size and Orientation
         $pdfPaperSize = $settings->pdfPaperSize;
         $pdfPaperOrientation = $settings->pdfPaperOrientation;
         $dompdf->setPaper($pdfPaperSize, $pdfPaperOrientation);
-
-        $dompdf->setOptions($options);
 
         $dompdf->loadHtml($html);
 
@@ -170,14 +202,15 @@ class PdfService extends Component
         }
 
         // Trigger an 'afterRenderPdf' event
-        $event = new PdfEvent([
-            'order' => $order,
-            'option' => $option,
-            'template' => $templatePath,
+        $afterEvent = new PdfEvent([
+            'order' => $event->order,
+            'option' => $event->option,
+            'template' => $event->template,
+            'variables' => $variables,
             'pdf' => $dompdf->output(),
         ]);
-        $this->trigger(self::EVENT_AFTER_RENDER_PDF, $event);
+        $this->trigger(self::EVENT_AFTER_RENDER_PDF, $afterEvent);
 
-        return $event->pdf;
+        return $afterEvent->pdf;
     }
 }
