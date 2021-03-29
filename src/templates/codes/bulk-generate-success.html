@@ -1,0 +1,31 @@
+{% extends 'gift-voucher/_layouts' %}
+{% import '_includes/forms' as forms %}
+
+{% set crumbs = [
+    { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
+    { label: 'Voucher Codes' | t('gift-voucher'), url: url('gift-voucher/codes') },
+    { label: 'Bulk Generate' | t('gift-voucher'), url: url('gift-voucher/codes/bulk-generate') }
+] %}
+
+{% set selectedSubnavItem = 'bulk-generate' %}
+
+{% set title = 'Bulk Generate Codes' | t('gift-voucher') %}
+{% set noTabs = true %}
+
+{% block blockContent %}
+
+<p>{{ 'The following codes were generated successfully.' | t('gift-voucher') }}</p>
+
+{% set savedCodes = craft.app.request.getParam('savedCodes', []) %}
+
+{% if savedCodes %}
+    <div class="pane">
+        {% set codes = craft.giftVoucher.codes().id(savedCodes).all() %}
+
+        {% for code in codes %}
+            <a href="{{ code.cpEditUrl }}">{{ code.codeKey }}</a><br>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}

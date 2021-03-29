@@ -2,14 +2,14 @@
 {% import '_includes/forms' as forms %}
 
 {% set crumbs = [
-	{ label: 'Gift Voucher'|t('gift-voucher'), url: url('gift-voucher') },
-	{ label: 'Voucher codes'|t('app'), url: url('gift-voucher/codes') },
-	{ label: 'Bulk generate'|t('app'), url: url('gift-voucher/codes/bulk-generate') }
+	{ label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
+	{ label: 'Voucher Codes' | t('gift-voucher'), url: url('gift-voucher/codes') },
+	{ label: 'Bulk Generate' | t('gift-voucher'), url: url('gift-voucher/codes/bulk-generate') }
 ] %}
 
 {% set selectedSubnavItem = 'bulk-generate' %}
 
-{% set title = 'Bulk generate codes'|t('gift-voucher') %}
+{% set title = 'Bulk Generate Codes' | t('gift-voucher') %}
 {% set noTabs = true %}
 {% set fullPageForm = true %}
 
@@ -17,13 +17,12 @@
 
 {% block blockContent %}
 	{{ actionInput('gift-voucher/codes/bulk-generate-submit') }}
-	{{ redirectInput('gift-voucher/codes/bulk-generate') }}
 
 	<div id="fields">
 		{{ forms.textField({
 			first: true,
-			label: 'Amount of voucher codes'|t('gift-voucher'),
-			instructions: 'How many voucher codes would you like to generate?'|t('gift-voucher'),
+			label: 'Number of Voucher Codes' | t('gift-voucher'),
+			instructions: 'How many voucher codes would you like to generate?' | t('gift-voucher'),
 			id: 'amount',
 			name: 'amount',
 			value: null,
@@ -35,32 +34,32 @@
 		{% js %}
 			{% set voucherTypes = [] %}
 			{% for voucherType in craft.giftVoucher.getEditableVoucherTypes() %}
-				{% set voucherTypes = voucherTypes|merge([{
+				{% set voucherTypes = voucherTypes | merge([{
 					id: voucherType.id,
 					name: voucherType.name,
 					handle: voucherType.handle,
 				}]) %}
 			{% endfor %}
 			
-			Craft.GiftVoucher.editableVoucherTypes = {{ voucherTypes|json_encode|raw }};
+			Craft.GiftVoucher.editableVoucherTypes = {{ voucherTypes | json_encode | raw }};
 		{% endjs %}
 		
 		{{ forms.elementSelectField({
-			label: 'Voucher'|t('gift-voucher'),
-			instructions: 'Select a voucher to be associated with the generated voucher codes.'|t('gift-voucher'),
+			label: 'Voucher' | t('gift-voucher'),
+			instructions: 'Select a voucher to be associated with the generated voucher codes.' | t('gift-voucher'),
 			elementType: voucherElementType,
 			id: 'voucher',
 			class: 'ltr',
 			name: 'voucher',
 			required: true,
 			limit: 1,
-			addButtonLabel: 'Select a Voucher'|t('gift-voucher'),
+			addButtonLabel: 'Select a Voucher' | t('gift-voucher'),
 			errors: errors.voucher is defined ? errors.voucher : [],
 		}) }}
 		
 		{{ forms.textField({
-			label: 'Voucher amount'|t('gift-voucher'),
-			instructions: 'Define an amount for the value of the voucher code.'|t('gift-voucher'),
+			label: 'Voucher Amount' | t('gift-voucher'),
+			instructions: 'Define an amount for the value of each voucher code.' | t('gift-voucher'),
 			id: 'voucherAmount',
 			name: 'voucherAmount',
 			value: null,
@@ -69,7 +68,7 @@
 		}) }}
 		
 		{{ forms.dateTimeField({
-			label: 'Expiry date'|t('gift-voucher'),
+			label: 'Expiry Date' | t('gift-voucher'),
 			instructions: 'Optionally, enter the date for the voucher codes to expire.',
 			id: 'expiryDate',
 			name: 'expiryDate',
@@ -81,6 +80,6 @@
 
 {% block footerButton %}
 	<div class="buttons">
-		<input type="submit" class="btn submit" value="{{ 'Generate codes'|t('gift-voucher') }}">
+		<input type="submit" class="btn submit" value="{{ 'Generate Codes' | t('gift-voucher') }}">
 	</div>
 {% endblock %}

@@ -130,9 +130,9 @@ class GiftVoucher extends Plugin
             ];
         }
 
-        if (Craft::$app->getUser()->checkPermission('giftVoucher-manageCodes')) {
+        if (Craft::$app->getUser()->checkPermission('giftVoucher-bulkGenerateCodes')) {
             $navItems['subnav']['bulk-generate'] = [
-                'label' => Craft::t('gift-voucher', 'Bulk generate codes'),
+                'label' => Craft::t('gift-voucher', 'Bulk Generate Codes'),
                 'url' => 'gift-voucher/codes/bulk-generate',
             ];
         }
@@ -242,6 +242,7 @@ class GiftVoucher extends Plugin
                 'giftVoucher-manageVoucherTypes' => ['label' => Craft::t('gift-voucher', 'Manage voucher types')],
                 'giftVoucher-manageVouchers' => ['label' => Craft::t('gift-voucher', 'Manage vouchers'), 'nested' => $voucherTypePermissions],
                 'giftVoucher-manageCodes' => ['label' => Craft::t('gift-voucher', 'Manage codes')],
+                'giftVoucher-bulkGenerateCodes' => ['label' => Craft::t('gift-voucher', 'Bulk generate codes')],
             ];
         });
     }

@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Element;
 use craft\base\Field;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 
 use yii\base\Exception;
@@ -190,11 +191,12 @@ class CodesController extends Controller
 
         $request = Craft::$app->getRequest();
         $errors = [];
-        $amount = (int) $request->getBodyParam('amount');
-        $voucherAmount = (float) $request->getBodyParam('voucherAmount');
+        $amount = (int)$request->getBodyParam('amount');
+        $voucherAmount = (float)$request->getBodyParam('voucherAmount');
         $voucher = null;
 
         $voucherIds = $request->getBodyParam('voucher');
+        
         if (!empty($voucherIds) && is_array($voucherIds)) {
             $voucherId = reset($voucherIds);
             $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId);
@@ -216,6 +218,7 @@ class CodesController extends Controller
 
         if (!empty($errors)) {
             Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Failed generating voucher codes.'));
+
             Craft::$app->getUrlManager()->setRouteParams([
                 'errors' => $errors,
             ]);
@@ -230,6 +233,8 @@ class CodesController extends Controller
         $baseCode->originalAmount = $baseCode->currentAmount;
         $baseCode->expiryDate = $expiryDate;
 
+        $savedCodes = [];
+
         for ($i = 0; $i <= $amount; $i++) {
             $code = clone $baseCode;
 
@@ -238,10 +243,14 @@ class CodesController extends Controller
 
                 return null;
             }
+
+            $savedCodes[] = $code->id;
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Voucher codes generated.'));
 
-        return $this->redirectToPostedUrl();
+        return $this->redirect(UrlHelper::url('gift-voucher/codes/bulk-generate-success', [
+            'savedCodes' => $savedCodes,
+        ]));
     }
 }
