@@ -130,6 +130,13 @@ class GiftVoucher extends Plugin
             ];
         }
 
+        if (Craft::$app->getUser()->checkPermission('giftVoucher-manageCodes')) {
+            $navItems['subnav']['bulk-generate'] = [
+                'label' => Craft::t('gift-voucher', 'Bulk generate codes'),
+                'url' => 'gift-voucher/codes/bulk-generate',
+            ];
+        }
+
         if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             $navItems['subnav']['settings'] = [
                 'label' => Craft::t('gift-voucher', 'Settings'),
@@ -292,7 +299,7 @@ class GiftVoucher extends Plugin
         $projectConfigService->onAdd(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleChangedVoucherType'])
             ->onUpdate(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleChangedVoucherType'])
             ->onRemove(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleDeletedVoucherType']);
-        
+
         $projectConfigService->onAdd(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
             ->onUpdate(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
             ->onRemove(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleDeletedFieldLayout']);
@@ -320,6 +327,8 @@ class GiftVoucher extends Plugin
 
                 'gift-voucher/codes/new' => 'gift-voucher/codes/edit',
                 'gift-voucher/codes/<codeId:\d+>' => 'gift-voucher/codes/edit',
+
+                'gift-voucher/codes/bulk-generate' => 'gift-voucher/codes/bulk-generate',
 
                 'gift-voucher/settings' => 'gift-voucher/base/settings',
             ]);

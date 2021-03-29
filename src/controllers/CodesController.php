@@ -1,6 +1,7 @@
 <?php
 namespace verbb\giftvoucher\controllers;
 
+use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 
@@ -173,5 +174,74 @@ class CodesController extends Controller
         Craft::$app->getUrlManager()->setRouteParams(['code' => $code]);
 
         return null;
+    }
+
+    public function actionBulkGenerate()
+    {
+        $variables = Craft::$app->getUrlManager()->getRouteParams();
+        $variables['voucherElementType'] = Voucher::class;
+
+        return $this->renderTemplate('gift-voucher/codes/_bulk-generate', $variables);
+    }
+
+    public function actionBulkGenerateSubmit()
+    {
+        $this->requirePostRequest();
+
+        $request = Craft::$app->getRequest();
+        $errors = [];
+        $amount = (int) $request->getBodyParam('amount');
+        $voucherAmount = (float) $request->getBodyParam('voucherAmount');
+        $voucher = null;
+
+        $voucherIds = $request->getBodyParam('voucher');
+        if (!empty($voucherIds) && is_array($voucherIds)) {
+            $voucherId = reset($voucherIds);
+            $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId);
+        }
+
+        $expiryDate = $request->getBodyParam('expiryDate') ? (DateTimeHelper::toDateTime($request->getBodyParam('expiryDate')) ?: null) : null;
+
+        if (!($amount > 0)) {
+            $errors['amount'][] = Craft::t('gift-voucher', 'You should at least generate one voucher code.');
+        }
+
+        if (!($voucherAmount > 0)) {
+            $errors['voucherAmount'][] = Craft::t('gift-voucher', 'Choose the amount the voucher code is worth.');
+        }
+
+        if (!$voucher) {
+            $errors['voucher'][] = Craft::t('gift-voucher', 'Select a voucher to assign the codes to.');
+        }
+
+        if (!empty($errors)) {
+            Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Failed generating voucher codes.'));
+            Craft::$app->getUrlManager()->setRouteParams([
+                'errors' => $errors,
+            ]);
+
+            return null;
+        }
+
+        $baseCode = new Code();
+        $baseCode->voucherId = $voucherId;
+        $baseCode->enabled = true;
+        $baseCode->currentAmount = $voucherAmount;
+        $baseCode->originalAmount = $baseCode->currentAmount;
+        $baseCode->expiryDate = $expiryDate;
+
+        for ($i = 0; $i <= $amount; $i++) {
+            $code = clone $baseCode;
+
+            if (!Craft::$app->getElements()->saveElement($code)) {
+                Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t save code.'));
+
+                return null;
+            }
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Voucher codes generated.'));
+
+        return $this->redirectToPostedUrl();
     }
 }
