@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.9 - 2021-03-29
+
+### Added
+- Add bulk voucher code generation page. (thanks @jerome2710).
+- Add `EVENT_MODIFY_RENDER_OPTIONS` event for modifying the DomPDF options during render.
+
+### Fixed
+- Fix incorrectly using `fieldLayoutId` for plugin settings, when fetching Codes’ field layouts. This could lead to some installs not generating voucher codes correctly upon checkout.
+
 ## 2.5.8 - 2021-02-13
 
 ### Added
