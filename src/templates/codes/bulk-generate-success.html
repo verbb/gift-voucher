@@ -16,9 +16,11 @@
 
 <p>{{ 'The following codes were generated successfully.' | t('gift-voucher') }}</p>
 
-{% set savedCodes = craft.app.request.getParam('savedCodes', []) %}
+{% set savedCodes = craft.app.request.getParam('savedCodes') %}
 
 {% if savedCodes %}
+    {% set savedCodes = savedCodes | split('_') %}
+    
     <div class="pane">
         {% set codes = craft.giftVoucher.codes().id(savedCodes).all() %}
 

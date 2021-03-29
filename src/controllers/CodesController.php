@@ -250,7 +250,7 @@ class CodesController extends Controller
         Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Voucher codes generated.'));
 
         return $this->redirect(UrlHelper::url('gift-voucher/codes/bulk-generate-success', [
-            'savedCodes' => $savedCodes,
+            'savedCodes' => implode('_', $savedCodes),
         ]));
     }
 }
