@@ -235,7 +235,7 @@ class CodesController extends Controller
 
         $savedCodes = [];
 
-        for ($i = 0; $i <= $amount; $i++) {
+        for ($i = 0; $i < $amount; $i++) {
             $code = clone $baseCode;
 
             if (!Craft::$app->getElements()->saveElement($code)) {
