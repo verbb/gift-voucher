@@ -146,40 +146,52 @@ class CodesService extends Component
      */
     public function codeVoucherByOrder(Voucher $voucher, Order $order, LineItem $lineItem): bool
     {
-        $code = new Code();
-        $code->voucherId = $voucher->id;
-        $code->orderId = $order->id;
-        $code->lineItemId = $lineItem->id;
+        $success = false;
 
-        $code->originalAmount = $lineItem->price;
-        $code->currentAmount = $lineItem->price;
+        try {
+            $code = new Code();
+            $code->voucherId = $voucher->id;
+            $code->orderId = $order->id;
+            $code->lineItemId = $lineItem->id;
 
-        // add the field layout fields
-        $customFields = $this->populateCodeByLineItem($code, $lineItem);
+            $code->originalAmount = $lineItem->price;
+            $code->currentAmount = $lineItem->price;
 
-        // give plugins a chance to change/modify it
-        if ($this->hasEventHandlers(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM)) {
-            $this->trigger(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM, new PopulateCodeFromLineItemEvent([
-                'code'          => $code,
-                'order'         => $order,
-                'lineItem'      => $lineItem,
-                'customFields'  => $customFields,
-                'voucher'       => $voucher
-            ]));
-        }
+            // add the field layout fields
+            $customFields = $this->populateCodeByLineItem($code, $lineItem);
 
-        // TODO: Maybe set the scenario to live to validate the custom fields
-        // we already validate the line item before it can be added to the cart -> they are fine the moment
-        // they are added but what's the proper scenario if a client changes the required fields between creating a
-        // line item and completing the order ¯\_(ツ)_/¯
-        // $code->setScenario(Element::SCENARIO_LIVE);
+            // give plugins a chance to change/modify it
+            if ($this->hasEventHandlers(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM)) {
+                $this->trigger(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM, new PopulateCodeFromLineItemEvent([
+                    'code'          => $code,
+                    'order'         => $order,
+                    'lineItem'      => $lineItem,
+                    'customFields'  => $customFields,
+                    'voucher'       => $voucher
+                ]));
+            }
 
-        $success = Craft::$app->getElements()->saveElement($code);
+            // TODO: Maybe set the scenario to live to validate the custom fields
+            // we already validate the line item before it can be added to the cart -> they are fine the moment
+            // they are added but what's the proper scenario if a client changes the required fields between creating a
+            // line item and completing the order ¯\_(ツ)_/¯
+            // $code->setScenario(Element::SCENARIO_LIVE);
 
-        if (!$success) {
-            GiftVoucher::error(Craft::t('app', 'Unable to save code: “{errors}”.', [
-                'errors' => Json::encode($code->getErrors()),
-            ]));
+            $success = Craft::$app->getElements()->saveElement($code, false);
+
+            if (!$success) {
+                GiftVoucher::error(Craft::t('app', 'Unable to save code: “{errors}”.', [
+                    'errors' => Json::encode($code->getErrors()),
+                ]));
+            }
+        } catch (\Throwable $e) {
+            $error = Craft::t('app', 'Unable to save voucher code for order: “{message}” {file}:{line}', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            GiftVoucher::error($error);
         }
 
         return $success;
@@ -196,23 +208,14 @@ class CodesService extends Component
     public function populateCodeByLineItem(Code $code, LineItem $lineItem): array
     {
         $settings = GiftVoucher::getInstance()->getSettings();
-        $fieldLayoutId = $settings->fieldLayoutId;
+
         $validFields = [];
 
-        if ($settings->fieldLayoutId !== null) {
-            // Set the field layout id
-            $code->fieldLayoutId = $fieldLayoutId;
-            // Grab the options from the lineItems, those may contain the field values
-            $options = $lineItem->getOptions();
+        // Grab the options from the lineItems, those may contain the field values
+        $options = $lineItem->getOptions() ?? [];
 
-            // okay that might seems a little bit creepy but imagine the case the field layout changes
-            // between storing the line item and creating the code or if the user changes the `fieldsPath` setting
-            // we need to make sure the fields inserted in the options contain valid, still existing fields
-            // and only if that's the case we want to set them otherwise users will see exceptions
-            // that's why we loop every valid field in the layout
-            $fieldLayout = $code->getFieldLayout();
-
-            if ($fieldLayout !== null && ($fields = $fieldLayout->getFields())) {
+        if ($fieldLayout = $code->getFieldLayout()) {
+            if ($fields = $fieldLayout->getFields()) {
                 /** @var \craft\base\Field $field */
                 foreach ($fields as $field){
                     $fieldHandle = $field->handle;

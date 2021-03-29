@@ -7,7 +7,7 @@
       "uuidString" : "ECE3F09A-2816-43C6-9715-3F4A30BD28C5"
     }
   ],
-  "creatorBuild" : "34081",
+  "creatorBuild" : "34127",
   "files" : {
     "\/.github" : {
       "ft" : 65536,
@@ -737,6 +737,22 @@
       "hM" : 0,
       "oA" : 2,
       "oAP" : "\/src\/events\/GenerateCodeEvent.php",
+      "oF" : 0
+    },
+    "\/src\/events\/PdfEvent.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/events\/PdfEvent.php",
+      "oF" : 0
+    },
+    "\/src\/events\/PdfRenderOptionsEvent.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/events\/PdfRenderOptionsEvent.php",
       "oF" : 0
     },
     "\/src\/events\/PopulateCodeFromLineItemEvent.php" : {
@@ -3011,6 +3027,9 @@
       "removeVariables" : 0,
       "safelistEntries" : [
 
+      ],
+      "skippedEntries" : [
+        "node_modules\/**"
       ]
     },
     "rollupContext" : "",
@@ -3045,6 +3064,7 @@
     "tsNoImplicitThis" : 0,
     "tsNoImplicitUseStrict" : 0,
     "tsNoLib" : 0,
+    "tsNoPropertyAccessFromIndexSignature" : 0,
     "tsNoResolve" : 0,
     "tsNoStrictGenericChecks" : 0,
     "tsNoUncheckedIndexAccess" : 0,
