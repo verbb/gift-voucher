@@ -270,6 +270,10 @@ class GiftVoucher extends Plugin
                 $event->types[] = GiftVoucherAdjuster::class;
             }
         });
+
+        Event::on(OrderAdjustments::class, OrderAdjustments::EVENT_REGISTER_DISCOUNT_ADJUSTERS, function(RegisterComponentTypesEvent $event) {
+            $event->types[] = GiftVoucherAdjuster::class;
+        });
     }
 
     private function _registerVariable()
