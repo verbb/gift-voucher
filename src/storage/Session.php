@@ -54,7 +54,7 @@ class Session extends Component implements CodeStorageInterface
             $codeKeys[] = $code->codeKey;
             $codeKeys = array_unique($codeKeys);
 
-            Craft::$app->getSession()->set(self::CODE_KEY, $codeKeys);
+            Craft::$app->getSession()->set($this->_getCacheKey($order), $codeKeys);
 
             return true;
         }
@@ -89,7 +89,7 @@ class Session extends Component implements CodeStorageInterface
                 }
             }
 
-            Craft::$app->getSession()->set(self::CODE_KEY, $codeKeys);
+            Craft::$app->getSession()->set($this->_getCacheKey($order), $codeKeys);
         }
 
         return $success;
@@ -109,7 +109,7 @@ class Session extends Component implements CodeStorageInterface
     public function getCodeKeys(Order $order): array
     {
         if ($this->_isActive() === true) {
-            return Craft::$app->getSession()->get(self::CODE_KEY, []);
+            return Craft::$app->getSession()->get($this->_getCacheKey($order), []);
         }
 
         return [];
@@ -165,7 +165,7 @@ class Session extends Component implements CodeStorageInterface
                 }
             }
 
-            Craft::$app->getSession()->set(self::CODE_KEY, $codeKeys);
+            Craft::$app->getSession()->set($this->_getCacheKey($order), $codeKeys);
         }
 
         return $success;
@@ -187,6 +187,11 @@ class Session extends Component implements CodeStorageInterface
     private function _isActive(): bool
     {
         return $this->request->getIsConsoleRequest() === false && Craft::$app->getSession()->getIsActive();
+    }
+
+    private function _getCacheKey($order): string
+    {
+        return self::CODE_KEY . ':' . $order->id;
     }
     
 }
