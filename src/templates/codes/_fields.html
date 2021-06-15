@@ -74,7 +74,7 @@
     <table id="fields" class="data fullwidth collapsible">
         <thead>
             <tr>
-                <th scope="col">{{ 'Order' | t('gift-voucher') }}</th>
+                <th scope="col">{{ 'Restaurant' | t('gift-voucher') }}</th>
                 <th scope="col">{{ 'Date' | t('gift-voucher') }}</th>
                 <th scope="col">{{ 'Amount Redeemed' | t('gift-voucher') }}</th>
             </tr>
@@ -83,19 +83,15 @@
             {% for redemption in code.getRedemptions() %}
                 <tr>
                     <td>
-                        {{ redemption.getOrder().getLink() | raw }}
+                        {{ redemption.getRestaurant().getLink() | raw }}
                     </td>
 
                     <td>
-                        {{ redemption.getOrder().dateOrdered | date('Y-m-d H:i:s') }}
+                        {{ redemption.dateCreated | date('Y-m-d H:i:s') }}
                     </td>
 
                     <td class="nowrap" width="10%">
-                        {{ redemption.amount|commerceCurrency(
-                            redemption.getOrder().currency,
-                            convert=true
-                            )
-                        }}
+                        ${{ redemption.amount }}
                     </td>
                 </tr>
             {% endfor %}
