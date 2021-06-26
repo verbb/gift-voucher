@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Add `EVENT_BEFORE_MATCH_CODE` event for adding custom code matching logic
+
 ## 2.5.9 - 2021-03-29
 
 ### Added
