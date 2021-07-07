@@ -154,9 +154,9 @@ class PdfService extends Component
         $dompdfFontCache = $pathService->getCachePath() . DIRECTORY_SEPARATOR . 'gift_voucher_dompdf';
         $dompdfLogFile = $pathService->getLogPath() . DIRECTORY_SEPARATOR . 'gift_voucher_dompdf.htm';
 
-        // Should throw an error if not writable
-        FileHelper::isWritable($dompdfTempDir);
-        FileHelper::isWritable($dompdfLogFile);
+        // Ensure directories are created
+        FileHelper::createDirectory($dompdfTempDir);
+        FileHelper::createDirectory($dompdfFontCache);
 
         if (!FileHelper::isWritable($dompdfLogFile)) {
             throw new ErrorException("Unable to write to file: $dompdfLogFile");
