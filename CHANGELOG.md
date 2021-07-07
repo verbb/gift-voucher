@@ -1,9 +1,14 @@
 # Changelog
 
-## Unreleased
+## 2.5.10 - 2021-07-08
 
 ### Added
-- Add `EVENT_BEFORE_MATCH_CODE` event for adding custom code matching logic
+- Add `EVENT_BEFORE_MATCH_CODE` event for adding custom code matching logic. (thanks @superbigco).
+
+### Fixed
+- Fix an error when generating PDFs and custom fonts, where the temporary folder isn’t writable (or created).
+- Ensure we register the discount adjuster via `EVENT_REGISTER_DISCOUNT_ADJUSTERS` to fix some compatibility issues.
+- Fix vouchers being applied to new orders, when creating new orders in the control panel.
 
 ## 2.5.9 - 2021-03-29
 
