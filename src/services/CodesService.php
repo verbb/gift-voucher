@@ -1,6 +1,7 @@
 <?php
 namespace verbb\giftvoucher\services;
 
+use verbb\giftvoucher\events\MatchCodeEvent;
 use verbb\giftvoucher\events\PopulateCodeFromLineItemEvent;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
@@ -26,6 +27,11 @@ use yii\base\ModelEvent;
 
 class CodesService extends Component
 {
+    // Constants
+    // =========================================================================
+
+    const EVENT_BEFORE_MATCH_CODE = 'beforeMatchCode';
+
     /**
      * This event is fired when a new Code is created after an order is complete
      * to give users a chance to modify the field layout
@@ -277,6 +283,20 @@ class CodesService extends Component
     public function matchCode($codeKey, &$error = '')
     {
         $code = Code::findOne(['codeKey' => $codeKey]);
+
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_MATCH_CODE)) {
+            $event = new MatchCodeEvent([
+                'code' => $code,
+                'codeKey' => $codeKey,
+            ]);
+            $this->trigger(self::EVENT_BEFORE_MATCH_CODE, $event);
+
+            if (!empty($event->error)) {
+                $error = $event->error;
+
+                return false;
+            }
+        }
 
         // Check if valid
         if (!$code) {
