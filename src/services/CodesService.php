@@ -1,12 +1,13 @@
 <?php
 namespace verbb\giftvoucher\services;
 
-use verbb\giftvoucher\events\MatchCodeEvent;
-use verbb\giftvoucher\events\PopulateCodeFromLineItemEvent;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
+use verbb\giftvoucher\adjusters\GiftVoucherShippingAdjuster;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\events\MatchCodeEvent;
+use verbb\giftvoucher\events\PopulateCodeFromLineItemEvent;
 use verbb\giftvoucher\models\RedemptionModel;
 
 use Craft;
@@ -82,39 +83,50 @@ class CodesService extends Component
             $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
 
             if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
-                foreach ($order->getAdjustments() as $adjustment) {
-                    if ($adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE) {
-                        $code = null;
+                $redeemedCodes = [];
 
+                foreach ($order->getAdjustments() as $adjustment) {
+                    // A single redemption can be split over shipping and a discount which is annoying.
+                    // We combine the (potential) shipping discount and regular discount which use the same code
+                    // so that we're not redeeming a single voucher multiple times. We want to ensure the price is correct.
+                    if ($adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE || $adjustment->type === GiftVoucherShippingAdjuster::ADJUSTMENT_TYPE) {
                         if (isset($adjustment->sourceSnapshot['codeKey'])) {
                             $codeKey = $adjustment->sourceSnapshot['codeKey'];
-                            $code = Code::findOne(['codeKey' => $codeKey]);
-                        }
-
-                        if ($code) {
-                            $code->currentAmount += $adjustment->amount;
-                            Craft::$app->getElements()->saveElement($code, false);
-
-                            // Track code redemption
-                            $redemption = new RedemptionModel();
-                            $redemption->codeId = $code->id;
-                            $redemption->orderId = $order->id;
-                            $redemption->amount = (float)$adjustment->amount * -1;
                             
-                            if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
-                                $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
-                                    'errors' => Json::encode($redemption->getErrors()),
-                                ]);
+                            // Accumulate the total amount for the discount, shipping discount + discount.
+                            if ($code = Code::findOne(['codeKey' => $codeKey])) {
+                                $redeemedCodes[$codeKey]['code'] = $code;
 
-                                GiftVoucher::error($error);
+                                if (isset($redeemedCodes[$codeKey]['amount'])) {
+                                    $redeemedCodes[$codeKey]['amount'] += $adjustment->amount;
+                                } else {
+                                    $redeemedCodes[$codeKey]['amount'] = $adjustment->amount;
+                                }
                             }
-                        } else {
-                            $error = Craft::t('app', 'Unable to find matching code in adjustment snapshot: “{adjustment}”.', [
-                                'adjustment' => Json::encode($adjustment),
-                            ]);
-
-                            GiftVoucher::error($error);
                         }
+                    }
+                }
+
+                // With the consolidated codes with the correct amount, track redemption for each code
+                foreach ($redeemedCodes as $codeKey => $redeemedCode) {
+                    $code = $redeemedCode['code'];
+                    $amount = $redeemedCode['amount'];
+
+                    $code->currentAmount += $amount;
+                    Craft::$app->getElements()->saveElement($code, false);
+
+                    // Track code redemption
+                    $redemption = new RedemptionModel();
+                    $redemption->codeId = $code->id;
+                    $redemption->orderId = $order->id;
+                    $redemption->amount = (float)$amount * -1;
+                    
+                    if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
+                        $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
+                            'errors' => Json::encode($redemption->getErrors()),
+                        ]);
+
+                        GiftVoucher::error($error);
                     }
                 }
 

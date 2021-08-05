@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.6.0 - Unreleased
+
+### Changed
+- Major refactor of discount adjuster, which is used when applying a voucher code on an order. This change fixes a few issues with Commerce 3.4+.
+- Discounts are now spread over all line items, when applying a voucher code. This is inline with Craft Commerce's discount adjusters are handled.
+- Now requires Craft Commerce 3.4+.
+
+### Fixed
+- Fixed duplicate discounts being applied to orders when redeeming a code, in some instances.
+- Fixed some cases when tax on a shipping method was being charged, despite the discount being applied to a shipping methods' cost.
+
 ## 2.5.10 - 2021-07-08
 
 ### Added
