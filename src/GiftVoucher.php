@@ -263,17 +263,14 @@ class GiftVoucher extends Plugin
             $taxKey = array_search(Tax::class, $event->types);
 
             if ($taxKey) {
+                array_splice($types, $taxKey, 0, GiftVoucherAdjuster::class);
                 array_splice($types, $taxKey, 0, GiftVoucherShippingAdjuster::class);
             } else {
+                $types[] = GiftVoucherAdjuster::class;
                 $types[] = GiftVoucherShippingAdjuster::class;
             }
 
             $event->types = $types;
-        });
-
-        // Apply the discount adjuster normally, where it should go in adjuster order.
-        Event::on(OrderAdjustments::class, OrderAdjustments::EVENT_REGISTER_DISCOUNT_ADJUSTERS, function(RegisterComponentTypesEvent $event) {
-            $event->types[] = GiftVoucherAdjuster::class;
         });
     }
 

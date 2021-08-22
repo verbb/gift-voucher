@@ -8,7 +8,7 @@ class GiftVoucherAdjuster extends BaseAdjuster
     // Constants
     // =========================================================================
 
-    const ADJUSTMENT_TYPE = 'discount';
+    const ADJUSTMENT_TYPE = 'voucher';
 
 
     // Public Methods
@@ -16,7 +16,7 @@ class GiftVoucherAdjuster extends BaseAdjuster
 
     public function initTotal(Order $order): bool
     {
-        $this->_total = $order->getTotalPrice();
+        $this->_total = $order->getItemTotal();
 
         return true;
     }
