@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.6.0 - Unreleased
+## 2.6.0 - 2021-08-22
 
 ### Changed
 - Major refactor of discount adjuster, which is used when applying a voucher code on an order. This change fixes a few issues with Commerce 3.4+.
