@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.6.1 - 2021-08-23
+
+### Fixed
+- Fix shipping discount being applied when total amount already redeemed (introduced in 2.6.0).
+
 ## 2.6.0 - 2021-08-22
 
 ### Changed
