@@ -33,7 +33,7 @@ class GiftVoucherShippingAdjuster extends BaseAdjuster
         $discountAmount = 0;
 
         foreach ($order->getAdjustments() as $adjustment) {
-            if ($adjustment->type === 'discount') {
+            if ($adjustment->type === 'voucher') {
                 // Check for multiple codes, that this matches the correct one
                 $codeKey = $adjustment->sourceSnapshot['codeKey'] ?? '';
 
