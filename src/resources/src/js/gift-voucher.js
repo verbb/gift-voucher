@@ -20,8 +20,6 @@ Craft.GiftVoucher.CpAddVoucher = Garnish.Base.extend({
     init: function(orderNumber) {
         this.orderNumber = orderNumber;
 
-        console.log('tse')
-
         // Find the settings menubtn, and add a new option to it
         var $menubtn = $('.menubtn[data-icon="settings"]').data('menubtn');
 
