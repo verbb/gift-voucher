@@ -32,7 +32,7 @@ return [
 - `pdfPaperSize` - Sets the paper size for the PDF.
 - `pdfPaperOrientation` - Sets the paper orientation for the PDF.
 - `registerAdjuster` - Controls when the adjuster should be applied. Valid options are `beforeTax` (default) and `afterTax`.
-- `attachPdfToEmails` - A collection of Commerce Email UIDs that Gift Voucher should automatically attache the voucher PDF to.
+- `attachPdfToEmails` - A collection of Commerce Email UIDs that Gift Voucher should automatically attach the voucher PDF to.
 
 ## Control Panel
 

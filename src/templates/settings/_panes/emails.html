@@ -35,6 +35,12 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% if craft.app.config.getConfigFromFile('gift-voucher')['attachPdfToEmails'] is defined %}
+        <p class="warning with-icon">
+            {{ macros.configWarning('attachPdfToEmails', 'gift-voucher') | md | striptags('<code>') | raw }}
+        </p>
+    {% endif %}
 {% else %}
     <div class="zilch">{{ 'No Commerce emails yet.' | t('gift-voucher') }}</div>
 {% endif %}
