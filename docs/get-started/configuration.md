@@ -34,6 +34,16 @@ return [
 - `registerAdjuster` - Controls when the adjuster should be applied. Valid options are `beforeTax` (default) and `afterTax`.
 - `attachPdfToEmails` - A collection of Commerce Email UIDs that Gift Voucher should automatically attach the voucher PDF to.
 
+#### `attachPdfToEmails`
+To populate the `attachPdfToEmails` setting, you'll need the UIDs of Commerce Emails. To determine these, create your Commerce emails, then look up the `commerce_emails` table in your database. Use the values in the `uid` column in an array, passing `true/false` as to whether the PDF should be attached to the email. For example:
+
+```php
+'attachPdfToEmails' => [
+    'a27c0c16-71c8-422f-a09f-094264876319' => false,
+    'd0b374ad-4394-48ea-8ecb-f0efc0bfeec5' => true,
+],
+```
+
 ## Control Panel
 
 You can also manage configuration settings through the Control Panel by visiting Settings → Gift Voucher.
