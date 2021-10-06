@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.2 - 2021-10-06
+
+### Fixed
+- Fix when attaching the PDF to an email, clears the body content of the email.
+- Fix an override warning message not showing for the `attachPdfToEmails` config setting in the control panel.
+- Fix debug console output in the control panel.
+
 ## 2.6.1 - 2021-08-23
 
 ### Fixed
