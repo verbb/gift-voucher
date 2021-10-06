@@ -109,6 +109,11 @@ class VouchersService extends Component
 
             $event->craftEmail->attach($pdfPath, ['fileName' => $fileName . '.pdf', 'contentType' => 'application/pdf']);
 
+            // Fix a bug with SwiftMailer where setting an attachment clears out the body of the email!
+            $body = $event->craftEmail->getSwiftMessage()->getBody();
+            $event->craftEmail->setHtmlBody($body);
+            $event->craftEmail->setTextBody($body);
+
             // Store for later
             $this->_pdfPaths[] = $pdfPath;
         } catch (\Throwable $e) {
