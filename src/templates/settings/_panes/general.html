@@ -2,7 +2,7 @@
 {% import 'verbb-base/_macros' as macros %}
 
 {% set months = [{ label: 'No expiry' | t('gift-voucher'), value: 0 }] %}
-{% for i in range(1, 24) %}
+{% for i in range(1, 36) %}
     {% set months = months | merge([{ label: i, value: i }]) %}
 {% endfor %}
 
