@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.6.3 - 2021-10-30
+
+### Changed
+- Extend voucher expiry from 24 to 36 months.
+
 ## 2.6.2 - 2021-10-06
 
 ### Fixed
