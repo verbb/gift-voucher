@@ -86,22 +86,19 @@ class CodesService extends Component
                 $redeemedCodes = [];
 
                 foreach ($order->getAdjustments() as $adjustment) {
-                    // A single redemption can be split over shipping and a discount which is annoying.
-                    // We combine the (potential) shipping discount and regular discount which use the same code
-                    // so that we're not redeeming a single voucher multiple times. We want to ensure the price is correct.
-                    if ($adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE || $adjustment->type === GiftVoucherShippingAdjuster::ADJUSTMENT_TYPE) {
-                        if (isset($adjustment->sourceSnapshot['codeKey'])) {
-                            $codeKey = $adjustment->sourceSnapshot['codeKey'];
-                            
-                            // Accumulate the total amount for the discount, shipping discount + discount.
-                            if ($code = Code::findOne(['codeKey' => $codeKey])) {
-                                $redeemedCodes[$codeKey]['code'] = $code;
+                    $isVoucherCode = $adjustment->sourceSnapshot['giftVoucherPluginCode'] ?? null;
+                    $codeKey = $adjustment->sourceSnapshot['codeKey'] ?? null;
 
-                                if (isset($redeemedCodes[$codeKey]['amount'])) {
-                                    $redeemedCodes[$codeKey]['amount'] += $adjustment->amount;
-                                } else {
-                                    $redeemedCodes[$codeKey]['amount'] = $adjustment->amount;
-                                }
+                    // Check if this is a gift voucher adjustment redemption
+                    if ($isVoucherCode && $codeKey) {
+                        // Accumulate the total amount for the discount, shipping discount + discount.
+                        if ($code = Code::findOne(['codeKey' => $codeKey])) {
+                            $redeemedCodes[$codeKey]['code'] = $code;
+
+                            if (isset($redeemedCodes[$codeKey]['amount'])) {
+                                $redeemedCodes[$codeKey]['amount'] += $adjustment->amount;
+                            } else {
+                                $redeemedCodes[$codeKey]['amount'] = $adjustment->amount;
                             }
                         }
                     }

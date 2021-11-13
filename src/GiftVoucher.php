@@ -1,6 +1,7 @@
 <?php
 namespace verbb\giftvoucher;
 
+use verbb\giftvoucher\adjusters\GiftVoucherAdjusterNew;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\adjusters\GiftVoucherShippingAdjuster;
 use verbb\giftvoucher\assetbundles\GiftVoucherAsset;
@@ -251,34 +252,7 @@ class GiftVoucher extends Plugin
     private function _registerAdjusters()
     {
         Event::on(OrderAdjustments::class, OrderAdjustments::EVENT_REGISTER_ORDER_ADJUSTERS, function(RegisterComponentTypesEvent $event) {
-            $settings = $this->getSettings();
-            $types = $event->types;
-
-            // Because of how discount adjusters work, we can't modify the shipping value, which in almost
-            // all cases, we want to include. The regular discount adjuster will take care of the total
-            // item value just fine, but won't effect the shipping. We need to create another (duplicate)
-            // adjuster that provides a discount against the shipping amount, but as a shipping adjuster
-            // (not a discount adjuster). This then subtracts the shipping amount from the voucher.
-
-            // Insert our shipping adjuster after regular discounts, before Tax.
-            if ($settings->registerAdjuster === 'beforeTax') {
-                // Find the Tax adjuster, it should go before that, but if its not found (Commerce Lite), append
-                $taxKey = array_search(Tax::class, $event->types);
-
-                // Watch the order - shipping adjuster after discount adjuster (but note we're splicing)
-                if ($taxKey) {
-                    array_splice($types, $taxKey, 0, GiftVoucherShippingAdjuster::class);
-                    array_splice($types, $taxKey, 0, GiftVoucherAdjuster::class);
-                } else {
-                    $types[] = GiftVoucherShippingAdjuster::class;
-                    $types[] = GiftVoucherAdjuster::class;
-                }
-            } elseif ($settings->registerAdjuster === 'afterTax') {
-                $types[] = GiftVoucherShippingAdjuster::class;
-                $types[] = GiftVoucherAdjuster::class;
-            }
-
-            $event->types = $types;
+            $event->types[] = GiftVoucherAdjusterNew::class;
         });
     }
 
