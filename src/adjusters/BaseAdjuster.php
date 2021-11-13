@@ -68,12 +68,9 @@ class BaseAdjuster extends Component implements AdjusterInterface
             $discounts = Commerce::getInstance()->getDiscounts()->getAllDiscounts();
 
             foreach ($discounts as $discount) {
-                // Is this discount set to stop processing?
-                if ($discount->stopProcessing) {
-                    // Is this discount applied on the order?
-                    if ($order->couponCode && (strcasecmp($order->couponCode, $discount->code) == 0)) {
-                        return [];
-                    }
+                // Is this discount applied on the order?
+                if ($order->couponCode && (strcasecmp($order->couponCode, $discount->code) == 0)) {
+                    return [];
                 }
             }
         }
