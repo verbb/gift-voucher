@@ -18,6 +18,10 @@ use verbb\giftvoucher\variables\GiftVoucherVariable;
 
 use Craft;
 use craft\base\Plugin;
+use craft\console\Application as ConsoleApplication;
+use craft\console\Controller as ConsoleController;
+use craft\console\controllers\ResaveController;
+use craft\events\DefineConsoleActionsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
@@ -86,6 +90,7 @@ class GiftVoucher extends Plugin
         $this->_registerCraftEventListeners();
         $this->_registerProjectConfigEventListeners();
         $this->_defineFieldLayoutElements();
+        $this->_registerResaveCommand();
     }
 
     public function afterInstall()
@@ -331,6 +336,35 @@ class GiftVoucher extends Plugin
                     $e->fields[] = TitleField::class;
                     break;
             }
+        });
+    }
+
+    private function _registerResaveCommand()
+    {
+        if (!Craft::$app instanceof ConsoleApplication) {
+            return;
+        }
+
+        Event::on(ResaveController::class, ConsoleController::EVENT_DEFINE_ACTIONS, function(DefineConsoleActionsEvent $e) {
+            $e->actions['gift-voucher-vouchers'] = [
+                'action' => function(): int {
+                    $controller = Craft::$app->controller;
+                    $query = Voucher::find();
+                    return $controller->saveElements($query);
+                },
+                'options' => [],
+                'helpSummary' => 'Re-saves Gift Voucher vouchers.',
+            ];
+
+            $e->actions['gift-voucher-codes'] = [
+                'action' => function(): int {
+                    $controller = Craft::$app->controller;
+                    $query = Code::find();
+                    return $controller->saveElements($query);
+                },
+                'options' => [],
+                'helpSummary' => 'Re-saves Gift Voucher codes.',
+            ];
         });
     }
 
