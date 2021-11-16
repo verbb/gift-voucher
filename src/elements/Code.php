@@ -224,6 +224,15 @@ class Code extends Element
         return null;
     }
 
+    public function getOrderReference()
+    {
+        if ($order = $this->getOrder()) {
+            return $order->reference;
+        }
+
+        return null;
+    }
+
     public function getLineItem()
     {
         if ($this->_lineItem) {
@@ -377,7 +386,7 @@ class Code extends Element
 
     protected static function defineSearchableAttributes(): array
     {
-        return ['voucherName', 'codeKey'];
+        return ['voucherName', 'codeKey', 'orderReference'];
     }
 
     protected function tableAttributeHtml(string $attribute): string
