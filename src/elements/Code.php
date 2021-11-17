@@ -398,6 +398,13 @@ class Code extends Element
 
                 return '-';
             }
+            case 'voucherType': {
+                if ($this->getVoucherType()) {
+                    return '<a href="' . $this->getVoucherType()->getCpEditUrl() . '">' . $this->getVoucherType()->name . '</a>';
+                }
+
+                return '';
+            }
             case 'orderLink': {
 
                 if ($this->getOrder()) {
