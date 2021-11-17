@@ -79,20 +79,19 @@ class Code extends Element
             $voucherTypeIds[] = $voucherType->id;
         }
 
-        $sources = [
-            '*' => [
-                'label' => Craft::t('gift-voucher', 'All voucher types'),
-                'criteria' => ['typeId' => $voucherTypeIds],
-                'defaultSort' => ['dateCreated', 'desc']
-            ]
-        ];
+        $sources = [[
+            'key' => '*',
+            'label' => Craft::t('gift-voucher', 'All voucher types'),
+            'criteria' => ['typeId' => $voucherTypeIds],
+            'defaultSort' => ['dateCreated', 'desc']
+        ]];
 
         $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
 
         foreach ($voucherTypes as $voucherType) {
             $key = 'voucherType:' . $voucherType->id;
 
-            $sources[$key] = [
+            $sources[] = [
                 'key' => $key,
                 'label' => $voucherType->name,
                 'data' => [
