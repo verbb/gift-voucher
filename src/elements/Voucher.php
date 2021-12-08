@@ -487,7 +487,7 @@ class Voucher extends Purchasable
 
     public function getPrice(): float
     {
-        return $this->price;
+        return floatval($this->price);
     }
 
     public function getSku(): string
