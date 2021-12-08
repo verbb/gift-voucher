@@ -29,7 +29,6 @@ class GiftVoucherAdjusterNew extends Component implements AdjusterInterface
     // Properties
     // =========================================================================
 
-    // protected $_total;
     const ADJUSTMENT_TYPE = 'voucher';
 
 
@@ -66,83 +65,22 @@ class GiftVoucherAdjusterNew extends Component implements AdjusterInterface
             return [];
         }
 
-        // In order to properly discount the order's total, we need to negate 3 things, the line items
-        // (which includes any core discounts already negated), any non-included Tax, and Shipping.
-        // It would be SO much easier to just be able to take an amount off the order total, but we end up
-        // with a strange UI that still shows the values for adjusters, despite the order being $0.
-        // This also gets complicated with other taxes too (tax on shipping).
-
-        // Save a flag on each adjustment to track that this is a Gift Voucher adjustment
-        // because each snapshot's type is set to each core adjuster, so not an easy way to track
-        // what is a Gift Voucher adjuster later on in the process when it comes to tracking redemptions.
         $sourceSnapshot = $voucherCode->attributes;
         $sourceSnapshot['giftVoucherPluginCode'] = true;
 
-        $itemSubTotal = $order->getItemSubtotal();
-        $discountTotal = $order->getTotalDiscount();
+        $voucherAmount = ($order->total >= $totalAvailableVoucher) ? $totalAvailableVoucher : $order->total;
 
-        // Get the total line item amount for the order (includes any discounts already applied)
-        // And start with discounting that before moving on to discounting shipping and tax.
-        $itemTotal = ($itemSubTotal + $discountTotal);
+        $adjustment = new OrderAdjustment;
+        $adjustment->name = 'Gift Voucher';
+        $adjustment->amount = -$voucherAmount;
+        $adjustment->orderId = $order->id;
+        $adjustment->type = self::ADJUSTMENT_TYPE;
+        $adjustment->sourceSnapshot = $sourceSnapshot;
+        $adjustment->description = Craft::t('gift-voucher', 'Gift Voucher discount using code {code}', [
+            'code' => $voucherCode->codeKey,
+        ]);
 
-        if ($itemTotal) {
-            $voucherAmount = ($itemTotal >= $totalAvailableVoucher) ? $totalAvailableVoucher : $itemTotal;
-            $totalAvailableVoucher -= $voucherAmount;
-
-            if ($voucherAmount) {
-                $adjustment = new OrderAdjustment;
-                $adjustment->name = $voucherCode->getVoucher()->title;
-                $adjustment->amount = -$voucherAmount;
-                $adjustment->orderId = $order->id;
-                $adjustment->type = Discount::ADJUSTMENT_TYPE;
-                $adjustment->sourceSnapshot = $sourceSnapshot;
-                $adjustment->description = Craft::t('gift-voucher', 'Gift Voucher discount using code {code}', [
-                    'code' => $voucherCode->codeKey,
-                ]);
-
-                $adjustments[] = $adjustment;
-            }
-        }
-
-        // Handle discounting shipping next, if there's any more amount on the voucher
-        $shippingAdjusters = $order->getAdjustmentsByType(Shipping::ADJUSTMENT_TYPE);
-
-        foreach ($shippingAdjusters as $shippingAdjuster) {
-            $shippingTotal = $shippingAdjuster->amount;
-            $shippingAmount = ($shippingTotal >= $totalAvailableVoucher) ? $totalAvailableVoucher : $shippingTotal;
-            $totalAvailableVoucher -= $shippingAmount;
-
-            if ($shippingAmount) {
-                $adjustment = new OrderAdjustment;
-                $adjustment->name = Craft::t('gift-voucher', '{name} Removed', ['name' => $shippingAdjuster->name]);
-                $adjustment->amount = -$shippingAmount;
-                $adjustment->orderId = $order->id;
-                $adjustment->type = Shipping::ADJUSTMENT_TYPE;
-                $adjustment->sourceSnapshot = $sourceSnapshot;
-                
-                $adjustments[] = $adjustment;
-            }
-        }
-
-        // Finally do the same thing with un-included tax
-        $taxAdjusters = $order->getAdjustmentsByType(Tax::ADJUSTMENT_TYPE);
-
-        foreach ($taxAdjusters as $taxAdjuster) {
-            $taxTotal = $taxAdjuster->amount;
-            $taxAmount = ($taxTotal >= $totalAvailableVoucher) ? $totalAvailableVoucher : $taxTotal;
-            $totalAvailableVoucher -= $taxAmount;
-
-            if ($taxAmount) {
-                $adjustment = new OrderAdjustment;
-                $adjustment->name = Craft::t('gift-voucher', '{name} Removed', ['name' => $taxAdjuster->name]);
-                $adjustment->amount = -$taxAmount;
-                $adjustment->orderId = $order->id;
-                $adjustment->type = Tax::ADJUSTMENT_TYPE;
-                $adjustment->sourceSnapshot = $sourceSnapshot;
-
-                $adjustments[] = $adjustment;
-            }
-        }
+        $adjustments[] = $adjustment;
 
         // Raise the 'afterVoucherAdjustmentsCreated' event
         $event = new VoucherAdjustmentsEvent([
