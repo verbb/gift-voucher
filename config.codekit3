@@ -691,6 +691,14 @@
       "oAP" : "\/src\/adjusters\/GiftVoucherAdjuster.php",
       "oF" : 0
     },
+    "\/src\/adjusters\/GiftVoucherAdjusterNew.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 2,
+      "oAP" : "\/src\/adjusters\/GiftVoucherAdjusterNew.php",
+      "oF" : 0
+    },
     "\/src\/adjusters\/GiftVoucherShippingAdjuster.php" : {
       "cB" : 0,
       "ft" : 8192,

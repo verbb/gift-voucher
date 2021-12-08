@@ -184,7 +184,7 @@ Craft.GiftVoucher.VoucherIndex = Craft.BaseElementIndex.extend({
         var newVoucherBtnText = this.$newVoucherBtn.text();
         this.$newVoucherBtn.text(Craft.t('gift-voucher', 'New {voucherType} voucher', { voucherType: voucherType.name }));
 
-        new Craft.ElementEditor({
+        Craft.createElementEditor(this.elementType, {
             hudTrigger: this.$newVoucherBtnGroup,
             elementType: elementTypeClass,
             siteId: this.siteId,
