@@ -3,7 +3,6 @@ namespace verbb\giftvoucher\services;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
-use verbb\giftvoucher\adjusters\GiftVoucherShippingAdjuster;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\events\MatchCodeEvent;
@@ -83,47 +82,39 @@ class CodesService extends Component
             $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
 
             if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
-                $redeemedCodes = [];
-
                 foreach ($order->getAdjustments() as $adjustment) {
-                    $isVoucherCode = $adjustment->sourceSnapshot['giftVoucherPluginCode'] ?? null;
-                    $codeKey = $adjustment->sourceSnapshot['codeKey'] ?? null;
+                    if ($adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE) {
+                        $code = null;
 
-                    // Check if this is a gift voucher adjustment redemption
-                    if ($isVoucherCode && $codeKey) {
-                        // Accumulate the total amount for the discount, shipping discount + discount.
-                        if ($code = Code::findOne(['codeKey' => $codeKey])) {
-                            $redeemedCodes[$codeKey]['code'] = $code;
-
-                            if (isset($redeemedCodes[$codeKey]['amount'])) {
-                                $redeemedCodes[$codeKey]['amount'] += $adjustment->amount;
-                            } else {
-                                $redeemedCodes[$codeKey]['amount'] = $adjustment->amount;
-                            }
+                        if (isset($adjustment->sourceSnapshot['codeKey'])) {
+                            $codeKey = $adjustment->sourceSnapshot['codeKey'];
+                            $code = Code::findOne(['codeKey' => $codeKey]);
                         }
-                    }
-                }
 
-                // With the consolidated codes with the correct amount, track redemption for each code
-                foreach ($redeemedCodes as $codeKey => $redeemedCode) {
-                    $code = $redeemedCode['code'];
-                    $amount = $redeemedCode['amount'];
+                        if ($code) {
+                            $code->currentAmount += $adjustment->amount;
+                            Craft::$app->getElements()->saveElement($code, false);
 
-                    $code->currentAmount += $amount;
-                    Craft::$app->getElements()->saveElement($code, false);
+                            // Track code redemption
+                            $redemption = new RedemptionModel();
+                            $redemption->codeId = $code->id;
+                            $redemption->orderId = $order->id;
+                            $redemption->amount = (float)$adjustment->amount * -1;
+                            
+                            if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
+                                $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
+                                    'errors' => Json::encode($redemption->getErrors()),
+                                ]);
 
-                    // Track code redemption
-                    $redemption = new RedemptionModel();
-                    $redemption->codeId = $code->id;
-                    $redemption->orderId = $order->id;
-                    $redemption->amount = (float)$amount * -1;
-                    
-                    if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
-                        $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
-                            'errors' => Json::encode($redemption->getErrors()),
-                        ]);
+                                GiftVoucher::error($error);
+                            }
+                        } else {
+                            $error = Craft::t('app', 'Unable to find matching code in adjustment snapshot: “{adjustment}”.', [
+                                'adjustment' => Json::encode($adjustment),
+                            ]);
 
-                        GiftVoucher::error($error);
+                            GiftVoucher::error($error);
+                        }
                     }
                 }
 
