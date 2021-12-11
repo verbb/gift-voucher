@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.7.0 - 2021-12-12
+
+### Added
+- Added `resave/gift-voucher-codes` and `resave/gift-voucher-vouchers` console commands.
+- Added `orderReference` to the searchable attributes for voucher codes.
+
+### Changed
+- Reverted adjuster behaviour back to 2.5.x version, fixing many issues.
+- Voucher adjusters not use a `voucher` type instead of `discount` to fix many issues.
+
+### Fixed
+- Fix an error when clicking "New voucher" when adding a voucher in the Bulk Generate Codes function.
+- Fix a hard-error shown when saving a voucher with no price.
+- Fix "Voucher Type" column not displaying correctly for the codes element index.
+- Fix "All voucher types" not appearing in the control panel for codes element index.
+
 ## 2.6.3 - 2021-10-30
 
 ### Changed
