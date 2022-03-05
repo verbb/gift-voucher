@@ -45,9 +45,9 @@ class Code extends Element
     public ?float $currentAmount = null;
     public ?DateTime $expiryDate = null;
 
-    private ?Voucher $_voucher;
-    private ?Order $_order;
-    private ?LineItem $_lineItem;
+    private ?Voucher $_voucher = null;
+    private ?Order $_order = null;
+    private ?LineItem $_lineItem = null;
 
 
     // Public Methods

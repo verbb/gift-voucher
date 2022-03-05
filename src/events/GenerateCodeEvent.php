@@ -11,6 +11,6 @@ class GenerateCodeEvent extends Event
     // =========================================================================
 
     public Code $code;
-    public string $codeKey;
+    public ?string $codeKey = null;
 
 }

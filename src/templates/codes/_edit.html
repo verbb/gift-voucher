@@ -69,7 +69,6 @@
             {% include 'gift-voucher/codes/_fields' %}
         </div>
 
-        {# include the field layout :) #}
         {% for tab in code.getFieldLayout().getTabs() %}
             <div id="{{ tab.getHtmlId() }}" class="flex-fields hidden">
                 {% for formElement in tab.elements %}
@@ -87,14 +86,14 @@
             id: 'expiryDate',
             name: 'expiryDate',
             value: code.expiryDate,
-            errors: code.getErrors('expiryDate')
+            errors: code.getErrors('expiryDate'),
         }) }}
 
         {{ forms.lightswitchField({
             label: 'Enabled' | t('gift-voucher'),
             id: 'enabled',
             name: 'enabled',
-            on: code.enabled
+            on: code.enabled,
         }) }}
 
         {% if craft.app.getIsMultiSite() %}
@@ -102,7 +101,7 @@
                 label: 'Enabled for site' | t('gift-voucher'),
                 id: 'enabledForSite',
                 name: 'enabledForSite',
-                on: code.enabledForSite
+                on: code.enabledForSite,
             }) }}
         {% endif %}
     </div>
@@ -121,7 +120,7 @@
         {% endif %}
 
         {{ forms.field({
-            label: 'Voucher' | t('gift-voucher')
+            label: 'Voucher' | t('gift-voucher'),
         }, voucherInput) }}
 
         {% if code.getVoucherType() %}
@@ -135,7 +134,7 @@
         {% endif %}
 
         {{ forms.field({
-            label: 'Voucher Type' | t('gift-voucher')
+            label: 'Voucher Type' | t('gift-voucher'),
         }, voucherTypeInput) }}
 
         {% if code.orderId %}
@@ -149,7 +148,7 @@
         {% endif %}
 
         {{ forms.field({
-            label: 'Order' | t('gift-voucher')
+            label: 'Order' | t('gift-voucher'),
         }, productInput) }}
     </div>
 

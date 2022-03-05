@@ -69,7 +69,7 @@ class GiftVoucherVariable
         return false;
     }
 
-    public function isVoucherAdjustment($adjuster)
+    public function isVoucherAdjustment($adjuster): bool
     {
         return $adjuster->sourceSnapshot['codeKey'] ?? false;
     }

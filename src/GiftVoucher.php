@@ -343,7 +343,7 @@ class GiftVoucher extends Plugin
         });
     }
 
-    private function _defineFieldLayoutElements(): void: void
+    private function _defineFieldLayoutElements(): void
     {
         Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS, function(DefineFieldLayoutFieldsEvent $e) {
             /** @var FieldLayout $fieldLayout */
@@ -355,7 +355,7 @@ class GiftVoucher extends Plugin
         });
     }
 
-    private function _registerResaveCommand(): void: void
+    private function _registerResaveCommand(): void
     {
         if (!Craft::$app instanceof ConsoleApplication) {
             return;

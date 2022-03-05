@@ -11,6 +11,6 @@ class VoucherAdjustmentsEvent extends CancelableEvent
     // =========================================================================
 
     public Order $order;
-    public array $giftVoucherCodes;
-    public array $adjustments;
+    public array $giftVoucherCodes = [];
+    public array $adjustments = [];
 }
