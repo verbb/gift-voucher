@@ -70,7 +70,7 @@ trait PluginTrait
     {
         return $this->get('codeStorage');
     }
-    
+
     public function getKlaviyoConnect(): KlaviyoConnect
     {
         return $this->get('klaviyoConnect');

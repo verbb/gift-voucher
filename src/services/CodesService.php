@@ -46,11 +46,6 @@ class CodesService extends Component
     // Public Methods
     // =========================================================================
 
-    public function isCodeKeyUnique(string $codeKey): bool
-    {
-        return !(bool)Code::findOne(['codeKey' => $codeKey]);
-    }
-
     public static function handleCompletedOrder(Event $event): void
     {
         try {
@@ -102,7 +97,7 @@ class CodesService extends Component
                             $redemption->codeId = $code->id;
                             $redemption->orderId = $order->id;
                             $redemption->amount = $adjustment->amount * -1;
-                            
+
                             if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
                                 $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
                                     'errors' => Json::encode($redemption->getErrors()),
@@ -140,6 +135,11 @@ class CodesService extends Component
         }
     }
 
+    public function isCodeKeyUnique(string $codeKey): bool
+    {
+        return !(bool)Code::findOne(['codeKey' => $codeKey]);
+    }
+
     /**
      * Create a Code after an Order is completed
      *
@@ -165,11 +165,11 @@ class CodesService extends Component
             // give plugins a chance to change/modify it
             if ($this->hasEventHandlers(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM)) {
                 $this->trigger(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM, new PopulateCodeFromLineItemEvent([
-                    'code'          => $code,
-                    'order'         => $order,
-                    'lineItem'      => $lineItem,
-                    'customFields'  => $customFields,
-                    'voucher'       => $voucher
+                    'code' => $code,
+                    'order' => $order,
+                    'lineItem' => $lineItem,
+                    'customFields' => $customFields,
+                    'voucher' => $voucher,
                 ]));
             }
 
@@ -215,7 +215,7 @@ class CodesService extends Component
 
         if ($fieldLayout = $code->getFieldLayout()) {
             if ($fields = $fieldLayout->getCustomFields()) {
-                foreach ($fields as $field){
+                foreach ($fields as $field) {
                     $fieldHandle = $field->handle;
 
                     if (isset($options[$fieldHandle])) {
@@ -245,12 +245,12 @@ class CodesService extends Component
             $code->voucherId = $purchasable->id;
             $this->populateCodeByLineItem($code, $lineItem);
             $code->setScenario(Element::SCENARIO_LIVE);
-            
+
             // if validation fails it means you can't create a code with the current settings
             if ($code->validate() === false) {
                 // invalidate it -> let users know about missing/wrong fields
                 $lineItem->addErrors($code->getErrors());
-                
+
                 $event->isValid = false;
             }
         }

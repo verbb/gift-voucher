@@ -79,7 +79,7 @@ class Session extends Component implements CodeStorageInterface
     {
         $code = CodeHelper::getCode($code);
         $success = false;
-        
+
         if ($code !== null && $this->_isActive() === true) {
             $codeKeys = $this->getCodeKeys($order);
 
@@ -150,10 +150,10 @@ class Session extends Component implements CodeStorageInterface
             $codeKeys = [];
             $success = true;
 
-            foreach ($codes as $code){
+            foreach ($codes as $code) {
                 $codeElement = CodeHelper::getCode($code);
-                
-                if ($codeElement !== null){
+
+                if ($codeElement !== null) {
                     $codeKeys[] = $codeElement->codeKey;
                 } else {
                     $success = false;
@@ -186,5 +186,5 @@ class Session extends Component implements CodeStorageInterface
     {
         return self::CODE_KEY . ':' . $order->id;
     }
-    
+
 }

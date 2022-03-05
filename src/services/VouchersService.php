@@ -46,8 +46,8 @@ class VouchersService extends Component
                 'criteria' => [
                     'siteId' => $siteId,
                     'status' => null,
-                    'enabledForSite' => false
-                ]
+                    'enabledForSite' => false,
+                ],
             ]));
         }
     }
@@ -111,7 +111,7 @@ class VouchersService extends Component
             }
 
             $event->craftEmail->attach($pdfPath, ['fileName' => $fileName . '.pdf', 'contentType' => 'application/pdf']);
-            
+
             // Store for later
             $this->_pdfPaths[] = $pdfPath;
         } catch (Throwable $e) {

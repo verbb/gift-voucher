@@ -20,8 +20,8 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
     // Constants
     // =========================================================================
 
-    const EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED = 'afterVoucherAdjustmentsCreated';
     const ADJUSTMENT_TYPE = 'voucher';
+    const EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED = 'afterVoucherAdjustmentsCreated';
 
 
     // Properties
@@ -103,7 +103,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $adjustment->orderId = $order->id;
         $adjustment->sourceSnapshot = $voucherCode->attributes;
         $adjustment->description = Craft::t('gift-voucher', 'Gift Voucher discount using code {code}', [
-            'code' => $voucherCode->codeKey
+            'code' => $voucherCode->codeKey,
         ]);
 
         // Check if there is an amount left
@@ -121,7 +121,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         if ($this->_orderTotal < $voucherCode->currentAmount) {
             $adjustment->amount = $this->_orderTotal * -1;
         } else {
-            $adjustment->amount = (float) $voucherCode->currentAmount * -1;
+            $adjustment->amount = (float)$voucherCode->currentAmount * -1;
         }
 
         $this->_orderTotal += $adjustment->amount;

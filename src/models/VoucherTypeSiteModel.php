@@ -56,7 +56,7 @@ class VoucherTypeSiteModel extends Model
         if (!$this->_site) {
             $this->_site = Craft::$app->getSites()->getSiteById($this->siteId);
         }
-        
+
         return $this->_site;
     }
 

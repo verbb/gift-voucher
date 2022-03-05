@@ -22,8 +22,8 @@ class ProjectConfigData
         if ($codeFieldLayout->uid) {
             $output['codes'] = [
                 'fieldLayouts' => [
-                    $codeFieldLayout->uid => $codeFieldLayout->getConfig()
-                ]
+                    $codeFieldLayout->uid => $codeFieldLayout->getConfig(),
+                ],
             ];
         }
 
@@ -38,7 +38,7 @@ class ProjectConfigData
                 'name',
                 'handle',
                 'skuFormat',
-                'uid'
+                'uid',
             ])
             ->from(['{{%giftvoucher_vouchertypes}} voucherTypes'])
             ->all();

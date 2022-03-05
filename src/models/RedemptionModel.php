@@ -40,5 +40,5 @@ class RedemptionModel extends Model
 
         return null;
     }
-    
+
 }

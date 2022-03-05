@@ -158,7 +158,7 @@ class Order extends Component implements CodeStorageInterface
         }
 
         $codeIds = [];
-        foreach ($codes as $code){
+        foreach ($codes as $code) {
             $code = CodeHelper::getCode($code);
 
             if ($code !== null) {

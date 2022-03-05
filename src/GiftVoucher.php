@@ -57,9 +57,9 @@ class GiftVoucher extends Plugin
     // Public Properties
     // =========================================================================
 
-    public string $schemaVersion = '2.0.8';
-    public bool $hasCpSettings = true;
     public bool $hasCpSection = true;
+    public bool $hasCpSettings = true;
+    public string $schemaVersion = '2.0.8';
 
     // Traits
     // =========================================================================
@@ -273,7 +273,7 @@ class GiftVoucher extends Plugin
                 }
 
                 $event->types = $types;
-            } elseif ($settings->registerAdjuster === 'afterTax') {
+            } else if ($settings->registerAdjuster === 'afterTax') {
                 $event->types[] = GiftVoucherAdjuster::class;
             }
         });
@@ -315,7 +315,7 @@ class GiftVoucher extends Plugin
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$voucherTypeService, 'pruneDeletedField']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$voucherTypeService, 'pruneDeletedSite']);
 
-        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event): void {
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event): void {
             $event->config['giftVoucher'] = ProjectConfigData::rebuildProjectConfig();
         });
     }

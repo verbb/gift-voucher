@@ -117,12 +117,12 @@ class CartController extends BaseFrontEndController
                     'error' => $error,
                     'errors' => $this->_cart->getErrors(),
                     'success' => !$this->_cart->hasErrors(),
-                    $this->_cartVariable => $this->cartArray($this->_cart)
+                    $this->_cartVariable => $this->cartArray($this->_cart),
                 ]);
             }
 
             Craft::$app->getUrlManager()->setRouteParams([
-                $this->_cartVariable => $this->_cart
+                $this->_cartVariable => $this->_cart,
             ]);
 
             Craft::$app->getSession()->setError($error);
@@ -141,12 +141,12 @@ class CartController extends BaseFrontEndController
                     'error' => $error,
                     'errors' => $this->_cart->getErrors(),
                     'success' => !$this->_cart->hasErrors(),
-                    $this->_cartVariable => $this->cartArray($this->_cart)
+                    $this->_cartVariable => $this->cartArray($this->_cart),
                 ]);
             }
 
             Craft::$app->getUrlManager()->setRouteParams([
-                $this->_cartVariable => $this->_cart
+                $this->_cartVariable => $this->_cart,
             ]);
 
             Craft::$app->getSession()->setError($error);
@@ -157,14 +157,14 @@ class CartController extends BaseFrontEndController
         if ($request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => !$this->_cart->hasErrors(),
-                $this->_cartVariable => $this->cartArray($this->_cart)
+                $this->_cartVariable => $this->cartArray($this->_cart),
             ]);
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('commerce', 'Cart updated.'));
 
         Craft::$app->getUrlManager()->setRouteParams([
-            $this->_cartVariable => $this->_cart
+            $this->_cartVariable => $this->_cart,
         ]);
 
         return $this->redirectToPostedUrl();

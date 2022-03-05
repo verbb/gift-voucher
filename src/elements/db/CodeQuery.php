@@ -61,7 +61,8 @@ class CodeQuery extends ElementQuery
         }
     }
 
-    public function voucher($value): static {
+    public function voucher($value): static
+    {
         if ($value instanceof Voucher) {
             $this->voucherId = $value->id;
         } else if ($value !== null) {
@@ -101,7 +102,7 @@ class CodeQuery extends ElementQuery
         }
 
         $this->dateCreated = ArrayHelper::toArray($this->dateCreated);
-        $this->dateCreated[] = '<'.$value;
+        $this->dateCreated[] = '<' . $value;
 
         return $this;
     }
@@ -113,7 +114,7 @@ class CodeQuery extends ElementQuery
         }
 
         $this->dateCreated = ArrayHelper::toArray($this->dateCreated);
-        $this->dateCreated[] = '>='.$value;
+        $this->dateCreated[] = '>=' . $value;
 
         return $this;
     }
@@ -159,7 +160,7 @@ class CodeQuery extends ElementQuery
 
         return $this;
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -221,10 +222,10 @@ class CodeQuery extends ElementQuery
     {
         return match ($status) {
             Code::STATUS_ENABLED => [
-                'elements.enabled' => true
+                'elements.enabled' => true,
             ],
             Code::STATUS_DISABLED => [
-                'elements.disabled' => true
+                'elements.disabled' => true,
             ],
             default => parent::statusCondition($status),
         };

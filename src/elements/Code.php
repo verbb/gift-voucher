@@ -33,6 +33,166 @@ class Code extends Element
     const EVENT_GENERATE_CODE_KEY = 'beforeGenerateCodeKey';
 
 
+    // Static Methods
+    // =========================================================================
+
+    public static function hasContent(): bool
+    {
+        return true;
+    }
+
+    public static function hasStatuses(): bool
+    {
+        return true;
+    }
+
+    public static function find(): ElementQueryInterface
+    {
+        return new CodeQuery(static::class);
+    }
+
+    public static function defineSources(string $context = null): array
+    {
+        $voucherTypes = GiftVoucher::$plugin->getVoucherTypes()->getAllVoucherTypes();
+
+        $voucherTypeIds = [];
+
+        foreach ($voucherTypes as $voucherType) {
+            $voucherTypeIds[] = $voucherType->id;
+        }
+
+        $sources = [
+            [
+                'key' => '*',
+                'label' => Craft::t('gift-voucher', 'All voucher types'),
+                'criteria' => ['typeId' => $voucherTypeIds],
+                'defaultSort' => ['dateCreated', 'desc'],
+            ],
+        ];
+
+        $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
+
+        foreach ($voucherTypes as $voucherType) {
+            $key = 'voucherType:' . $voucherType->id;
+
+            $sources[] = [
+                'key' => $key,
+                'label' => $voucherType->name,
+                'data' => [
+                    'handle' => $voucherType->handle,
+                ],
+                'criteria' => ['typeId' => $voucherType->id],
+            ];
+        }
+
+        return $sources;
+    }
+
+    public static function eagerLoadingMap(array $sourceElements, string $handle): array|null|false
+    {
+        $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
+
+        if ($handle === 'voucher') {
+            $map = (new Query())
+                ->select('id as source, voucherId as target')
+                ->from('{{%giftvoucher_codes}}')
+                ->where(['in', 'id', $sourceElementIds])
+                ->all();
+
+            return [
+                'elementType' => Voucher::class,
+                'map' => $map,
+            ];
+        }
+
+        if ($handle === 'order') {
+            $map = (new Query())
+                ->select('id as source, orderId as target')
+                ->from('{{%giftvoucher_codes}}')
+                ->where(['in', 'id', $sourceElementIds])
+                ->all();
+
+            return [
+                'elementType' => Order::class,
+                'map' => $map,
+            ];
+        }
+
+        return parent::eagerLoadingMap($sourceElements, $handle);
+    }
+
+    protected static function defineActions(string $source = null): array
+    {
+        $actions = [];
+
+        $actions[] = Craft::$app->getElements()->createAction([
+            'type' => Delete::class,
+            'confirmationMessage' => Craft::t('gift-voucher', 'Are you sure you want to delete the selected codes?'),
+            'successMessage' => Craft::t('gift-voucher', 'Codes deleted.'),
+        ]);
+
+        return $actions;
+    }
+
+    protected static function defineTableAttributes(): array
+    {
+        return [
+            'codeKey' => ['label' => Craft::t('gift-voucher', 'Code')],
+            'voucher' => ['label' => Craft::t('gift-voucher', 'Voucher')],
+            'voucherType' => ['label' => Craft::t('gift-voucher', 'Voucher Type')],
+            'orderLink' => ['label' => Craft::t('gift-voucher', 'Order')],
+            'originalAmount' => ['label' => Craft::t('gift-voucher', 'Original Amount')],
+            'currentAmount' => ['label' => Craft::t('gift-voucher', 'Current Amount')],
+            'expiryDate' => ['label' => Craft::t('gift-voucher', 'Expiry Date')],
+            'dateCreated' => ['label' => Craft::t('gift-voucher', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('gift-voucher', 'Date Updated')],
+        ];
+    }
+
+    protected static function defineDefaultTableAttributes(string $source): array
+    {
+        $attributes = [];
+
+        if ($source === '*') {
+            $attributes[] = 'voucherType';
+        }
+
+        $attributes[] = 'codeKey';
+        $attributes[] = 'voucher';
+        $attributes[] = 'dateCreated';
+        $attributes[] = 'orderLink';
+        $attributes[] = 'currentAmount';
+        $attributes[] = 'expiryDate';
+
+        return $attributes;
+    }
+
+    protected static function defineSearchableAttributes(): array
+    {
+        return ['voucherName', 'codeKey', 'orderReference'];
+    }
+
+    protected static function defineSortOptions(): array
+    {
+        return [
+            'slug' => Craft::t('gift-voucher', 'Code'),
+            'dateCreated' => Craft::t('gift-voucher', 'Date Created'),
+        ];
+    }
+
+    protected static function prepElementQueryForTableAttribute(ElementQueryInterface $elementQuery, string $attribute): void
+    {
+        if ($attribute === 'voucher') {
+            $with = $elementQuery->with ?: [];
+            $with[] = 'voucher';
+            $elementQuery->with = $with;
+            return;
+        }
+
+        parent::prepElementQueryForTableAttribute($elementQuery, $attribute);
+    }
+
+
     // Properties
     // =========================================================================
 
@@ -63,64 +223,6 @@ class Code extends Element
         return Craft::t('gift-voucher', 'Code');
     }
 
-    public static function hasContent(): bool
-    {
-        return true;
-    }
-
-    public static function hasStatuses(): bool
-    {
-        return true;
-    }
-
-    public static function defineSources(string $context = null): array
-    {
-        $voucherTypes = GiftVoucher::$plugin->getVoucherTypes()->getAllVoucherTypes();
-
-        $voucherTypeIds = [];
-
-        foreach ($voucherTypes as $voucherType) {
-            $voucherTypeIds[] = $voucherType->id;
-        }
-
-        $sources = [[
-            'key' => '*',
-            'label' => Craft::t('gift-voucher', 'All voucher types'),
-            'criteria' => ['typeId' => $voucherTypeIds],
-            'defaultSort' => ['dateCreated', 'desc']
-        ]];
-
-        $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
-
-        foreach ($voucherTypes as $voucherType) {
-            $key = 'voucherType:' . $voucherType->id;
-
-            $sources[] = [
-                'key' => $key,
-                'label' => $voucherType->name,
-                'data' => [
-                    'handle' => $voucherType->handle
-                ],
-                'criteria' => ['typeId' => $voucherType->id]
-            ];
-        }
-
-        return $sources;
-    }
-
-    protected static function defineActions(string $source = null): array
-    {
-        $actions = [];
-
-        $actions[] = Craft::$app->getElements()->createAction([
-            'type' => Delete::class,
-            'confirmationMessage' => Craft::t('gift-voucher', 'Are you sure you want to delete the selected codes?'),
-            'successMessage' => Craft::t('gift-voucher', 'Codes deleted.'),
-        ]);
-
-        return $actions;
-    }
-
     public function setEagerLoadedElements(string $handle, array $elements): void
     {
         if ($handle === 'voucher') {
@@ -138,39 +240,6 @@ class Code extends Element
         parent::setEagerLoadedElements($handle, $elements);
     }
 
-    public static function eagerLoadingMap(array $sourceElements, string $handle): array|null|false
-    {
-        $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
-
-        if ($handle === 'voucher') {
-            $map = (new Query())
-                ->select('id as source, voucherId as target')
-                ->from('{{%giftvoucher_codes}}')
-                ->where(['in', 'id', $sourceElementIds])
-                ->all();
-
-            return array(
-                'elementType' => Voucher::class,
-                'map' => $map
-            );
-        }
-
-        if ($handle === 'order') {
-            $map = (new Query())
-                ->select('id as source, orderId as target')
-                ->from('{{%giftvoucher_codes}}')
-                ->where(['in', 'id', $sourceElementIds])
-                ->all();
-
-            return array(
-                'elementType' => Order::class,
-                'map' => $map
-            );
-        }
-
-        return parent::eagerLoadingMap($sourceElements, $handle);
-    }
-
     public function rules(): array
     {
         $rules = parent::rules();
@@ -179,11 +248,6 @@ class Code extends Element
         $rules[] = [['expiryDate'], DateTimeValidator::class];
 
         return $rules;
-    }
-
-    public static function find(): ElementQueryInterface
-    {
-        return new CodeQuery(static::class);
     }
 
     public function datetimeAttributes(): array
@@ -262,7 +326,7 @@ class Code extends Element
 
     public function getVoucherName(): string
     {
-        return (string) $this->getVoucher();
+        return (string)$this->getVoucher();
     }
 
     public function getAmount(): ?float
@@ -356,62 +420,27 @@ class Code extends Element
         return $codeKey;
     }
 
-    protected static function defineTableAttributes(): array
-    {
-        return [
-            'codeKey' => ['label' => Craft::t('gift-voucher', 'Code')],
-            'voucher' => ['label' => Craft::t('gift-voucher', 'Voucher')],
-            'voucherType' => ['label' => Craft::t('gift-voucher', 'Voucher Type')],
-            'orderLink' => ['label' => Craft::t('gift-voucher', 'Order')],
-            'originalAmount' => ['label' => Craft::t('gift-voucher', 'Original Amount')],
-            'currentAmount' => ['label' => Craft::t('gift-voucher', 'Current Amount')],
-            'expiryDate' => ['label' => Craft::t('gift-voucher', 'Expiry Date')],
-            'dateCreated' => ['label' => Craft::t('gift-voucher', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('gift-voucher', 'Date Updated')],
-        ];
-    }
-
-    protected static function defineDefaultTableAttributes(string $source): array
-    {
-        $attributes = [];
-
-        if ($source === '*') {
-            $attributes[] = 'voucherType';
-        }
-
-        $attributes[] = 'codeKey';
-        $attributes[] = 'voucher';
-        $attributes[] = 'dateCreated';
-        $attributes[] = 'orderLink';
-        $attributes[] = 'currentAmount';
-        $attributes[] = 'expiryDate';
-
-        return $attributes;
-    }
-
-    protected static function defineSearchableAttributes(): array
-    {
-        return ['voucherName', 'codeKey', 'orderReference'];
-    }
-
     protected function tableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
-            case 'voucher': {
+            case 'voucher':
+            {
                 if ($this->getVoucher()) {
                     return '<a href="' . $this->getVoucher()->getCpEditUrl() . '">' . $this->getVoucher() . '</a>';
                 }
 
                 return '-';
             }
-            case 'voucherType': {
+            case 'voucherType':
+            {
                 if ($this->getVoucherType()) {
                     return '<a href="' . $this->getVoucherType()->getCpEditUrl() . '">' . $this->getVoucherType()->name . '</a>';
                 }
 
                 return '';
             }
-            case 'orderLink': {
+            case 'orderLink':
+            {
 
                 if ($this->getOrder()) {
                     return '<a href="' . $this->getOrder()->getCpEditUrl() . '">' . $this->getOrder() . '</a>';
@@ -420,41 +449,20 @@ class Code extends Element
                 return '-';
             }
             case 'currentAmount':
-            case 'originalAmount': {
+            case 'originalAmount':
+            {
                 $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
                 return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
             }
-            case 'expiryDate': {
+            case 'expiryDate':
+            {
                 return (!$this->expiryDate) ? '∞' : parent::tableAttributeHtml($attribute);
             }
-            default: {
+            default:
+            {
                 return parent::tableAttributeHtml($attribute);
             }
         }
-    }
-
-    protected static function defineSortOptions(): array
-    {
-        return [
-            'slug' => Craft::t('gift-voucher', 'Code'),
-            'dateCreated' => Craft::t('gift-voucher', 'Date Created'),
-        ];
-    }
-
-
-    // Protected methods
-    // =========================================================================
-
-    protected static function prepElementQueryForTableAttribute(ElementQueryInterface $elementQuery, string $attribute): void
-    {
-        if ($attribute === 'voucher') {
-            $with = $elementQuery->with ?: [];
-            $with[] = 'voucher';
-            $elementQuery->with = $with;
-            return;
-        }
-
-        parent::prepElementQueryForTableAttribute($elementQuery, $attribute);
     }
 }

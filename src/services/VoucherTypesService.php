@@ -145,7 +145,7 @@ class VoucherTypesService extends Component
                     'siteId',
                     'uriFormat',
                     'hasUrls',
-                    'template'
+                    'template',
                 ])
                 ->from('{{%giftvoucher_vouchertypes_sites}}')
                 ->where(['voucherTypeId' => $voucherTypeId])
@@ -283,7 +283,7 @@ class VoucherTypesService extends Component
                 $layout->id = $voucherTypeRecord->fieldLayoutId;
                 $layout->type = Voucher::class;
                 $layout->uid = key($data['voucherFieldLayouts']);
-                
+
                 $fieldsService->saveLayout($layout);
 
                 $voucherTypeRecord->fieldLayoutId = $layout->id;
@@ -416,7 +416,7 @@ class VoucherTypesService extends Component
         $this->_allVoucherTypeIds = null;
         $this->_editableVoucherTypeIds = null;
         $this->_fetchedAllVoucherTypes = false;
-        
+
         unset(
             $this->_voucherTypesById[$voucherTypeRecord->id],
             $this->_voucherTypesByHandle[$voucherTypeRecord->handle],
@@ -583,7 +583,8 @@ class VoucherTypesService extends Component
                     'voucherTypes.uid voucherTypeUid',
                     'vouchertypes_sites.uriFormat',
                     'vouchertypes_sites.template',
-                    'vouchertypes_sites.hasUrls'])
+                    'vouchertypes_sites.hasUrls',
+                ])
                 ->from(['{{%giftvoucher_vouchertypes_sites}} vouchertypes_sites'])
                 ->innerJoin(['{{%giftvoucher_vouchertypes}} voucherTypes'], '[[vouchertypes_sites.voucherTypeId]] = [[voucherTypes.id]]')
                 ->where(['siteId' => $event->oldPrimarySiteId])
@@ -593,7 +594,7 @@ class VoucherTypesService extends Component
                 $newSiteSettings = [
                     'uriFormat' => $primarySiteSettings['uriFormat'],
                     'template' => $primarySiteSettings['template'],
-                    'hasUrls' => $primarySiteSettings['hasUrls']
+                    'hasUrls' => $primarySiteSettings['hasUrls'],
                 ];
 
                 Craft::$app->getProjectConfig()->set(self::CONFIG_VOUCHERTYPES_KEY . '.' . $primarySiteSettings['voucherTypeUid'] . '.siteSettings.' . $event->site->uid, $newSiteSettings);

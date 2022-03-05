@@ -51,7 +51,7 @@ class CodesController extends Controller
                 // TODO: Maybe There is a better wording for it ¯\_(ツ)_/¯
                 'label' => Craft::t('app', 'Settings'),
                 'url' => '#general',
-                'class' => $code->getErrors('voucherId') ? 'error' : null
+                'class' => $code->getErrors('voucherId') ? 'error' : null,
             ];
         }
 
@@ -72,11 +72,11 @@ class CodesController extends Controller
             $variables['tabs'][] = [
                 'label' => Craft::t('site', $tab->name),
                 'url' => '#' . $tab->getHtmlId(),
-                'class' => $hasErrors ? 'error' : null
+                'class' => $hasErrors ? 'error' : null,
             ];
         }
 
-        $variables['title'] = $code->id ? (string) $code : Craft::t('gift-voucher', 'Create a new Code');
+        $variables['title'] = $code->id ? (string)$code : Craft::t('gift-voucher', 'Create a new Code');
         $variables['code'] = $code;
         $variables['voucherElementType'] = Voucher::class;
         $variables['continueEditingUrl'] = 'gift-voucher/codes/{id}';
@@ -198,7 +198,7 @@ class CodesController extends Controller
         $voucher = null;
 
         $voucherIds = $request->getBodyParam('voucher');
-        
+
         if (!empty($voucherIds) && is_array($voucherIds)) {
             $voucherId = reset($voucherIds);
             $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId);

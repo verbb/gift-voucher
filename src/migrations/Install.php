@@ -39,6 +39,12 @@ class Install extends Migration
         return true;
     }
 
+    public function dropProjectConfig(): void
+    {
+        Craft::$app->projectConfig->remove('gift-voucher');
+    }
+    
+
     // Protected Methods
     // =========================================================================
 
@@ -168,10 +174,5 @@ class Install extends Migration
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchers}}', $this);
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes}}', $this);
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
-    }
-
-    public function dropProjectConfig(): void
-    {
-        Craft::$app->projectConfig->remove('gift-voucher');
     }
 }

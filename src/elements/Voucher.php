@@ -42,41 +42,12 @@ class Voucher extends Purchasable
     const EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT = 'afterCaptureVoucherSnapshot';
 
 
-    // Properties
-    // =========================================================================
-
-    public ?int $id = null;
-    public ?int $typeId = null;
-    public ?int $taxCategoryId = null;
-    public ?int $shippingCategoryId = null;
-    public ?DateTime $postDate = null;
-    public ?DateTime $expiryDate = null;
-    public ?string $sku = null;
-    public ?float $price = null;
-    public ?float $customAmount = null;
-    public bool $promotable = true;
-    public bool $availableForPurchase = true;
-
-    private ?VoucherTypeModel $_voucherType = null;
-    private ?array $_existingCodes = null;
-
-
-    // Public Methods
+    // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
         return Craft::t('gift-voucher', 'Gift Voucher');
-    }
-
-    public function __toString(): string
-    {
-        return (string)$this->title;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->title;
     }
 
     public static function hasContent(): bool
@@ -104,6 +75,11 @@ class Voucher extends Purchasable
         return true;
     }
 
+    public static function find(): ElementQueryInterface
+    {
+        return new VoucherQuery(static::class);
+    }
+
     public static function defineSources(string $context = null): array
     {
         if ($context === 'index') {
@@ -126,16 +102,16 @@ class Voucher extends Purchasable
                 'label' => Craft::t('gift-voucher', 'All vouchers'),
                 'criteria' => [
                     'typeId' => $voucherTypeIds,
-                    'editable' => $editable
+                    'editable' => $editable,
                 ],
-                'defaultSort' => ['postDate', 'desc']
-            ]
+                'defaultSort' => ['postDate', 'desc'],
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
 
         foreach ($voucherTypes as $voucherType) {
-            $key = 'voucherType:'.$voucherType->id;
+            $key = 'voucherType:' . $voucherType->id;
             $canEditVouchers = Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $voucherType->id);
 
             $sources[$key] = [
@@ -143,13 +119,38 @@ class Voucher extends Purchasable
                 'label' => $voucherType->name,
                 'data' => [
                     'handle' => $voucherType->handle,
-                    'editable' => $canEditVouchers
+                    'editable' => $canEditVouchers,
                 ],
-                'criteria' => ['typeId' => $voucherType->id, 'editable' => $editable]
+                'criteria' => ['typeId' => $voucherType->id, 'editable' => $editable],
             ];
         }
 
         return $sources;
+    }
+
+    public static function eagerLoadingMap(array $sourceElements, string $handle): array|null|false
+    {
+        if ($handle === 'existingCodes') {
+            $userId = Craft::$app->getUser()->getId();
+
+            if ($userId) {
+                $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
+
+                $map = (new Query())
+                    ->select('voucherId as source, id as target')
+                    ->from('{{%giftvoucher_codes}}')
+                    ->where(['in', 'voucherId', $sourceElementIds])
+                    ->andWhere(['userId' => $userId])
+                    ->all();
+
+                return [
+                    'elementType' => Code::class,
+                    'map' => $map,
+                ];
+            }
+        }
+
+        return parent::eagerLoadingMap($sourceElements, $handle);
     }
 
     protected static function defineActions(string $source = null): array
@@ -165,13 +166,88 @@ class Voucher extends Purchasable
         return $actions;
     }
 
+    protected static function defineTableAttributes(): array
+    {
+        return [
+            'title' => ['label' => Craft::t('gift-voucher', 'Title')],
+            'type' => ['label' => Craft::t('gift-voucher', 'Type')],
+            'slug' => ['label' => Craft::t('gift-voucher', 'Slug')],
+            'sku' => ['label' => Craft::t('gift-voucher', 'SKU')],
+            'price' => ['label' => Craft::t('gift-voucher', 'Price')],
+            'postDate' => ['label' => Craft::t('gift-voucher', 'Post Date')],
+            'expiryDate' => ['label' => Craft::t('gift-voucher', 'Expiry Date')],
+        ];
+    }
+
+    protected static function defineDefaultTableAttributes(string $source): array
+    {
+        $attributes = [];
+
+        if ($source === '*') {
+            $attributes[] = 'type';
+        }
+
+        $attributes[] = 'postDate';
+        $attributes[] = 'expiryDate';
+
+        return $attributes;
+    }
+
+    protected static function defineSearchableAttributes(): array
+    {
+        return ['title'];
+    }
+
+    protected static function defineSortOptions(): array
+    {
+        return [
+            'title' => Craft::t('gift-voucher', 'Title'),
+            'postDate' => Craft::t('gift-voucher', 'Post Date'),
+            'expiryDate' => Craft::t('gift-voucher', 'Expiry Date'),
+            'price' => Craft::t('gift-voucher', 'Price'),
+        ];
+    }
+
+
+    // Properties
+    // =========================================================================
+
+    public ?int $id = null;
+    public ?int $typeId = null;
+    public ?int $taxCategoryId = null;
+    public ?int $shippingCategoryId = null;
+    public ?DateTime $postDate = null;
+    public ?DateTime $expiryDate = null;
+    public ?string $sku = null;
+    public ?float $price = null;
+    public ?float $customAmount = null;
+    public bool $promotable = true;
+    public bool $availableForPurchase = true;
+
+    private ?VoucherTypeModel $_voucherType = null;
+    private ?array $_existingCodes = null;
+
+
+    // Public Methods
+    // =========================================================================
+
+    public function __toString(): string
+    {
+        return (string)$this->title;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->title;
+    }
+
     public function getStatuses(): array
     {
         return [
             self::STATUS_LIVE => Craft::t('gift-voucher', 'Live'),
             self::STATUS_PENDING => Craft::t('gift-voucher', 'Pending'),
             self::STATUS_EXPIRED => Craft::t('gift-voucher', 'Expired'),
-            self::STATUS_DISABLED => Craft::t('gift-voucher', 'Disabled')
+            self::STATUS_DISABLED => Craft::t('gift-voucher', 'Disabled'),
         ];
     }
 
@@ -184,32 +260,6 @@ class Voucher extends Purchasable
         }
 
         parent::setEagerLoadedElements($handle, $elements);
-    }
-
-    public static function eagerLoadingMap(array $sourceElements, string $handle): array|null|false
-    {
-        if ($handle === 'existingCodes') {
-            $userId = Craft::$app->getUser()->getId();
-
-            if ($userId)
-            {
-                $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
-
-                $map = (new Query())
-                    ->select('voucherId as source, id as target')
-                    ->from('{{%giftvoucher_codes}}')
-                    ->where(['in', 'voucherId', $sourceElementIds])
-                    ->andWhere(['userId' => $userId])
-                    ->all();
-
-                return array(
-                    'elementType' => Code::class,
-                    'map' => $map
-                );
-            }
-        }
-
-        return parent::eagerLoadingMap($sourceElements, $handle);
     }
 
     public function getIsAvailable(): bool
@@ -254,12 +304,6 @@ class Voucher extends Purchasable
 
         return $rules;
     }
-
-    public static function find(): ElementQueryInterface
-    {
-        return new VoucherQuery(static::class);
-    }
-
 
     public function datetimeAttributes(): array
     {
@@ -346,6 +390,10 @@ class Voucher extends Purchasable
         return null;
     }
 
+
+    // Implement Purchasable
+    // =========================================================================
+
     public function getShippingCategory(): ?ShippingCategory
     {
         if ($this->shippingCategoryId) {
@@ -385,13 +433,13 @@ class Voucher extends Purchasable
             $voucherRecord = VoucherRecord::findOne($this->id);
 
             if (!$voucherRecord) {
-                throw new Exception('Invalid voucher id: '.$this->id);
+                throw new Exception('Invalid voucher id: ' . $this->id);
             }
         } else {
             $voucherRecord = new VoucherRecord();
             $voucherRecord->id = $this->id;
         }
-        
+
         $voucherRecord->postDate = $this->postDate;
         $voucherRecord->expiryDate = $this->expiryDate;
         $voucherRecord->typeId = $this->typeId;
@@ -419,15 +467,11 @@ class Voucher extends Purchasable
         parent::afterSave($isNew);
     }
 
-
-    // Implement Purchasable
-    // =========================================================================
-
     public function getPurchasableId(): ?int
     {
         return $this->id;
     }
-    
+
     public function getSnapshot(): array
     {
         $data = [];
@@ -495,6 +539,10 @@ class Voucher extends Purchasable
         return $this->taxCategoryId;
     }
 
+
+    // Protected methods
+    // =========================================================================
+
     public function getShippingCategoryId(): int
     {
         return $this->shippingCategoryId;
@@ -522,10 +570,6 @@ class Voucher extends Purchasable
         }
     }
 
-
-    // Protected methods
-    // =========================================================================
-
     protected function route(): array|string|null
     {
         // Make sure the voucher type is set to have URLs for this site
@@ -542,41 +586,9 @@ class Voucher extends Purchasable
                 'variables' => [
                     'voucher' => $this,
                     'product' => $this,
-                ]
-            ]
+                ],
+            ],
         ];
-    }
-
-    protected static function defineTableAttributes(): array
-    {
-        return [
-            'title' => ['label' => Craft::t('gift-voucher', 'Title')],
-            'type' => ['label' => Craft::t('gift-voucher', 'Type')],
-            'slug' => ['label' => Craft::t('gift-voucher', 'Slug')],
-            'sku' => ['label' => Craft::t('gift-voucher', 'SKU')],
-            'price' => ['label' => Craft::t('gift-voucher', 'Price')],
-            'postDate' => ['label' => Craft::t('gift-voucher', 'Post Date')],
-            'expiryDate' => ['label' => Craft::t('gift-voucher', 'Expiry Date')],
-        ];
-    }
-
-    protected static function defineDefaultTableAttributes(string $source): array
-    {
-        $attributes = [];
-
-        if ($source === '*') {
-            $attributes[] = 'type';
-        }
-
-        $attributes[] = 'postDate';
-        $attributes[] = 'expiryDate';
-
-        return $attributes;
-    }
-
-    protected static function defineSearchableAttributes(): array
-    {
-        return ['title'];
     }
 
     protected function tableAttributeHtml(string $attribute): string
@@ -584,41 +596,37 @@ class Voucher extends Purchasable
         $voucherType = $this->getType();
 
         switch ($attribute) {
-            case 'type': {
+            case 'type':
+            {
                 return ($voucherType ? Craft::t('site', $voucherType->name) : '');
             }
-            case 'taxCategory': {
+            case 'taxCategory':
+            {
                 $taxCategory = $this->getTaxCategory();
 
                 return ($taxCategory ? Craft::t('site', $taxCategory->name) : '');
             }
-            case 'shippingCategory': {
+            case 'shippingCategory':
+            {
                 $shippingCategory = $this->getShippingCategory();
 
                 return ($shippingCategory ? Craft::t('site', $shippingCategory->name) : '');
             }
-            case 'defaultPrice': {
+            case 'defaultPrice':
+            {
                 $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
                 return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
             }
             case 'availableForPurchase':
-            case 'promotable': {
+            case 'promotable':
+            {
                 return ($this->$attribute ? '<span data-icon="check" title="' . Craft::t('gift-voucher', 'Yes') . '"></span>' : '');
             }
-            default: {
-                return parent::tableAttributeHtml($attribute);                
+            default:
+            {
+                return parent::tableAttributeHtml($attribute);
             }
         }
-    }
-
-    protected static function defineSortOptions(): array
-    {
-        return [
-            'title' => Craft::t('gift-voucher', 'Title'),
-            'postDate' => Craft::t('gift-voucher', 'Post Date'),
-            'expiryDate' => Craft::t('gift-voucher', 'Expiry Date'),
-            'price' => Craft::t('gift-voucher', 'Price'),
-        ];
     }
 }

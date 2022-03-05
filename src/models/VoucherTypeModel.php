@@ -34,7 +34,7 @@ class VoucherTypeModel extends Model
 
     public function __toString(): string
     {
-        return (string) $this->handle;
+        return (string)$this->handle;
     }
 
     public function rules(): array
@@ -88,8 +88,8 @@ class VoucherTypeModel extends Model
             'voucherFieldLayout' => [
                 'class' => FieldLayoutBehavior::class,
                 'elementType' => Voucher::class,
-                'idAttribute' => 'fieldLayoutId'
-            ]
+                'idAttribute' => 'fieldLayoutId',
+            ],
         ];
     }
 }

@@ -51,7 +51,7 @@ class VoucherTypesController extends Controller
         } else {
             $variables['title'] = Craft::t('gift-voucher', 'Create a Voucher Type');
         }
-        
+
         return $this->renderTemplate('gift-voucher/voucher-types/_edit', $variables);
     }
 
@@ -62,7 +62,7 @@ class VoucherTypesController extends Controller
         $voucherType = new VoucherTypeModel();
 
         $request = Craft::$app->getRequest();
-        
+
         $voucherType->id = $request->getBodyParam('voucherTypeId');
         $voucherType->name = $request->getBodyParam('name');
         $voucherType->handle = $request->getBodyParam('handle');
@@ -107,7 +107,7 @@ class VoucherTypesController extends Controller
 
         // Send the voucherType back to the template
         Craft::$app->getUrlManager()->setRouteParams([
-            'voucherType' => $voucherType
+            'voucherType' => $voucherType,
         ]);
 
         return null;

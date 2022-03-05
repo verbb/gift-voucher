@@ -102,7 +102,7 @@ class VoucherQuery extends ElementQuery
         }
 
         $this->postDate = ArrayHelper::toArray($this->postDate);
-        $this->postDate[] = '<'.$value;
+        $this->postDate[] = '<' . $value;
 
         return $this;
     }
@@ -114,7 +114,7 @@ class VoucherQuery extends ElementQuery
         }
 
         $this->postDate = ArrayHelper::toArray($this->postDate);
-        $this->postDate[] = '>='.$value;
+        $this->postDate[] = '>=' . $value;
 
         return $this;
     }
@@ -176,7 +176,7 @@ class VoucherQuery extends ElementQuery
             'giftvoucher_vouchers.expiryDate',
             'giftvoucher_vouchers.sku',
             'giftvoucher_vouchers.price',
-            'giftvoucher_vouchers.customAmount'
+            'giftvoucher_vouchers.customAmount',
         ]);
 
         $giftVoucher = Craft::$app->getPlugins()->getStoredPluginInfo('gift-voucher');
@@ -228,14 +228,14 @@ class VoucherQuery extends ElementQuery
                 'and',
                 [
                     'elements.enabled' => true,
-                    'elements_sites.enabled' => true
+                    'elements_sites.enabled' => true,
                 ],
                 ['<=', 'giftvoucher_vouchers.postDate', $currentTimeDb],
                 [
                     'or',
                     ['giftvoucher_vouchers.expiryDate' => null],
-                    ['>', 'giftvoucher_vouchers.expiryDate', $currentTimeDb]
-                ]
+                    ['>', 'giftvoucher_vouchers.expiryDate', $currentTimeDb],
+                ],
             ],
             Voucher::STATUS_PENDING => [
                 'and',
@@ -243,16 +243,16 @@ class VoucherQuery extends ElementQuery
                     'elements.enabled' => true,
                     'elements_sites.enabled' => true,
                 ],
-                ['>', 'giftvoucher_vouchers.postDate', $currentTimeDb]
+                ['>', 'giftvoucher_vouchers.postDate', $currentTimeDb],
             ],
             Voucher::STATUS_EXPIRED => [
                 'and',
                 [
                     'elements.enabled' => true,
-                    'elements_sites.enabled' => true
+                    'elements_sites.enabled' => true,
                 ],
                 ['not', ['giftvoucher_vouchers.expiryDate' => null]],
-                ['<=', 'giftvoucher_vouchers.expiryDate', $currentTimeDb]
+                ['<=', 'giftvoucher_vouchers.expiryDate', $currentTimeDb],
             ],
             default => parent::statusCondition($status),
         };
@@ -275,7 +275,7 @@ class VoucherQuery extends ElementQuery
 
         // Limit the query to only the sections the user has permission to edit
         $this->subQuery->andWhere([
-            'giftvoucher_vouchers.typeId' => GiftVoucher::$plugin->getVoucherTypes()->getEditableVoucherTypeIds()
+            'giftvoucher_vouchers.typeId' => GiftVoucher::$plugin->getVoucherTypes()->getEditableVoucherTypeIds(),
         ]);
     }
 }
