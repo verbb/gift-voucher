@@ -3,7 +3,6 @@ namespace verbb\giftvoucher\events;
 
 use craft\events\CancelableEvent;
 use verbb\giftvoucher\elements\Code;
-use yii\base\Event;
 
 class MatchCodeEvent extends CancelableEvent
 {
@@ -11,7 +10,7 @@ class MatchCodeEvent extends CancelableEvent
     // =========================================================================
 
     /** @var Code */
-    public $code;
+    public Code $code;
     public $codeKey;
-    public $error = '';
+    public string $error = '';
 }

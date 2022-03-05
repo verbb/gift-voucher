@@ -4,10 +4,11 @@ namespace verbb\giftvoucher\controllers;
 use verbb\giftvoucher\GiftVoucher;
 
 use Craft;
-use craft\web\Controller;
 
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\controllers\BaseFrontEndController;
+
+use yii\web\Response;
 
 class CartController extends BaseFrontEndController
 {
@@ -21,7 +22,7 @@ class CartController extends BaseFrontEndController
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         $this->_cart = Commerce::getInstance()->getCarts()->getCart();
         $this->_cartVariable = Commerce::getInstance()->getSettings()->cartVariable;
@@ -36,7 +37,7 @@ class CartController extends BaseFrontEndController
         parent::init();
     }
 
-    public function actionAddCode()
+    public function actionAddCode(): ?Response
     {
         $this->requirePostRequest();
 
@@ -57,7 +58,7 @@ class CartController extends BaseFrontEndController
         GiftVoucher::$plugin->getCodes()->matchCode($voucherCode, $error);
 
         if ($error) {
-            // Check to see if its a Coupon code
+            // Check to see if it's a Coupon code
             $isCouponCode = Commerce::getInstance()->getDiscounts()->getDiscountByCode($voucherCode);
 
             if ($isCouponCode) {
@@ -88,7 +89,7 @@ class CartController extends BaseFrontEndController
         return $this->_returnCart();
     }
 
-    public function actionRemoveCode()
+    public function actionRemoveCode(): ?Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
@@ -103,7 +104,7 @@ class CartController extends BaseFrontEndController
     // Private Methods
     // =========================================================================
 
-    private function _returnCart()
+    private function _returnCart(): ?Response
     {
         $request = Craft::$app->getRequest();
 

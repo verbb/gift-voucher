@@ -1,15 +1,12 @@
 <?php
 namespace verbb\giftvoucher\migrations;
 
-use verbb\giftvoucher\elements\Code;
-
 use Craft;
 use craft\db\Migration;
-use craft\records\FieldLayout;
 
 class m200622_000000_resave_plugin extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $projectConfig = Craft::$app->getProjectConfig();
 
@@ -28,9 +25,11 @@ class m200622_000000_resave_plugin extends Migration
         $settings = $plugin->getSettings()->toArray();
 
         Craft::$app->getPlugins()->savePluginSettings($plugin, $settings);
+
+        return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200622_000000_resave_plugin cannot be reverted.\n";
 

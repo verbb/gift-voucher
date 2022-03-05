@@ -8,18 +8,24 @@ use verbb\giftvoucher\records\CodeRecord;
 
 use Craft;
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Delete;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
+use craft\commerce\models\LineItem;
 
+use yii\base\Model;
 use yii\base\InvalidConfigException;
+
+use DateTime;
 
 class Code extends Element
 {
@@ -32,29 +38,29 @@ class Code extends Element
     // Properties
     // =========================================================================
 
-    public $id;
+    public ?int $id = null;
     public $voucherId;
     public $orderId;
     public $lineItemId;
     public $codeKey;
     public $originalAmount;
     public $currentAmount;
-    public $expiryDate;
+    public ?DateTime $expiryDate = null;
 
-    private $_voucher;
-    private $_order;
-    private $_lineItem;
+    private array|Model|null|ElementInterface $_voucher;
+    private ?Order $_order;
+    private ?LineItem $_lineItem;
 
 
     // Public Methods
     // =========================================================================
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->codeKey;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return Craft::t('gift-voucher', 'Code');
     }
@@ -117,7 +123,7 @@ class Code extends Element
         return $actions;
     }
 
-    public function setEagerLoadedElements(string $handle, array $elements)
+    public function setEagerLoadedElements(string $handle, array $elements): void
     {
         if ($handle === 'voucher') {
             $this->_voucher = $elements[0] ?? null;
@@ -134,7 +140,7 @@ class Code extends Element
         parent::setEagerLoadedElements($handle, $elements);
     }
 
-    public static function eagerLoadingMap(array $sourceElements, string $handle)
+    public static function eagerLoadingMap(array $sourceElements, string $handle): array|null|false
     {
         $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
 
@@ -190,12 +196,12 @@ class Code extends Element
         return $attributes;
     }
 
-    public function getCpEditUrl(): string
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('gift-voucher/codes/' . $this->id);
     }
 
-    public function getVoucher()
+    public function getVoucher(): ElementInterface|Model|array|null
     {
         if ($this->_voucher) {
             return $this->_voucher;
@@ -210,7 +216,7 @@ class Code extends Element
         return null;
     }
 
-    public function getOrder()
+    public function getOrder(): ?Order
     {
         if ($this->_order) {
             return $this->_order;
@@ -223,7 +229,7 @@ class Code extends Element
         return null;
     }
 
-    public function getOrderReference()
+    public function getOrderReference(): ?string
     {
         if ($order = $this->getOrder()) {
             return $order->reference;
@@ -232,7 +238,7 @@ class Code extends Element
         return null;
     }
 
-    public function getLineItem()
+    public function getLineItem(): ?LineItem
     {
         if ($this->_lineItem) {
             return $this->_lineItem;
@@ -266,16 +272,18 @@ class Code extends Element
         return $this->currentAmount;
     }
 
-    public function getFieldLayout()
+    public function getFieldLayout(): ?FieldLayout
     {
         return Craft::$app->getFields()->getLayoutByType(self::class);
     }
 
-    public function getRedemptions()
+    public function getRedemptions(): array
     {
         if ($this->id) {
             return GiftVoucher::$plugin->getRedemptions()->getRedemptionsByCodeId($this->id);
         }
+
+        return [];
     }
 
     public function getPdfUrl($option = null)
@@ -283,7 +291,7 @@ class Code extends Element
         return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option = null);
     }
 
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$isNew) {
             $codeRecord = CodeRecord::findOne($this->id);
@@ -311,9 +319,9 @@ class Code extends Element
 
         $defaultExpiry = GiftVoucher::getInstance()->getSettings()->expiry;
 
-        // If not specifying an expiry and we have a default expiry
+        // If not specifying an expiry, and we have a default expiry
         if ($isNew && !$codeRecord->expiryDate && $defaultExpiry) {
-            $newExpiry = DateTimeHelper::toDateTime(new \DateTime);
+            $newExpiry = DateTimeHelper::toDateTime(new DateTime);
             $newExpiry->modify('+' . $defaultExpiry . ' month');
             $newExpiry->setTime(0, 0, 0);
 
@@ -413,12 +421,8 @@ class Code extends Element
 
                 return '-';
             }
+            case 'currentAmount':
             case 'originalAmount': {
-                $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
-
-                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
-            }
-            case 'currentAmount': {
                 $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
                 return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
@@ -444,7 +448,7 @@ class Code extends Element
     // Protected methods
     // =========================================================================
 
-    protected static function prepElementQueryForTableAttribute(ElementQueryInterface $elementQuery, string $attribute)
+    protected static function prepElementQueryForTableAttribute(ElementQueryInterface $elementQuery, string $attribute): void
     {
         if ($attribute === 'voucher') {
             $with = $elementQuery->with ?: [];

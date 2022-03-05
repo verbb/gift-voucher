@@ -9,6 +9,6 @@ class RedemptionEvent extends Event
     // =========================================================================
 
     public $redemption;
-    public $isNew = false;
+    public bool $isNew = false;
     
 }

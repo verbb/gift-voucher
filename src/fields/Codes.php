@@ -16,7 +16,7 @@ class Codes extends BaseRelationField
         return Craft::t('gift-voucher', 'Gift Voucher Code');
     }
 
-    protected static function elementType(): string
+    public static function elementType(): string
     {
         return Code::class;
     }

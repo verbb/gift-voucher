@@ -3,8 +3,6 @@ namespace verbb\giftvoucher\integrations\klaviyoconnect;
 
 use verbb\giftvoucher\elements\Voucher;
 
-use Craft;
-
 use yii\base\Component;
 
 use fostercommerce\klaviyoconnect\events\AddLineItemCustomPropertiesEvent;
@@ -14,7 +12,7 @@ class KlaviyoConnect extends Component
     // Public Methods
     // =========================================================================
 
-    public function addLineItemCustomProperties(AddLineItemCustomPropertiesEvent $e)
+    public function addLineItemCustomProperties(AddLineItemCustomPropertiesEvent $e): void
     {
         $eventName = $e->event;
         $order = $e->order;

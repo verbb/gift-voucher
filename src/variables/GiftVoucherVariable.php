@@ -1,16 +1,16 @@
 <?php
-
 namespace verbb\giftvoucher\variables;
 
+use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\elements\Voucher;
+
 use Craft;
+use craft\elements\db\ElementQueryInterface;
+
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
-use craft\commerce\Plugin as Commerce;
-use verbb\giftvoucher\elements\Code;
-use verbb\giftvoucher\elements\db\CodeQuery;
-use verbb\giftvoucher\elements\db\VoucherQuery;
-use verbb\giftvoucher\elements\Voucher;
-use verbb\giftvoucher\GiftVoucher;
 
 class GiftVoucherVariable
 {
@@ -33,7 +33,7 @@ class GiftVoucherVariable
         return GiftVoucher::$plugin->getVoucherTypes()->getEditableVoucherTypes();
     }
 
-    public function vouchers($criteria = null): VoucherQuery
+    public function vouchers($criteria = null): ElementQueryInterface
     {
         $query = Voucher::find();
 
@@ -44,7 +44,7 @@ class GiftVoucherVariable
         return $query;
     }
 
-    public function codes($criteria = null): CodeQuery
+    public function codes($criteria = null): ElementQueryInterface
     {
         $query = Code::find();
 
@@ -61,10 +61,10 @@ class GiftVoucherVariable
         return GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($cart);
     }
 
-    public function isVoucher(LineItem $lineItem)
+    public function isVoucher(LineItem $lineItem): bool
     {
         if ($lineItem->purchasable) {
-            return (bool) (get_class($lineItem->purchasable) === Voucher::class);
+            return $lineItem->purchasable::class === Voucher::class;
         }
 
         return false;

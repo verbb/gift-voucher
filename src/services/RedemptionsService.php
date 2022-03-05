@@ -9,6 +9,8 @@ use Craft;
 use craft\base\Component;
 use craft\db\Query;
 
+use Exception;
+
 class RedemptionsService extends Component
 {
     // Constants
@@ -20,16 +22,10 @@ class RedemptionsService extends Component
     const EVENT_AFTER_DELETE_REDEMPTION = 'afterDeleteRedemption';
 
 
-    // Properties
-    // =========================================================================
-
-    private $_redemptionsById;
-
-
     // Public Methods
     // =========================================================================
 
-    public function getRedemptionById(int $id)
+    public function getRedemptionById(int $id): ?RedemptionModel
     {
         $result = $this->_createRedemptionsQuery()
             ->where(['id' => $id])
@@ -38,7 +34,7 @@ class RedemptionsService extends Component
         return $result ? new RedemptionModel($result) : null;
     }
 
-    public function getRedemptionsByCodeId(int $codeId)
+    public function getRedemptionsByCodeId(int $codeId): array
     {
         $results = $this->_createRedemptionsQuery()
             ->where(['codeId' => $codeId])
@@ -78,7 +74,7 @@ class RedemptionsService extends Component
         // Save the record
         $redemptionRecord->save(false);
 
-        // Now that we have a ID, save it on the model
+        // Now that we have an ID, save it on the model
         if ($isNewRedemption) {
             $redemption->id = $redemptionRecord->id;
         }
@@ -138,7 +134,7 @@ class RedemptionsService extends Component
             $redemptionRecord = RedemptionRecord::findOne($redemptionId);
 
             if (!$redemptionRecord) {
-                throw new RedemptionNotFoundException("No redemption exists with the ID '{$redemptionId}'");
+                throw new Exception("No redemption exists with the ID '{$redemptionId}'");
             }
         } else {
             $redemptionRecord = new RedemptionRecord();

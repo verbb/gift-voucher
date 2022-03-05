@@ -4,16 +4,18 @@ namespace verbb\giftvoucher\models;
 use verbb\giftvoucher\elements\Code;
 
 use Craft;
+use craft\base\ElementInterface;
 use craft\base\Model;
 
 use craft\commerce\Plugin as Commerce;
+use craft\commerce\elements\Order;
 
 class RedemptionModel extends Model
 {
     // Properties
     // =========================================================================
 
-    public $id;
+    public ?int $id = null;
     public $codeId;
     public $orderId;
     public $amount;
@@ -21,7 +23,7 @@ class RedemptionModel extends Model
     // Public Methods
     // =========================================================================
 
-    public function getCode()
+    public function getCode(): ?ElementInterface
     {
         if ($this->codeId) {
             return Craft::$app->getElements()->getElementById($this->codeId, Code::class);
@@ -30,7 +32,7 @@ class RedemptionModel extends Model
         return null;
     }
 
-    public function getOrder()
+    public function getOrder(): ?Order
     {
         if ($this->orderId) {
             return Commerce::getInstance()->getOrders()->getOrderById($this->orderId);

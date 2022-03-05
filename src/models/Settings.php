@@ -1,35 +1,30 @@
 <?php
 namespace verbb\giftvoucher\models;
 
-use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\storage\Session;
 
-use Craft;
 use craft\base\Model;
-use craft\models\FieldLayout;
-
-use yii\base\InvalidConfigException;
 
 class Settings extends Model
 {
     // Properties
     // =========================================================================
 
-    public $expiry = 0;
-    public $codeKeyLength = 10;
-    public $codeKeyCharacters = 'ACDEFGHJKLMNPQRTUVWXYZ234679';
-    public $voucherCodesPdfPath = 'shop/_pdf/voucher';
-    public $voucherCodesPdfFilenameFormat = 'Voucher-{number}';
-    public $stopProcessing = true;
-    public $pdfAllowRemoteImages = false;
-    public $pdfPaperSize = 'letter';
-    public $pdfPaperOrientation = 'portrait';
-    public $codeStorage = Session::class;
-    public $registerAdjuster = 'beforeTax';
-    public $attachPdfToEmails = [];
+    public int $expiry = 0;
+    public int $codeKeyLength = 10;
+    public string $codeKeyCharacters = 'ACDEFGHJKLMNPQRTUVWXYZ234679';
+    public string $voucherCodesPdfPath = 'shop/_pdf/voucher';
+    public string $voucherCodesPdfFilenameFormat = 'Voucher-{number}';
+    public bool $stopProcessing = true;
+    public bool $pdfAllowRemoteImages = false;
+    public string $pdfPaperSize = 'letter';
+    public string $pdfPaperOrientation = 'portrait';
+    public string $codeStorage = Session::class;
+    public string $registerAdjuster = 'beforeTax';
+    public array $attachPdfToEmails = [];
 
     // TODO: Remove at next breakpoint
     private $fieldLayout;
     public $fieldLayoutId;
-    public $fieldsPath = 'fields';
+    public string $fieldsPath = 'fields';
 }

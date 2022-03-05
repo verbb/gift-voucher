@@ -11,8 +11,6 @@ use craft\web\Request;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use yii\web\HttpException;
-
 class VoucherHelper
 {
     public static function voucherFromPost(Request $request = null): Voucher

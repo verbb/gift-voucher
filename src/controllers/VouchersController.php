@@ -7,33 +7,28 @@ use verbb\giftvoucher\helpers\VoucherHelper;
 
 use Craft;
 use craft\base\Element;
-use craft\errors\ElementNotFoundException;
 use craft\errors\InvalidElementException;
-use craft\errors\MissingComponentException;
-use craft\errors\SiteNotFoundException;
-use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
-use craft\helpers\Localization;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\web\Controller;
 
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
+use Throwable;
+
 class VouchersController extends Controller
 {
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         $this->requirePermission('giftVoucher-manageVouchers');
 
@@ -110,7 +105,7 @@ class VouchersController extends Controller
         return $this->renderTemplate('gift-voucher/vouchers/_edit', $variables);
     }
 
-    public function actionDelete()
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
@@ -145,7 +140,7 @@ class VouchersController extends Controller
         return $this->redirectToPostedUrl($voucher);
     }
 
-    public function actionSave(bool $duplicate = false)
+    public function actionSave(bool $duplicate = false): ?Response
     {
         $this->requirePostRequest();
 
@@ -184,7 +179,7 @@ class VouchersController extends Controller
                     ]);
 
                     return null;
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     throw new ServerErrorHttpException(Craft::t('gift-voucher', 'An error occurred when duplicating the voucher.'), 0, $e);
                 }
             } else {
@@ -233,7 +228,7 @@ class VouchersController extends Controller
             }
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -263,7 +258,7 @@ class VouchersController extends Controller
     // Protected Methods
     // =========================================================================
 
-    protected function enforceVoucherPermissions(Voucher $voucher)
+    protected function enforceVoucherPermissions(Voucher $voucher): void
     {
         $this->requirePermission('giftVoucher-manageVoucherType:' . $voucher->getType()->uid);
     }
@@ -272,7 +267,7 @@ class VouchersController extends Controller
     // Private Methods
     // =========================================================================
 
-    private function _prepVariables(array &$variables)
+    private function _prepVariables(array &$variables): void
     {
         $variables['tabs'] = [];
 
@@ -284,7 +279,7 @@ class VouchersController extends Controller
         $variables['fieldsHtml'] = $form->render();
     }
 
-    private function _prepEditVoucherVariables(array &$variables)
+    private function _prepEditVoucherVariables(array &$variables): void
     {
         if (!empty($variables['voucherTypeHandle'])) {
             $variables['voucherType'] = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeByHandle($variables['voucherTypeHandle']);
@@ -347,8 +342,6 @@ class VouchersController extends Controller
                 }
             } else {
                 $variables['voucher'] = new Voucher();
-                $variables['voucher']->typeId = $variables['voucherType']->id;
-                
                 $variables['voucher']->typeId = $variables['voucherType']->id;
                 $variables['voucher']->enabled = true;
                 $variables['voucher']->siteId = $site->id;

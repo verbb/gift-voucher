@@ -1,14 +1,18 @@
 <?php
 namespace verbb\giftvoucher\storage;
 
+use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\helpers\CodeHelper;
 
 use Craft;
 use craft\base\Component;
+use craft\errors\ElementNotFoundException;
 
 use craft\commerce\elements\Order as OrderElement;
 
-use yii\helpers\ArrayHelper;
+use yii\base\Exception;
+
+use Throwable;
 
 class Order extends Component implements CodeStorageInterface
 {
@@ -20,18 +24,15 @@ class Order extends Component implements CodeStorageInterface
 
     // Public Methods
     // =========================================================================
-
     /**
      * Add a code
      *
      * @param                                $code
-     * @param \craft\commerce\elements\Order $order
      *
-     * @return bool
      *
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
-     * @throws \Throwable
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws Throwable
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -56,13 +57,11 @@ class Order extends Component implements CodeStorageInterface
      * remove a code
      *
      * @param                                $code
-     * @param \craft\commerce\elements\Order $order
      *
-     * @return bool
      *
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
-     * @throws \Throwable
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws Throwable
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -95,9 +94,8 @@ class Order extends Component implements CodeStorageInterface
     /**
      * Get all stored codes
      *
-     * @param \craft\commerce\elements\Order $order
      *
-     * @return \verbb\giftvoucher\elements\Code[]
+     * @return Code[]
      *
      * @author Robin Schambach
      * @since  2.0.16
@@ -114,7 +112,6 @@ class Order extends Component implements CodeStorageInterface
     /**
      * Get all stored code keys
      *
-     * @param \craft\commerce\elements\Order $order
      *
      * @return string[]
      *
@@ -136,14 +133,12 @@ class Order extends Component implements CodeStorageInterface
     /**
      * Set Codes
      *
-     * @param \verbb\giftvoucher\elements\Code[]|int[]|string[] $codes
-     * @param \craft\commerce\elements\Order                    $order
+     * @param Code[]|int[]|string[] $codes
      *
-     * @return bool
      *
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
-     * @throws \Throwable
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws Throwable
      * @author Robin Schambach
      * @since  2.0.16
      */

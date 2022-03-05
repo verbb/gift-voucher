@@ -14,16 +14,16 @@ class VoucherTypeSiteModel extends Model
     // Properties
     // =========================================================================
 
-    public $id;
+    public ?int $id = null;
     public $voucherTypeId;
     public $siteId;
     public $hasUrls;
     public $uriFormat;
     public $template;
-    public $uriFormatIsRequired = true;
+    public bool $uriFormatIsRequired = true;
 
-    private $_voucherType;
-    private $_site;
+    private VoucherTypeModel $_voucherType;
+    private Site $_site;
 
 
     // Public Methods
@@ -46,7 +46,7 @@ class VoucherTypeSiteModel extends Model
         return $this->_voucherType;
     }
 
-    public function setVoucherType(VoucherTypeModel $voucherType)
+    public function setVoucherType(VoucherTypeModel $voucherType): void
     {
         $this->_voucherType = $voucherType;
     }

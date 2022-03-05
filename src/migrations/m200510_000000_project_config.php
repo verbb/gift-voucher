@@ -6,16 +6,10 @@ use verbb\giftvoucher\services\VoucherTypesService;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
-use craft\db\Table;
-use craft\helpers\Db;
-use craft\helpers\Json;
-use craft\helpers\MigrationHelper;
-use craft\helpers\Component as ComponentHelper;
-use craft\helpers\StringHelper;
 
 class m200510_000000_project_config extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $projectConfig = Craft::$app->getProjectConfig();
 
@@ -27,9 +21,11 @@ class m200510_000000_project_config extends Migration
 
         $voucherTypeData = $this->_getVoucherTypeData();
         $projectConfig->set(VoucherTypesService::CONFIG_VOUCHERTYPES_KEY, $voucherTypeData);
+
+        return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200510_000000_project_config cannot be reverted.\n";
         return false;

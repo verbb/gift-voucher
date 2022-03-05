@@ -9,21 +9,21 @@ use craft\web\Controller;
 use craft\commerce\Plugin as Commerce;
 
 use yii\web\HttpException;
-use yii\web\Response;
 
 class DownloadsController extends Controller
 {
     // Properties
     // =========================================================================
 
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
 
     // Public Methods
     // =========================================================================
 
-    public function actionPdf()
+    public function actionPdf(): \craft\web\Response|\yii\console\Response
     {
+        $code = [];
         $request = Craft::$app->getRequest();
 
         $codes = [];
@@ -78,8 +78,8 @@ class DownloadsController extends Controller
 
         if ($format === 'plain') {
             return $pdf;
-        } else {
-            return Craft::$app->getResponse()->sendContentAsFile($pdf, $fileName . '.pdf', $options);
         }
+
+        return Craft::$app->getResponse()->sendContentAsFile($pdf, $fileName . '.pdf', $options);
     }
 }

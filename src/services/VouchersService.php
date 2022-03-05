@@ -5,6 +5,7 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
 
 use Craft;
+use craft\base\ElementInterface;
 use craft\events\SiteEvent;
 use craft\helpers\Assets;
 use craft\queue\jobs\ResaveElements;
@@ -13,23 +14,25 @@ use craft\commerce\events\MailEvent;
 
 use yii\base\Component;
 
+use Throwable;
+
 class VouchersService extends Component
 {
     // Properties
     // =========================================================================
 
-    private $_pdfPaths = [];
+    private array $_pdfPaths = [];
 
 
     // Public Methods
     // =========================================================================
 
-    public function getVoucherById(int $id, $siteId = null)
+    public function getVoucherById(int $id, $siteId = null): ?ElementInterface
     {
         return Craft::$app->getElements()->getElementById($id, Voucher::class, $siteId);
     }
 
-    public function afterSaveSiteHandler(SiteEvent $event)
+    public function afterSaveSiteHandler(SiteEvent $event): void
     {
         $queue = Craft::$app->getQueue();
         $siteId = $event->oldPrimarySiteId;
@@ -49,7 +52,7 @@ class VouchersService extends Component
         }
     }
 
-    public function onBeforeSendEmail(MailEvent $event)
+    public function onBeforeSendEmail(MailEvent $event): void
     {
         $order = $event->order;
         $commerceEmail = $event->commerceEmail;
@@ -87,7 +90,7 @@ class VouchersService extends Component
                 return;
             }
 
-            // Save it in a temp location so we can attach it
+            // Save it in a temp location, so we can attach it
             $pdfPath = Assets::tempFilePath('pdf');
             file_put_contents($pdfPath, $pdf);
 
@@ -116,7 +119,7 @@ class VouchersService extends Component
 
             // Store for later
             $this->_pdfPaths[] = $pdfPath;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $error = Craft::t('gift-voucher', 'PDF unable to be attached to “{email}” for order “{order}”. Error: {error} {file}:{line}', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
@@ -129,7 +132,7 @@ class VouchersService extends Component
         }
     }
 
-    public function onAfterSendEmail(MailEvent $event)
+    public function onAfterSendEmail(MailEvent $event): void
     {
         // Clear out any generated PDFs
         foreach ($this->_pdfPaths as $pdfPath) {

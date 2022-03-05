@@ -9,6 +9,6 @@ class VoucherTypeEvent extends Event
     // =========================================================================
 
     public $voucherType;
-    public $isNew = false;
+    public bool $isNew = false;
     
 }

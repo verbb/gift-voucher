@@ -1,10 +1,9 @@
 <?php
 namespace verbb\giftvoucher\records;
 
+use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 use craft\records\FieldLayout;
-
-use yii\db\ActiveQueryInterface;
 
 class VoucherTypeRecord extends ActiveRecord
 {
@@ -16,7 +15,7 @@ class VoucherTypeRecord extends ActiveRecord
         return '{{%giftvoucher_vouchertypes}}';
     }
 
-    public function getFieldLayout(): ActiveQueryInterface
+    public function getFieldLayout(): ActiveQuery
     {
         return $this->hasOne(FieldLayout::class, ['id' => 'fieldLayoutId']);
     }

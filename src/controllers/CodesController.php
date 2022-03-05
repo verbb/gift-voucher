@@ -7,7 +7,6 @@ use verbb\giftvoucher\elements\Voucher;
 
 use Craft;
 use craft\base\Element;
-use craft\base\Field;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
@@ -20,7 +19,7 @@ class CodesController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         $this->requirePermission('giftVoucher-manageCodes');
 
@@ -29,6 +28,7 @@ class CodesController extends Controller
 
     public function actionEdit(int $codeId = null, Code $code = null): Response
     {
+        $variables = [];
         if ($code === null) {
             if ($codeId === null) {
                 $code = new Code();
@@ -83,7 +83,7 @@ class CodesController extends Controller
         return $this->renderTemplate('gift-voucher/codes/_edit', $variables);
     }
 
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -147,7 +147,7 @@ class CodesController extends Controller
         return $this->redirectToPostedUrl($code);
     }
 
-    public function actionDelete()
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
@@ -177,7 +177,7 @@ class CodesController extends Controller
         return null;
     }
 
-    public function actionBulkGenerate()
+    public function actionBulkGenerate(): Response
     {
         $variables = Craft::$app->getUrlManager()->getRouteParams();
         $variables['voucherElementType'] = Voucher::class;
@@ -185,11 +185,12 @@ class CodesController extends Controller
         return $this->renderTemplate('gift-voucher/codes/_bulk-generate', $variables);
     }
 
-    public function actionBulkGenerateSubmit()
+    public function actionBulkGenerateSubmit(): ?Response
     {
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
+        $voucherId = null;
         $errors = [];
         $amount = (int)$request->getBodyParam('amount');
         $voucherAmount = (float)$request->getBodyParam('voucherAmount');

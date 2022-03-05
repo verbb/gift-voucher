@@ -1,9 +1,7 @@
 <?php
 namespace verbb\giftvoucher;
 
-use verbb\giftvoucher\adjusters\GiftVoucherAdjusterNew;
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
-use verbb\giftvoucher\adjusters\GiftVoucherShippingAdjuster;
 use verbb\giftvoucher\assetbundles\GiftVoucherAsset;
 use verbb\giftvoucher\base\PluginTrait;
 use verbb\giftvoucher\elements\Code;
@@ -17,6 +15,7 @@ use verbb\giftvoucher\services\VoucherTypesService as VoucherTypes;
 use verbb\giftvoucher\variables\GiftVoucherVariable;
 
 use Craft;
+use craft\base\Model;
 use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
 use craft\console\Controller as ConsoleController;
@@ -58,9 +57,9 @@ class GiftVoucher extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '2.0.8';
-    public $hasCpSettings = true;
-    public $hasCpSection = true;
+    public string $schemaVersion = '2.0.8';
+    public bool $hasCpSettings = true;
+    public bool $hasCpSection = true;
 
     // Traits
     // =========================================================================
@@ -71,7 +70,7 @@ class GiftVoucher extends Plugin
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -93,7 +92,7 @@ class GiftVoucher extends Plugin
         $this->_registerResaveCommand();
     }
 
-    public function afterInstall()
+    public function afterInstall(): void
     {
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
             return;
@@ -107,12 +106,12 @@ class GiftVoucher extends Plugin
         return false;
     }
 
-    public function getSettingsResponse()
+    public function getSettingsResponse(): mixed
     {
         return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('gift-voucher/settings'));
     }
 
-    public function getCpNavItem(): array
+    public function getCpNavItem(): ?array
     {
         $navItems = parent::getCpNavItem();
 
@@ -158,7 +157,7 @@ class GiftVoucher extends Plugin
     // Protected Methods
     // =========================================================================
 
-    protected function createSettingsModel(): Settings
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -167,7 +166,7 @@ class GiftVoucher extends Plugin
     // Private Methods
     // =========================================================================
 
-    private function _registerEventHandlers()
+    private function _registerEventHandlers(): void
     {
         Event::on(Sites::class, Sites::EVENT_AFTER_SAVE_SITE, [$this->getVoucherTypes(), 'afterSaveSiteHandler']);
         Event::on(Sites::class, Sites::EVENT_AFTER_SAVE_SITE, [$this->getVouchers(), 'afterSaveSiteHandler']);
@@ -185,7 +184,7 @@ class GiftVoucher extends Plugin
             $request = Craft::$app->getRequest();
 
             // Check if on the order overview screen, or editing an order
-            if ($request->isCpRequest && strstr($request->fullPath, '/commerce/orders')) {
+            if ($request->isCpRequest && str_contains($request->fullPath, '/commerce/orders')) {
                 $event->sender->registerAssetBundle(GiftVoucherAsset::class);
 
                 $routeParams = Craft::$app->getUrlManager()->getRouteParams();
@@ -210,32 +209,32 @@ class GiftVoucher extends Plugin
         }
     }
 
-    private function _registerElementTypes()
+    private function _registerElementTypes(): void
     {
-        Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function(RegisterComponentTypesEvent $event) {
+        Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function(RegisterComponentTypesEvent $event): void {
             $event->types[] = Code::class;
             $event->types[] = Voucher::class;
         });
     }
 
-    private function _registerFieldTypes()
+    private function _registerFieldTypes(): void
     {
-        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
+        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event): void {
             $event->types[] = Vouchers::class;
             $event->types[] = Codes::class;
         });
     }
 
-    private function _registerPurchasableTypes()
+    private function _registerPurchasableTypes(): void
     {
-        Event::on(Purchasables::class, Purchasables::EVENT_REGISTER_PURCHASABLE_ELEMENT_TYPES, function(RegisterComponentTypesEvent $event) {
+        Event::on(Purchasables::class, Purchasables::EVENT_REGISTER_PURCHASABLE_ELEMENT_TYPES, function(RegisterComponentTypesEvent $event): void {
             $event->types[] = Voucher::class;
         });
     }
 
-    private function _registerPermissions()
+    private function _registerPermissions(): void
     {
-        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
+        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event): void {
             $voucherTypes = $this->getVoucherTypes()->getAllVoucherTypes();
 
             $voucherTypePermissions = [];
@@ -254,16 +253,16 @@ class GiftVoucher extends Plugin
         });
     }
 
-    private function _registerAdjusters()
+    private function _registerAdjusters(): void
     {
-        Event::on(OrderAdjustments::class, OrderAdjustments::EVENT_REGISTER_ORDER_ADJUSTERS, function(RegisterComponentTypesEvent $event) {
+        Event::on(OrderAdjustments::class, OrderAdjustments::EVENT_REGISTER_ORDER_ADJUSTERS, function(RegisterComponentTypesEvent $event): void {
             $settings = $this->getSettings();
 
             // Re-order the built-in adjusters to ensure gift vouchers are applied before tax.
             if ($settings->registerAdjuster === 'beforeTax') {
                 $types = $event->types;
 
-                // Find the Tax adjuster, it should go before that, but if its not found (Commerce Lite), append
+                // Find the Tax adjuster, it should go before that, but if it's not found (Commerce Lite), append
                 $taxKey = array_search(Tax::class, $event->types);
 
                 if ($taxKey) {
@@ -279,18 +278,18 @@ class GiftVoucher extends Plugin
         });
     }
 
-    private function _registerVariable()
+    private function _registerVariable(): void
     {
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event): void {
             $variable = $event->sender;
             $variable->set('giftVoucher', GiftVoucherVariable::class);
         });
     }
 
-    private function _registerCraftEventListeners()
+    private function _registerCraftEventListeners(): void
     {
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            Event::on(Plugins::class, Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS, function(PluginEvent $event) {
+            Event::on(Plugins::class, Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS, function(PluginEvent $event): void {
                 if ($event->plugin === $this) {
                     $this->getCodes()->saveFieldLayout();
                 }
@@ -298,7 +297,7 @@ class GiftVoucher extends Plugin
         }
     }
 
-    private function _registerProjectConfigEventListeners()
+    private function _registerProjectConfigEventListeners(): void
     {
         $projectConfigService = Craft::$app->getProjectConfig();
         $voucherTypeService = $this->getVoucherTypes();
@@ -315,14 +314,14 @@ class GiftVoucher extends Plugin
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$voucherTypeService, 'pruneDeletedField']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$voucherTypeService, 'pruneDeletedSite']);
 
-        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event): void {
             $event->config['giftVoucher'] = ProjectConfigData::rebuildProjectConfig();
         });
     }
 
-    private function _registerCpRoutes()
+    private function _registerCpRoutes(): void
     {
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event): void {
             $event->rules = array_merge($event->rules, [
                 'gift-voucher/voucher-types/new' => 'gift-voucher/voucher-types/edit',
                 'gift-voucher/voucher-types/<voucherTypeId:\d+>' => 'gift-voucher/voucher-types/edit',

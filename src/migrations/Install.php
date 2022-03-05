@@ -13,7 +13,7 @@ class Install extends Migration
     // Public Methods
     // =========================================================================
 
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->createTables();
         $this->createIndexes();
@@ -30,7 +30,7 @@ class Install extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->dropForeignKeys();
         $this->dropTables();
@@ -42,7 +42,7 @@ class Install extends Migration
     // Protected Methods
     // =========================================================================
 
-    protected function createTables()
+    protected function createTables(): void
     {
         $this->createTable('{{%giftvoucher_codes}}', [
             'id' => $this->primaryKey(),
@@ -109,7 +109,7 @@ class Install extends Migration
         ]);
     }
 
-    protected function dropTables()
+    protected function dropTables(): void
     {
         $this->dropTable('{{%giftvoucher_codes}}');
         $this->dropTable('{{%giftvoucher_redemptions}}');
@@ -118,29 +118,29 @@ class Install extends Migration
         $this->dropTable('{{%giftvoucher_vouchertypes_sites}}');
     }
 
-    protected function createIndexes()
+    protected function createIndexes(): void
     {
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_codes}}', 'codeKey', true), '{{%giftvoucher_codes}}', 'codeKey', true);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_codes}}', 'voucherId', false), '{{%giftvoucher_codes}}', 'voucherId', false);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_codes}}', 'orderId', false), '{{%giftvoucher_codes}}', 'orderId', false);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_codes}}', 'lineItemId', false), '{{%giftvoucher_codes}}', 'lineItemId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'codeKey', true);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'voucherId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'orderId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'lineItemId', false);
 
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_redemptions}}', 'codeId', false), '{{%giftvoucher_redemptions}}', 'codeId', false);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_redemptions}}', 'orderId', false), '{{%giftvoucher_redemptions}}', 'orderId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_redemptions}}', 'codeId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_redemptions}}', 'orderId', false);
 
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchers}}', 'sku', true), '{{%giftvoucher_vouchers}}', 'sku', true);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchers}}', 'typeId', false), '{{%giftvoucher_vouchers}}', 'typeId', false);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchers}}', 'taxCategoryId', false), '{{%giftvoucher_vouchers}}', 'taxCategoryId', false);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchers}}', 'shippingCategoryId', false), '{{%giftvoucher_vouchers}}', 'shippingCategoryId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'sku', true);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'typeId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'taxCategoryId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'shippingCategoryId', false);
 
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchertypes}}', 'handle', true), '{{%giftvoucher_vouchertypes}}', 'handle', true);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchertypes}}', 'fieldLayoutId', false), '{{%giftvoucher_vouchertypes}}', 'fieldLayoutId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes}}', 'handle', true);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes}}', 'fieldLayoutId', false);
 
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId', 'siteId'], true), '{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId', 'siteId'], true);
-        $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchertypes_sites}}', 'siteId', false), '{{%giftvoucher_vouchertypes_sites}}', 'siteId', false);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId', 'siteId'], true);
+        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes_sites}}', 'siteId', false);
     }
 
-    protected function addForeignKeys()
+    protected function addForeignKeys(): void
     {
         $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'id', '{{%elements}}', ['id'], 'CASCADE');
         $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'lineItemId', '{{%commerce_lineitems}}', ['id'], 'SET NULL');
@@ -161,7 +161,7 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId'], '{{%giftvoucher_vouchertypes}}', ['id'], 'CASCADE');
     }
 
-    protected function dropForeignKeys()
+    protected function dropForeignKeys(): void
     {
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_codes}}', $this);
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_redemptions}}', $this);
@@ -170,7 +170,7 @@ class Install extends Migration
         MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
     }
 
-    public function dropProjectConfig()
+    public function dropProjectConfig(): void
     {
         Craft::$app->projectConfig->remove('gift-voucher');
     }

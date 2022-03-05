@@ -2,7 +2,6 @@
 namespace verbb\giftvoucher\services;
 
 use verbb\giftvoucher\GiftVoucher;
-use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\events\PdfEvent;
 use verbb\giftvoucher\events\PdfRenderOptionsEvent;
@@ -12,7 +11,6 @@ use craft\helpers\FileHelper;
 use craft\helpers\UrlHelper;
 use craft\web\View;
 
-use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 
@@ -36,7 +34,7 @@ class PdfService extends Component
     // Public Methods
     // =========================================================================
 
-    public function getPdfUrl(Order $order, LineItem $lineItem = null, $option = null)
+    public function getPdfUrl(Order $order, LineItem $lineItem = null, $option = null): string
     {
         return UrlHelper::actionUrl('gift-voucher/downloads/pdf', array_filter([
             'number' => $order->number ?? null,
@@ -45,7 +43,7 @@ class PdfService extends Component
         ]));
     }
 
-    public function getPdfUrlForCode($code, $option = null)
+    public function getPdfUrlForCode($code, $option = null): string
     {
         return UrlHelper::actionUrl('gift-voucher/downloads/pdf', array_filter([
             'codeId' => $code->id ?? null,
@@ -182,9 +180,9 @@ class PdfService extends Component
 
         if ($format === 'plain') {
             return $html;
-        } else {
-            $dompdf->render();
         }
+
+        $dompdf->render();
 
         // Trigger an 'afterRenderPdf' event
         $afterEvent = new PdfEvent([

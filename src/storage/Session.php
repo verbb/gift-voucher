@@ -6,6 +6,8 @@ use verbb\giftvoucher\helpers\CodeHelper;
 
 use Craft;
 use craft\base\Component;
+use craft\errors\MissingComponentException;
+use craft\web\Request;
 
 use craft\commerce\elements\Order;
 
@@ -19,14 +21,14 @@ class Session extends Component implements CodeStorageInterface
      */
     const CODE_KEY = 'giftVoucher.giftVoucherCodes';
     
-    /** @var \craft\web\Request */
-    public $request;
+    /** @var Request */
+    public Request $request;
 
 
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         $this->request = Craft::$app->getRequest();
 
@@ -37,11 +39,9 @@ class Session extends Component implements CodeStorageInterface
      * Add a code
      *
      * @param                                $code
-     * @param \craft\commerce\elements\Order $order
      *
-     * @return bool
      *
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -65,12 +65,11 @@ class Session extends Component implements CodeStorageInterface
     /**
      * remove a code
      *
-     * @param \verbb\giftvoucher\elements\Code|string|int|null $code
-     * @param \craft\commerce\elements\Order                   $order
+     * @param Code|string|int|null $code
+     * @param Order $order
      *
-     * @return bool
      *
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -98,11 +97,9 @@ class Session extends Component implements CodeStorageInterface
     /**
      * Get all Codes
      *
-     * @param \craft\commerce\elements\Order $order
      *
-     * @return array
      *
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -118,11 +115,10 @@ class Session extends Component implements CodeStorageInterface
     /**
      * Get all Codes
      *
-     * @param \craft\commerce\elements\Order $order
      *
      * @return Code[]
      *
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -138,12 +134,9 @@ class Session extends Component implements CodeStorageInterface
     /**
      * Set Codes
      *
-     * @param array                          $codes
-     * @param \craft\commerce\elements\Order $order
      *
-     * @return bool
      *
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      * @author Robin Schambach
      * @since  18.12.2019
      */
@@ -174,13 +167,11 @@ class Session extends Component implements CodeStorageInterface
 
     // Private Methods
     // =========================================================================
-
     /**
      * Check if the session is even active
      *
-     * @return bool
      *
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      * @since  18.12.2019
      * @author Robin Schambach
      */

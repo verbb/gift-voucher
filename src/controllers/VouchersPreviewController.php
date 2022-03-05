@@ -7,14 +7,9 @@ use verbb\giftvoucher\helpers\VoucherHelper;
 
 use Craft;
 use craft\base\Element;
-use craft\errors\ElementNotFoundException;
-use craft\errors\MissingComponentException;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
-use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -24,7 +19,7 @@ class VouchersPreviewController extends Controller
     // Properties
     // =========================================================================
 
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
 
     // Public Methods
@@ -81,7 +76,7 @@ class VouchersPreviewController extends Controller
         return null;
     }
 
-    public function actionSaveVoucher()
+    public function actionSaveVoucher(): ?Response
     {
         $this->requirePostRequest();
 
@@ -130,7 +125,7 @@ class VouchersPreviewController extends Controller
         return $this->redirectToPostedUrl($voucher);
     }
 
-    protected function enforceVoucherPermissions(Voucher $voucher)
+    protected function enforceVoucherPermissions(Voucher $voucher): void
     {
         $this->requirePermission('giftVoucher-manageVoucherType:' . $voucher->getType()->uid);
     }

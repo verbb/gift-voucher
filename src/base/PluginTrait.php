@@ -11,66 +11,63 @@ use verbb\giftvoucher\services\VoucherTypesService;
 use verbb\giftvoucher\storage\CodeStorageInterface;
 
 use Craft;
-use craft\log\FileTarget;
-use craft\web\View;
 
-use yii\base\Event;
 use yii\log\Logger;
 
 use verbb\base\BaseHelper;
 
 trait PluginTrait
 {
-    // Static Properties
+    // Properties
     // =========================================================================
 
-    public static $plugin;
+    public static GiftVoucher $plugin;
 
 
     // Public Methods
     // =========================================================================
 
-    public function getCodes()
+    public function getCodes(): CodesService
     {
         return $this->get('codes');
     }
 
-    public function getPdf()
+    public function getPdf(): PdfService
     {
         return $this->get('pdf');
     }
 
-    public function getRedemptions()
+    public function getRedemptions(): RedemptionsService
     {
         return $this->get('redemptions');
     }
 
-    public function getVouchers()
+    public function getVouchers(): VouchersService
     {
         return $this->get('vouchers');
     }
 
-    public function getVoucherTypes()
+    public function getVoucherTypes(): VoucherTypesService
     {
         return $this->get('voucherTypes');
     }
 
-    public function getCodeStorage()
+    public function getCodeStorage(): CodeStorageInterface
     {
         return $this->get('codeStorage');
     }
     
-    public function getKlaviyoConnect()
+    public function getKlaviyoConnect(): KlaviyoConnect
     {
         return $this->get('klaviyoConnect');
     }
 
-    public static function log($message)
+    public static function log($message): void
     {
         Craft::getLogger()->log($message, Logger::LEVEL_INFO, 'gift-voucher');
     }
 
-    public static function error($message)
+    public static function error($message): void
     {
         Craft::getLogger()->log($message, Logger::LEVEL_ERROR, 'gift-voucher');
     }
@@ -79,7 +76,7 @@ trait PluginTrait
     // Private Methods
     // =========================================================================
 
-    private function _setPluginComponents()
+    private function _setPluginComponents(): void
     {
         $settings = $this->getSettings();
 
@@ -96,7 +93,7 @@ trait PluginTrait
         BaseHelper::registerModule();
     }
 
-    private function _setLogging()
+    private function _setLogging(): void
     {
         BaseHelper::setFileLogging('gift-voucher');
     }

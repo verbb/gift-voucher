@@ -9,7 +9,6 @@ use verbb\giftvoucher\models\VoucherTypeSiteModel;
 use Craft;
 use craft\web\Controller;
 
-use yii\base\Exception;
 use yii\web\Response;
 
 class VoucherTypesController extends Controller
@@ -17,7 +16,7 @@ class VoucherTypesController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         $this->requirePermission('giftVoucher-manageVoucherTypes');
 
@@ -55,7 +54,7 @@ class VoucherTypesController extends Controller
         return $this->renderTemplate('gift-voucher/voucher-types/_edit', $variables);
     }
 
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 

@@ -8,7 +8,7 @@ use craft\db\Table;
 
 class m200104_000000_include_code_content extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         // grab all existing Voucher Codes
         $rows = (new Query())
@@ -47,10 +47,10 @@ class m200104_000000_include_code_content extends Migration
             }
         }
 
-
+        return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200104_000000_include_code_content cannot be reverted.\n";
 

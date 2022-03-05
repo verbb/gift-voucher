@@ -22,10 +22,11 @@ use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
-use craft\queue\jobs\ResaveElements;
 
 use yii\base\Component;
 use yii\base\Exception;
+
+use Throwable;
 
 class VoucherTypesService extends Component
 {
@@ -40,13 +41,13 @@ class VoucherTypesService extends Component
     // Properties
     // =========================================================================
 
-    private $_fetchedAllVoucherTypes = false;
+    private bool $_fetchedAllVoucherTypes = false;
     private $_voucherTypesById;
     private $_voucherTypesByHandle;
-    private $_allVoucherTypeIds;
-    private $_editableVoucherTypeIds;
-    private $_siteSettingsByVoucherId = [];
-    private $_savingVoucherTypes = [];
+    private ?array $_allVoucherTypeIds;
+    private ?array $_editableVoucherTypeIds;
+    private array $_siteSettingsByVoucherId = [];
+    private array $_savingVoucherTypes = [];
 
 
     // Public Methods
@@ -66,7 +67,7 @@ class VoucherTypesService extends Component
         return $editableVoucherTypes;
     }
 
-    public function getEditableVoucherTypeIds(): array
+    public function getEditableVoucherTypeIds(): ?array
     {
         if (null === $this->_editableVoucherTypeIds) {
             $this->_editableVoucherTypeIds = [];
@@ -82,7 +83,7 @@ class VoucherTypesService extends Component
         return $this->_editableVoucherTypeIds;
     }
 
-    public function getAllVoucherTypeIds(): array
+    public function getAllVoucherTypeIds(): ?array
     {
         if (null === $this->_allVoucherTypeIds) {
             $this->_allVoucherTypeIds = [];
@@ -251,7 +252,7 @@ class VoucherTypesService extends Component
         return true;
     }
 
-    public function handleChangedVoucherType(ConfigEvent $event)
+    public function handleChangedVoucherType(ConfigEvent $event): void
     {
         $voucherTypeUid = $event->tokenMatches[0];
         $data = $event->newValue;
@@ -352,7 +353,6 @@ class VoucherTypesService extends Component
                 // site rows
                 $affectedSiteUids = array_keys($siteData);
 
-                /** @noinspection PhpUndefinedVariableInspection */
                 foreach ($allOldSiteSettingsRecords as $siteId => $siteSettingsRecord) {
                     $siteUid = array_search($siteId, $siteIdMap, false);
                     if (!in_array($siteUid, $affectedSiteUids, false)) {
@@ -365,7 +365,7 @@ class VoucherTypesService extends Component
             // -----------------------------------------------------------------
 
             if (!$isNewVoucherType) {
-                // Get all of the voucher IDs in this group
+                // Get all the voucher IDs in this group
                 $voucherIds = Voucher::find()
                     ->typeId($voucherTypeRecord->id)
                     ->anyStatus()
@@ -389,8 +389,7 @@ class VoucherTypesService extends Component
                         foreach ($voucherIds as $voucherId) {
                             App::maxPowerCaptain();
 
-                            // Loop through each of the changed sites and update all of the vouchers’ slugs and
-                            // URIs
+                            // Loop through each of the changed sites and update all the vouchers’ slugs and URIs
                             foreach ($sitesWithNewUriFormats as $siteId) {
                                 $voucher = Voucher::find()
                                     ->id($voucherId)
@@ -408,7 +407,7 @@ class VoucherTypesService extends Component
             }
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -440,7 +439,7 @@ class VoucherTypesService extends Component
         return true;
     }
 
-    public function handleDeletedVoucherType(ConfigEvent $event)
+    public function handleDeletedVoucherType(ConfigEvent $event): void
     {
         $uid = $event->tokenMatches[0];
         $voucherTypeRecord = $this->_getVoucherTypeRecord($uid);
@@ -468,7 +467,7 @@ class VoucherTypesService extends Component
 
             $voucherTypeRecord->delete();
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
 
             throw $e;
@@ -485,7 +484,7 @@ class VoucherTypesService extends Component
         );
     }
 
-    public function pruneDeletedSite(DeleteSiteEvent $event)
+    public function pruneDeletedSite(DeleteSiteEvent $event): void
     {
         $siteUid = $event->site->uid;
 
@@ -500,7 +499,7 @@ class VoucherTypesService extends Component
         }
     }
 
-    public function pruneDeletedField(FieldEvent $event)
+    public function pruneDeletedField(FieldEvent $event): void
     {
         /** @var Field $field */
         $field = $event->field;
@@ -577,7 +576,7 @@ class VoucherTypesService extends Component
         return false;
     }
 
-    public function afterSaveSiteHandler(SiteEvent $event)
+    public function afterSaveSiteHandler(SiteEvent $event): void
     {
         if ($event->isNew) {
             $primarySiteSettings = (new Query())
@@ -606,7 +605,7 @@ class VoucherTypesService extends Component
     // Private methods
     // =========================================================================
 
-    private function _memoizeVoucherType(VoucherTypeModel $voucherType)
+    private function _memoizeVoucherType(VoucherTypeModel $voucherType): void
     {
         $this->_voucherTypesById[$voucherType->id] = $voucherType;
         $this->_voucherTypesByHandle[$voucherType->handle] = $voucherType;

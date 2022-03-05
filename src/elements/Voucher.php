@@ -5,7 +5,6 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\db\VoucherQuery;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotDataEvent;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotFieldsEvent;
-use verbb\giftvoucher\models\VoucherTypeModel;
 use verbb\giftvoucher\records\VoucherRecord;
 
 use Craft;
@@ -15,13 +14,11 @@ use craft\elements\actions\Delete;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 
 use craft\commerce\base\Purchasable;
-use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
-use craft\commerce\models\TaxCategory;
-use craft\commerce\models\ShippingCategory;
 use craft\commerce\Plugin as Commerce;
 
 use yii\base\Exception;
@@ -43,12 +40,12 @@ class Voucher extends Purchasable
     // Properties
     // =========================================================================
 
-    public $id;
+    public ?int $id = null;
     public $typeId;
     public $taxCategoryId;
     public $shippingCategoryId;
     public $postDate;
-    public $expiryDate;
+    public ?DateTime $expiryDate = null;
     public $sku;
     public $price;
     public $customAmount;
@@ -72,7 +69,7 @@ class Voucher extends Purchasable
         return (string)$this->title;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->title;
     }
@@ -185,7 +182,7 @@ class Voucher extends Purchasable
         return $html;
     }
 
-    public function setEagerLoadedElements(string $handle, array $elements)
+    public function setEagerLoadedElements(string $handle, array $elements): void
     {
         if ($handle === 'existingCodes') {
             $this->_existingCodes = $elements;
@@ -196,7 +193,7 @@ class Voucher extends Purchasable
         parent::setEagerLoadedElements($handle, $elements);
     }
 
-    public static function eagerLoadingMap(array $sourceElements, string $handle)
+    public static function eagerLoadingMap(array $sourceElements, string $handle): array|null|false
     {
         if ($handle === 'existingCodes') {
             $userId = Craft::$app->getUser()->getId();
@@ -231,7 +228,7 @@ class Voucher extends Purchasable
         return $this->getStatus() === static::STATUS_LIVE;
     }
 
-    public function getStatus()
+    public function getStatus(): ?string
     {
         $status = parent::getStatus();
 
@@ -291,7 +288,7 @@ class Voucher extends Purchasable
         return false;
     }
 
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         $voucherType = $this->getType();
 
@@ -315,19 +312,19 @@ class Voucher extends Purchasable
             ->all();
     }
 
-    public function getProduct()
+    public function getProduct(): static
     {
         return $this;
     }
 
-    public function getFieldLayout()
+    public function getFieldLayout(): ?FieldLayout
     {
         $voucherType = $this->getType();
 
         return $voucherType ? $voucherType->getVoucherFieldLayout() : null;
     }
 
-    public function getUriFormat()
+    public function getUriFormat(): ?string
     {
         $voucherTypeSiteSettings = $this->getType()->getSiteSettings();
 
@@ -350,7 +347,7 @@ class Voucher extends Purchasable
     public function getTaxCategory()
     {
         if ($this->taxCategoryId) {
-            return Commerce::$plugin->getTaxCategories()->getTaxCategoryById($this->taxCategoryId);
+            return Commerce::getInstance()->getTaxCategories()->getTaxCategoryById($this->taxCategoryId);
         }
 
         return null;
@@ -359,7 +356,7 @@ class Voucher extends Purchasable
     public function getShippingCategory()
     {
         if ($this->shippingCategoryId) {
-            return Commerce::$plugin->getShippingCategories()->getShippingCategoryById($this->shippingCategoryId);
+            return Commerce::getInstance()->getShippingCategories()->getShippingCategoryById($this->shippingCategoryId);
         }
 
         return null;
@@ -389,7 +386,7 @@ class Voucher extends Purchasable
         return parent::beforeSave($isNew);
     }
 
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$isNew) {
             $voucherRecord = VoucherRecord::findOne($this->id);
@@ -405,8 +402,8 @@ class Voucher extends Purchasable
         $voucherRecord->postDate = $this->postDate;
         $voucherRecord->expiryDate = $this->expiryDate;
         $voucherRecord->typeId = $this->typeId;
-        $voucherRecord->promotable = (bool)$this->promotable;
-        $voucherRecord->availableForPurchase = (bool)$this->availableForPurchase;
+        $voucherRecord->promotable = $this->promotable;
+        $voucherRecord->availableForPurchase = $this->availableForPurchase;
         $voucherRecord->taxCategoryId = $this->taxCategoryId;
         $voucherRecord->shippingCategoryId = $this->shippingCategoryId;
         $voucherRecord->price = $this->price;
@@ -417,7 +414,7 @@ class Voucher extends Purchasable
             try {
                 $voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId);
                 $this->sku = Craft::$app->getView()->renderObjectTemplate($voucherType->skuFormat, $this);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->sku = '';
             }
         }
@@ -426,14 +423,14 @@ class Voucher extends Purchasable
 
         $voucherRecord->save(false);
 
-        return parent::afterSave($isNew);
+        parent::afterSave($isNew);
     }
 
 
     // Implement Purchasable
     // =========================================================================
 
-    public function getPurchasableId(): int
+    public function getPurchasableId(): ?int
     {
         return $this->id;
     }
@@ -460,7 +457,7 @@ class Voucher extends Purchasable
 
         // Remove custom fields
         if (($fieldLayout = $this->getFieldLayout()) !== null) {
-            foreach ($fieldLayout->getFields() as $field) {
+            foreach ($fieldLayout->getCustomFields() as $field) {
                 ArrayHelper::removeValue($voucherAttributes, $field->handle);
             }
         }
@@ -487,7 +484,7 @@ class Voucher extends Purchasable
 
     public function getPrice(): float
     {
-        return floatval($this->price);
+        return (float)$this->price;
     }
 
     public function getSku(): string
@@ -517,10 +514,10 @@ class Voucher extends Purchasable
 
     public function getIsPromotable(): bool
     {
-        return (bool)$this->promotable;
+        return $this->promotable;
     }
 
-    public function populateLineItem(LineItem $lineItem)
+    public function populateLineItem(LineItem $lineItem): void
     {
         if ($lineItem->purchasable === $this && $lineItem->purchasable->customAmount) {
             $options = $lineItem->options;
@@ -536,7 +533,7 @@ class Voucher extends Purchasable
     // Protected methods
     // =========================================================================
 
-    protected function route()
+    protected function route(): array|string|null
     {
         // Make sure the voucher type is set to have URLs for this site
         $siteId = Craft::$app->getSites()->currentSite->id;
@@ -609,7 +606,7 @@ class Voucher extends Purchasable
                 return ($shippingCategory ? Craft::t('site', $shippingCategory->name) : '');
             }
             case 'defaultPrice': {
-                $code = Commerce::$plugin->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+                $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
                 return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
             }

@@ -1,13 +1,10 @@
 <?php
 namespace verbb\giftvoucher\records;
 
-use verbb\giftvoucher\records\CodeRecord;
-
+use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 
 use craft\commerce\records\Order;
-
-use yii\db\ActiveQueryInterface;
 
 class RedemptionRecord extends ActiveRecord
 {
@@ -19,12 +16,12 @@ class RedemptionRecord extends ActiveRecord
         return '{{%giftvoucher_redemptions}}';
     }
 
-    public function getCode(): ActiveQueryInterface
+    public function getCode(): ActiveQuery
     {
         return $this->hasOne(CodeRecord::class, ['id' => 'codeId']);
     }
 
-    public function getOrder(): ActiveQueryInterface
+    public function getOrder(): ActiveQuery
     {
         return $this->hasOne(Order::class, ['id' => 'orderId']);
     }

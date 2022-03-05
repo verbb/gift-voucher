@@ -11,8 +11,9 @@ use verbb\giftvoucher\models\RedemptionModel;
 
 use Craft;
 use craft\base\Element;
+use craft\base\Field;
+use craft\errors\ElementNotFoundException;
 use craft\events\ConfigEvent;
-use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
@@ -23,7 +24,11 @@ use craft\commerce\models\LineItem;
 
 use yii\base\Component;
 use yii\base\Event;
+use yii\base\Exception;
 use yii\base\ModelEvent;
+
+use DateTime;
+use Throwable;
 
 class CodesService extends Component
 {
@@ -49,7 +54,7 @@ class CodesService extends Component
         return !(bool)Code::findOne(['codeKey' => $codeKey]);
     }
 
-    public static function handleCompletedOrder(Event $event)
+    public static function handleCompletedOrder(Event $event): void
     {
         try {
             /** @var Order $order */
@@ -99,7 +104,7 @@ class CodesService extends Component
                             $redemption = new RedemptionModel();
                             $redemption->codeId = $code->id;
                             $redemption->orderId = $order->id;
-                            $redemption->amount = (float)$adjustment->amount * -1;
+                            $redemption->amount = $adjustment->amount * -1;
                             
                             if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
                                 $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
@@ -127,7 +132,7 @@ class CodesService extends Component
 
                 GiftVoucher::log($error);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $error = Craft::t('app', 'Unable to complete gift voucher order: “{message}” {file}:{line}', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
@@ -141,14 +146,10 @@ class CodesService extends Component
     /**
      * Create a Code after an Order is completed
      *
-     * @param \verbb\giftvoucher\elements\Voucher $voucher
-     * @param \craft\commerce\elements\Order      $order
-     * @param \craft\commerce\models\LineItem     $lineItem
      *
-     * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
-     * @return bool
+     * @throws Throwable
+     * @throws ElementNotFoundException
+     * @throws Exception
      */
     public function codeVoucherByOrder(Voucher $voucher, Order $order, LineItem $lineItem): bool
     {
@@ -190,7 +191,7 @@ class CodesService extends Component
                     'errors' => Json::encode($code->getErrors()),
                 ]));
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $error = Craft::t('app', 'Unable to save voucher code for order: “{message}” {file}:{line}', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
@@ -206,10 +207,7 @@ class CodesService extends Component
     /**
      * Populates a Code by LineItem options and return the valid custom fields
      *
-     * @param \verbb\giftvoucher\elements\Code $code
-     * @param \craft\commerce\models\LineItem  $lineItem
      *
-     * @return array
      */
     public function populateCodeByLineItem(Code $code, LineItem $lineItem): array
     {
@@ -221,8 +219,8 @@ class CodesService extends Component
         $options = $lineItem->getOptions() ?? [];
 
         if ($fieldLayout = $code->getFieldLayout()) {
-            if ($fields = $fieldLayout->getFields()) {
-                /** @var \craft\base\Field $field */
+            if ($fields = $fieldLayout->getCustomFields()) {
+                /** @var Field $field */
                 foreach ($fields as $field){
                     $fieldHandle = $field->handle;
 
@@ -239,10 +237,8 @@ class CodesService extends Component
 
     /**
      * Validate Line Items that are Vouchers based on required Field Layout Fields
-     *
-     * @param \yii\base\ModelEvent $event
      */
-    public function handleValidateLineItem(ModelEvent $event)
+    public function handleValidateLineItem(ModelEvent $event): void
     {
         /** @var LineItem $lineItem */
         $lineItem = $event->sender;
@@ -280,7 +276,7 @@ class CodesService extends Component
         return $codeKey;
     }
 
-    public function matchCode($codeKey, &$error = '')
+    public function matchCode($codeKey, &$error = ''): bool
     {
         $code = Code::findOne(['codeKey' => $codeKey]);
 
@@ -305,7 +301,7 @@ class CodesService extends Component
             return false;
         }
 
-        // Check if has an amount left
+        // Check if voucher has an amount left
         if ($code->currentAmount <= 0) {
             $error = Craft::t('gift-voucher', 'Voucher code has no amount left');
 
@@ -313,7 +309,7 @@ class CodesService extends Component
         }
 
         // Check for expiry date
-        $today = new \DateTime();
+        $today = new DateTime();
         if ($code->expiryDate && $code->expiryDate->format('Ymd') < $today->format('Ymd')) {
             $error = Craft::t('gift-voucher', 'Voucher code is out of date');
 
@@ -323,7 +319,7 @@ class CodesService extends Component
         return true;
     }
 
-    public function handleChangedFieldLayout(ConfigEvent $event)
+    public function handleChangedFieldLayout(ConfigEvent $event): void
     {
         $data = $event->newValue;
 
@@ -344,9 +340,8 @@ class CodesService extends Component
         $fieldsService->saveLayout($layout);
     }
 
-    public function pruneDeletedField(FieldEvent $event)
+    public function pruneDeletedField($event): void
     {
-        /** @var Field $field */
         $field = $event->field;
         $fieldUid = $field->uid;
 
@@ -365,12 +360,12 @@ class CodesService extends Component
         }
     }
 
-    public function handleDeletedFieldLayout(ConfigEvent $event)
+    public function handleDeletedFieldLayout(ConfigEvent $event): void
     {
         Craft::$app->getFields()->deleteLayoutsByType(Code::class);
     }
 
-    public function saveFieldLayout()
+    public function saveFieldLayout(): void
     {
         $projectConfig = Craft::$app->getProjectConfig();
         $fieldLayoutUid = StringHelper::UUID();

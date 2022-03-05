@@ -3,7 +3,6 @@ namespace verbb\giftvoucher\elements\db;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
-use verbb\giftvoucher\models\VoucherTypeModel;
 
 use Craft;
 use craft\db\Query;
@@ -13,21 +12,20 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\Db;
 
 use DateTime;
-use yii\db\Connection;
 
 class VoucherQuery extends ElementQuery
 {
     // Properties
     // =========================================================================
 
-    public $editable = false;
-    public $price;
-    public $sku;
-    public $typeId;
-    public $postDate;
-    public $expiryDate;
-    public $promotable;
-    public $availableForPurchase;
+    public bool $editable = false;
+    public mixed $price = null;
+    public mixed $sku = null;
+    public mixed $typeId = null;
+    public mixed $postDate = null;
+    public mixed $expiryDate = null;
+    public mixed $promotable = null;
+    public mixed $availableForPurchase = null;
 
 
     // Public Methods
@@ -60,7 +58,7 @@ class VoucherQuery extends ElementQuery
         }
     }
 
-    public function type($value)
+    public function type($value): static
     {
         if ($value instanceof VoucherType) {
             $this->typeId = $value->id;
@@ -77,26 +75,26 @@ class VoucherQuery extends ElementQuery
         return $this;
     }
 
-    public function typeId($value)
+    public function typeId($value): static
     {
         $this->typeId = $value;
 
         return $this;
     }
 
-    public function price($value)
+    public function price($value): static
     {
         $this->price = $value;
         return $this;
     }
 
-    public function sku($value)
+    public function sku($value): static
     {
         $this->sku = $value;
         return $this;
     }
 
-    public function before($value)
+    public function before($value): static
     {
         if ($value instanceof DateTime) {
             $value = $value->format(DateTime::W3C);
@@ -108,7 +106,7 @@ class VoucherQuery extends ElementQuery
         return $this;
     }
 
-    public function after($value)
+    public function after($value): static
     {
         if ($value instanceof DateTime) {
             $value = $value->format(DateTime::W3C);
@@ -120,35 +118,35 @@ class VoucherQuery extends ElementQuery
         return $this;
     }
 
-    public function editable(bool $value = true)
+    public function editable(bool $value = true): static
     {
         $this->editable = $value;
 
         return $this;
     }
 
-    public function postDate($value)
+    public function postDate($value): static
     {
         $this->postDate = $value;
 
         return $this;
     }
 
-    public function expiryDate($value)
+    public function expiryDate($value): static
     {
         $this->expiryDate = $value;
 
         return $this;
     }
 
-    public function promotable(bool $value = true)
+    public function promotable(bool $value = true): static
     {
         $this->promotable = $value;
 
         return $this;
     }
 
-    public function availableForPurchase(bool $value = true)
+    public function availableForPurchase(bool $value = true): static
     {
         $this->availableForPurchase = $value;
 
@@ -220,53 +218,49 @@ class VoucherQuery extends ElementQuery
         return parent::beforePrepare();
     }
 
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): mixed
     {
-        $currentTimeDb = Db::prepareDateForDb(new \DateTime());
+        $currentTimeDb = Db::prepareDateForDb(new DateTime());
 
-        switch ($status) {
-            case Voucher::STATUS_LIVE:
-                return [
-                    'and',
-                    [
-                        'elements.enabled' => true,
-                        'elements_sites.enabled' => true
-                    ],
-                    ['<=', 'giftvoucher_vouchers.postDate', $currentTimeDb],
-                    [
-                        'or',
-                        ['giftvoucher_vouchers.expiryDate' => null],
-                        ['>', 'giftvoucher_vouchers.expiryDate', $currentTimeDb]
-                    ]
-                ];
-            case Voucher::STATUS_PENDING:
-                return [
-                    'and',
-                    [
-                        'elements.enabled' => true,
-                        'elements_sites.enabled' => true,
-                    ],
-                    ['>', 'giftvoucher_vouchers.postDate', $currentTimeDb]
-                ];
-            case Voucher::STATUS_EXPIRED:
-                return [
-                    'and',
-                    [
-                        'elements.enabled' => true,
-                        'elements_sites.enabled' => true
-                    ],
-                    ['not', ['giftvoucher_vouchers.expiryDate' => null]],
-                    ['<=', 'giftvoucher_vouchers.expiryDate', $currentTimeDb]
-                ];
-            default:
-                return parent::statusCondition($status);
-        }
+        return match ($status) {
+            Voucher::STATUS_LIVE => [
+                'and',
+                [
+                    'elements.enabled' => true,
+                    'elements_sites.enabled' => true
+                ],
+                ['<=', 'giftvoucher_vouchers.postDate', $currentTimeDb],
+                [
+                    'or',
+                    ['giftvoucher_vouchers.expiryDate' => null],
+                    ['>', 'giftvoucher_vouchers.expiryDate', $currentTimeDb]
+                ]
+            ],
+            Voucher::STATUS_PENDING => [
+                'and',
+                [
+                    'elements.enabled' => true,
+                    'elements_sites.enabled' => true,
+                ],
+                ['>', 'giftvoucher_vouchers.postDate', $currentTimeDb]
+            ],
+            Voucher::STATUS_EXPIRED => [
+                'and',
+                [
+                    'elements.enabled' => true,
+                    'elements_sites.enabled' => true
+                ],
+                ['not', ['giftvoucher_vouchers.expiryDate' => null]],
+                ['<=', 'giftvoucher_vouchers.expiryDate', $currentTimeDb]
+            ],
+            default => parent::statusCondition($status),
+        };
     }
 
     // Private Methods
     // =========================================================================
 
-    private function _applyEditableParam()
+    private function _applyEditableParam(): void
     {
         if (!$this->editable) {
             return;

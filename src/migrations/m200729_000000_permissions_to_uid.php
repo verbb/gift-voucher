@@ -7,7 +7,7 @@ use craft\db\Table;
 
 class m200729_000000_permissions_to_uid extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $permissions = (new Query())
             ->select(['id', 'name'])
@@ -33,9 +33,11 @@ class m200729_000000_permissions_to_uid extends Migration
                 $this->update(Table::USERPERMISSIONS, ['name' => $permission], ['id' => $id]);
             }
         }
+
+        return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200729_000000_permissions_to_uid cannot be reverted.\n";
 

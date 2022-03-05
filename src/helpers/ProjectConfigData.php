@@ -5,7 +5,6 @@ use verbb\giftvoucher\elements\Code;
 
 use Craft;
 use craft\db\Query;
-use craft\helpers\Json;
 
 class ProjectConfigData
 {

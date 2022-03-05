@@ -5,7 +5,6 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\records\VoucherTypeRecord;
 
-use Craft;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\ArrayHelper;
@@ -19,26 +18,26 @@ class VoucherTypeModel extends Model
     // Properties
     // =========================================================================
 
-    public $id;
-    public $name;
-    public $handle;
+    public ?int $id = null;
+    public string $name = '';
+    public string $handle = '';
     public $skuFormat;
     public $template;
     public $fieldLayoutId;
-    public $uid;
+    public ?string $uid = null;
 
-    private $_siteSettings;
+    private array $_siteSettings;
 
 
     // Public Methods
     // =========================================================================
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->handle;
+        return (string) $this->handle;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true],
@@ -69,7 +68,7 @@ class VoucherTypeModel extends Model
         return $this->_siteSettings;
     }
 
-    public function setSiteSettings(array $siteSettings)
+    public function setSiteSettings(array $siteSettings): void
     {
         $this->_siteSettings = $siteSettings;
 
@@ -80,8 +79,7 @@ class VoucherTypeModel extends Model
 
     public function getVoucherFieldLayout(): FieldLayout
     {
-        $behavior = $this->getBehavior('voucherFieldLayout');
-        return $behavior->getFieldLayout();
+        return $this->getBehavior('voucherFieldLayout')->getFieldLayout();
     }
 
     public function behaviors(): array

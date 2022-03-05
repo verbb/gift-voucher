@@ -3,18 +3,16 @@ namespace verbb\giftvoucher\migrations;
 
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\records\CodeRecord;
-use verbb\giftvoucher\records\RedemptionRecord;
 
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\records\Element;
 use craft\records\Element_SiteSettings;
-use craft\queue\jobs\ResaveElements;
 
 class m190825_000000_migrate_codes_to_elements extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         // Find any orphaned records with no element
         $codeIds = (new Query())
@@ -74,7 +72,7 @@ class m190825_000000_migrate_codes_to_elements extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190825_000000_migrate_codes_to_elements cannot be reverted.\n";
         return false;

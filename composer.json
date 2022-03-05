@@ -2,7 +2,7 @@
     "name": "verbb/gift-voucher",
     "description": "Plugin for Craft Commerce implementing gift vouchers.",
     "type": "craft-plugin",
-    "version": "2.7.0",
+    "version": "3.0.0-beta.1",
     "keywords": [
         "craft",
         "cms",
@@ -25,9 +25,10 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.5.0",
-        "craftcms/commerce": "^3.4.0",
-        "verbb/base": "^1.0.2"
+        "php": "^8.0.2",
+        "craftcms/cms": "^4.0.0-alpha",
+        "craftcms/commerce": "^4.0.0-alpha",
+        "verbb/base": "^2.0.0-beta"
     },
     "autoload": {
         "psr-4": {
@@ -37,7 +38,7 @@
     "extra": {
         "name": "Gift Voucher",
         "handle": "gift-voucher",
-        "changelogUrl": "https://raw.githubusercontent.com/verbb/gift-voucher/craft-3/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/verbb/gift-voucher/craft-4/CHANGELOG.md",
         "class": "verbb\\giftvoucher\\GiftVoucher"
     }
 }

@@ -94,7 +94,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
     // Private Methods
     // =========================================================================
 
-    private function _getAdjustment(Order $order, Code $voucherCode)
+    private function _getAdjustment(Order $order, Code $voucherCode): bool|OrderAdjustment
     {
         //preparing model
         $adjustment = new OrderAdjustment;
@@ -106,7 +106,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
             'code' => $voucherCode->codeKey
         ]);
 
-        // Check if there is a amount left
+        // Check if there is an amount left
         if ($voucherCode->currentAmount <= 0) {
             return false;
         }

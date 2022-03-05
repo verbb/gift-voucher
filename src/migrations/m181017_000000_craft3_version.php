@@ -4,16 +4,13 @@ namespace verbb\giftvoucher\migrations;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\records\VoucherTypeSiteRecord;
 
-use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\MigrationHelper;
-use craft\helpers\Component as ComponentHelper;
-use craft\helpers\StringHelper;
 
 class m181017_000000_craft3_version extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         // Update all the Element references
         $this->update('{{%elements}}', ['type' => Voucher::class], ['type' => 'GiftVoucher_Voucher']);
@@ -28,10 +25,10 @@ class m181017_000000_craft3_version extends Migration
             MigrationHelper::renameColumn('{{%giftvoucher_vouchertypes_i18n}}', 'locale__siteId', 'siteId', $this);
 
             // And then just recreate them.
-            $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchertypes_i18n}}', 'voucherTypeId,siteId', true), '{{%giftvoucher_vouchertypes_i18n}}', 'voucherTypeId,siteId', true);
-            $this->createIndex($this->db->getIndexName('{{%giftvoucher_vouchertypes_i18n}}', 'siteId', false), '{{%giftvoucher_vouchertypes_i18n}}', 'siteId', false);
-            $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchertypes_i18n}}', 'siteId'), '{{%giftvoucher_vouchertypes_i18n}}', 'siteId', '{{%sites}}', 'id', 'CASCADE', 'CASCADE');
-            $this->addForeignKey($this->db->getForeignKeyName('{{%giftvoucher_vouchertypes_i18n}}', 'voucherTypeId'), '{{%giftvoucher_vouchertypes_i18n}}', 'voucherTypeId', '{{%giftvoucher_vouchertypes}}', 'id', 'CASCADE', null);
+            $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes_i18n}}', 'voucherTypeId,siteId', true);
+            $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes_i18n}}', 'siteId', false);
+            $this->addForeignKey($this->db->getForeignKeyName(), '{{%giftvoucher_vouchertypes_i18n}}', 'siteId', '{{%sites}}', 'id', 'CASCADE', 'CASCADE');
+            $this->addForeignKey($this->db->getForeignKeyName(), '{{%giftvoucher_vouchertypes_i18n}}', 'voucherTypeId', '{{%giftvoucher_vouchertypes}}', 'id', 'CASCADE', null);
 
             $this->addColumn('{{%giftvoucher_vouchertypes_i18n}}', 'template', $this->string(500));
             $this->addColumn('{{%giftvoucher_vouchertypes_i18n}}', 'hasUrls', $this->boolean());
@@ -79,9 +76,11 @@ class m181017_000000_craft3_version extends Migration
 
         $this->dropTable('{{%giftvoucher_voucher_products}}');
         $this->dropTable('{{%giftvoucher_voucher_producttypes}}');
+
+        return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m181017_000000_craft3_version cannot be reverted.\n";
         return false;

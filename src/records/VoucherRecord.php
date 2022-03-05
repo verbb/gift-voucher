@@ -1,13 +1,12 @@
 <?php
 namespace verbb\giftvoucher\records;
 
+use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 use craft\records\Element;
 
 use craft\commerce\records\TaxCategory;
 use craft\commerce\records\ShippingCategory;
-
-use yii\db\ActiveQueryInterface;
 
 class VoucherRecord extends ActiveRecord
 {
@@ -19,22 +18,22 @@ class VoucherRecord extends ActiveRecord
         return '{{%giftvoucher_vouchers}}';
     }
 
-    public function getType(): ActiveQueryInterface
+    public function getType(): ActiveQuery
     {
         return $this->hasOne(VoucherTypeRecord::class, ['id' => 'typeId']);
     }
 
-    public function getTaxCategory(): ActiveQueryInterface
+    public function getTaxCategory(): ActiveQuery
     {
         return $this->hasOne(TaxCategory::class, ['id' => 'taxCategoryId']);
     }
 
-    public function getShippingCategory(): ActiveQueryInterface
+    public function getShippingCategory(): ActiveQuery
     {
         return $this->hasOne(ShippingCategory::class, ['id' => 'shippingCategoryId']);
     }
 
-    public function getElement(): ActiveQueryInterface
+    public function getElement(): ActiveQuery
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
     }
