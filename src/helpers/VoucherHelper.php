@@ -9,10 +9,13 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Localization;
 use craft\web\Request;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use yii\web\NotFoundHttpException;
 
 class VoucherHelper
 {
+    // Static Methods
+    // =========================================================================
+
     public static function voucherFromPost(Request $request = null): Voucher
     {
         if ($request === null) {

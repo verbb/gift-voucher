@@ -27,7 +27,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
     // Properties
     // =========================================================================
 
-    private $_orderTotal;
+    private ?float $_orderTotal = null;
 
 
     // Public Methods
@@ -38,10 +38,10 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $adjustments = [];
 
         $this->_orderTotal = $order->getTotalPrice();
-        $settings = GiftVoucher::getInstance()->getSettings();
+        $settings = GiftVoucher::$plugin->getSettings();
 
         // Get code by session
-        $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
+        $giftVoucherCodes = GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($order);
 
         if (!$giftVoucherCodes || count($giftVoucherCodes) == 0) {
             return [];

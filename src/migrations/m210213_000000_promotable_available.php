@@ -5,6 +5,9 @@ use craft\db\Migration;
 
 class m210213_000000_promotable_available extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         $this->addColumn('{{%giftvoucher_vouchers}}', 'promotable', $this->boolean()->after('expiryDate'));

@@ -61,7 +61,7 @@ class VouchersPreviewController extends Controller
         return $this->redirect($url);
     }
 
-    public function actionViewSharedVoucher($voucherId, $site = null)
+    public function actionViewSharedVoucher($voucherId, $site = null): void
     {
         $this->requireToken();
 
@@ -72,8 +72,6 @@ class VouchersPreviewController extends Controller
         }
 
         $this->_showVoucher($voucher);
-
-        return null;
     }
 
     public function actionSaveVoucher(): ?Response

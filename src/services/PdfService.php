@@ -51,9 +51,9 @@ class PdfService extends Component
         ]));
     }
 
-    public function renderPdf($codes, $order = [], $lineItem = null, $option = '', $templatePath = null): string
+    public function renderPdf($codes, Order $order = null, $lineItem = null, $option = '', $templatePath = null): string
     {
-        $settings = GiftVoucher::getInstance()->getSettings();
+        $settings = GiftVoucher::$plugin->getSettings();
         $format = null;
 
         $request = Craft::$app->getRequest();

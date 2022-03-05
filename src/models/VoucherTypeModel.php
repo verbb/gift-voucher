@@ -19,14 +19,14 @@ class VoucherTypeModel extends Model
     // =========================================================================
 
     public ?int $id = null;
-    public string $name = '';
-    public string $handle = '';
-    public $skuFormat;
-    public $template;
-    public $fieldLayoutId;
+    public ?string $name = null;
+    public ?string $handle = null;
+    public ?string $skuFormat = null;
+    public ?string $template = null;
+    public ?int $fieldLayoutId = null;
     public ?string $uid = null;
 
-    private array $_siteSettings;
+    private ?array $_siteSettings = null;
 
 
     // Public Methods

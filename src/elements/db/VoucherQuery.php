@@ -3,6 +3,7 @@ namespace verbb\giftvoucher\elements\db;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\models\VoucherTypeModel;
 
 use Craft;
 use craft\db\Query;
@@ -60,7 +61,7 @@ class VoucherQuery extends ElementQuery
 
     public function type($value): static
     {
-        if ($value instanceof VoucherType) {
+        if ($value instanceof VoucherTypeModel) {
             $this->typeId = $value->id;
         } else if ($value !== null) {
             $this->typeId = (new Query())

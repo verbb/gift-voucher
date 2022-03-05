@@ -8,6 +8,9 @@ use craft\db\Table;
 
 class m200104_000000_include_code_content extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         // grab all existing Voucher Codes

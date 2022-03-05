@@ -8,7 +8,6 @@ use verbb\giftvoucher\records\CodeRecord;
 
 use Craft;
 use craft\base\Element;
-use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Delete;
@@ -22,7 +21,6 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 
-use yii\base\Model;
 use yii\base\InvalidConfigException;
 
 use DateTime;
@@ -39,15 +37,15 @@ class Code extends Element
     // =========================================================================
 
     public ?int $id = null;
-    public $voucherId;
-    public $orderId;
-    public $lineItemId;
-    public $codeKey;
-    public $originalAmount;
-    public $currentAmount;
+    public ?int $voucherId = null;
+    public ?int $orderId = null;
+    public ?int $lineItemId = null;
+    public ?string $codeKey = null;
+    public ?float $originalAmount = null;
+    public ?float $currentAmount = null;
     public ?DateTime $expiryDate = null;
 
-    private array|Model|null|ElementInterface $_voucher;
+    private ?Voucher $_voucher;
     private ?Order $_order;
     private ?LineItem $_lineItem;
 
@@ -77,7 +75,7 @@ class Code extends Element
 
     public static function defineSources(string $context = null): array
     {
-        $voucherTypes = GiftVoucher::getInstance()->getVoucherTypes()->getAllVoucherTypes();
+        $voucherTypes = GiftVoucher::$plugin->getVoucherTypes()->getAllVoucherTypes();
 
         $voucherTypeIds = [];
 
@@ -201,7 +199,7 @@ class Code extends Element
         return UrlHelper::cpUrl('gift-voucher/codes/' . $this->id);
     }
 
-    public function getVoucher(): ElementInterface|Model|array|null
+    public function getVoucher(): ?Voucher
     {
         if ($this->_voucher) {
             return $this->_voucher;
@@ -267,7 +265,7 @@ class Code extends Element
         return (string) $this->getVoucher();
     }
 
-    public function getAmount()
+    public function getAmount(): ?float
     {
         return $this->currentAmount;
     }
@@ -286,7 +284,7 @@ class Code extends Element
         return [];
     }
 
-    public function getPdfUrl($option = null)
+    public function getPdfUrl($option = null): string
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option = null);
     }
@@ -317,7 +315,7 @@ class Code extends Element
         $codeRecord->currentAmount = $this->currentAmount;
         $codeRecord->expiryDate = $this->expiryDate;
 
-        $defaultExpiry = GiftVoucher::getInstance()->getSettings()->expiry;
+        $defaultExpiry = GiftVoucher::$plugin->getSettings()->expiry;
 
         // If not specifying an expiry, and we have a default expiry
         if ($isNew && !$codeRecord->expiryDate && $defaultExpiry) {
@@ -352,8 +350,8 @@ class Code extends Element
         }
 
         do {
-            $codeKey = GiftVoucher::getInstance()->getCodes()->generateCodeKey();
-        } while (!GiftVoucher::getInstance()->getCodes()->isCodeKeyUnique($codeKey));
+            $codeKey = GiftVoucher::$plugin->getCodes()->generateCodeKey();
+        } while (!GiftVoucher::$plugin->getCodes()->isCodeKeyUnique($codeKey));
 
         return $codeKey;
     }

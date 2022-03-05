@@ -15,15 +15,15 @@ class VoucherTypeSiteModel extends Model
     // =========================================================================
 
     public ?int $id = null;
-    public $voucherTypeId;
-    public $siteId;
-    public $hasUrls;
-    public $uriFormat;
-    public $template;
+    public ?int $voucherTypeId = null;
+    public ?int $siteId = null;
+    public ?bool $hasUrls = null;
+    public ?string $uriFormat = null;
+    public ?string $template = null;
     public bool $uriFormatIsRequired = true;
 
-    private VoucherTypeModel $_voucherType;
-    private Site $_site;
+    private ?VoucherTypeModel $_voucherType = null;
+    private ?Site $_site = null;
 
 
     // Public Methods

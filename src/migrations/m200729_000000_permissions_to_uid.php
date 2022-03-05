@@ -7,6 +7,9 @@ use craft\db\Table;
 
 class m200729_000000_permissions_to_uid extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         $permissions = (new Query())

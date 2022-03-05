@@ -12,6 +12,9 @@ use craft\records\Element_SiteSettings;
 
 class m190825_000000_migrate_codes_to_elements extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         // Find any orphaned records with no element

@@ -7,6 +7,7 @@ use verbb\giftvoucher\helpers\CodeHelper;
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
+use craft\errors\InvalidFieldException;
 
 use craft\commerce\elements\Order as OrderElement;
 
@@ -19,7 +20,7 @@ class Order extends Component implements CodeStorageInterface
     // Properties
     // =========================================================================
 
-    public $fieldHandle;
+    public ?string $fieldHandle = null;
 
 
     // Public Methods
@@ -29,10 +30,12 @@ class Order extends Component implements CodeStorageInterface
      *
      * @param                                $code
      *
-     *
+     * @param OrderElement $order
+     * @return bool
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws Throwable
+     * @throws InvalidFieldException
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -58,10 +61,12 @@ class Order extends Component implements CodeStorageInterface
      *
      * @param                                $code
      *
-     *
+     * @param OrderElement $order
+     * @return bool
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws Throwable
+     * @throws InvalidFieldException
      * @author Robin Schambach
      * @since  2.0.16
      */
@@ -97,8 +102,10 @@ class Order extends Component implements CodeStorageInterface
      *
      * @return Code[]
      *
-     * @author Robin Schambach
+     * @throws InvalidFieldException
+     * @throws InvalidFieldException
      * @since  2.0.16
+     * @author Robin Schambach
      */
     public function getCodes(OrderElement $order): array
     {
@@ -115,8 +122,10 @@ class Order extends Component implements CodeStorageInterface
      *
      * @return string[]
      *
-     * @author Robin Schambach
+     * @throws InvalidFieldException
+     * @throws InvalidFieldException
      * @since  2.0.16
+     * @author Robin Schambach
      */
     public function getCodeKeys(OrderElement $order): array
     {

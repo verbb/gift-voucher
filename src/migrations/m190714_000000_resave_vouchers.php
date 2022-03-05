@@ -9,6 +9,9 @@ use craft\queue\jobs\ResaveElements;
 
 class m190714_000000_resave_vouchers extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         Craft::$app->getQueue()->push(new ResaveElements([

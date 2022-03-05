@@ -3,12 +3,14 @@ namespace verbb\giftvoucher\events;
 
 use craft\events\CancelableEvent;
 
+use craft\commerce\elements\Order;
+
 class VoucherAdjustmentsEvent extends CancelableEvent
 {
     // Properties
     // =========================================================================
 
-    public $order;
-    public $giftVoucherCodes;
-    public $adjustments;
+    public Order $order;
+    public array $giftVoucherCodes;
+    public array $adjustments;
 }

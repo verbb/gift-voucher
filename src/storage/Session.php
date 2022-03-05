@@ -13,16 +13,16 @@ use craft\commerce\elements\Order;
 
 class Session extends Component implements CodeStorageInterface
 {
+    // Constants
+    // =========================================================================
+
+    const CODE_KEY = 'giftVoucher.giftVoucherCodes';
+
+
     // Properties
     // =========================================================================
 
-    /**
-     * The key for code storing
-     */
-    const CODE_KEY = 'giftVoucher.giftVoucherCodes';
-    
-    /** @var Request */
-    public Request $request;
+    public ?Request $request = null;
 
 
     // Public Methods
@@ -40,7 +40,8 @@ class Session extends Component implements CodeStorageInterface
      *
      * @param                                $code
      *
-     *
+     * @param Order $order
+     * @return bool
      * @throws MissingComponentException
      * @author Robin Schambach
      * @since  2.0.16
@@ -69,6 +70,7 @@ class Session extends Component implements CodeStorageInterface
      * @param Order $order
      *
      *
+     * @return bool
      * @throws MissingComponentException
      * @author Robin Schambach
      * @since  2.0.16

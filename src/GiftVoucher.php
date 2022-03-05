@@ -77,6 +77,7 @@ class GiftVoucher extends Plugin
         self::$plugin = $this;
 
         $this->_setPluginComponents();
+        $this->_setLogging();
         $this->_registerCpRoutes();
         $this->_registerElementTypes();
         $this->_registerFieldTypes();
@@ -342,21 +343,19 @@ class GiftVoucher extends Plugin
         });
     }
 
-    private function _defineFieldLayoutElements()
+    private function _defineFieldLayoutElements(): void: void
     {
-        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_STANDARD_FIELDS, function(DefineFieldLayoutFieldsEvent $e) {
+        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS, function(DefineFieldLayoutFieldsEvent $e) {
             /** @var FieldLayout $fieldLayout */
             $fieldLayout = $e->sender;
 
-            switch ($fieldLayout->type) {
-                case Voucher::class:
-                    $e->fields[] = TitleField::class;
-                    break;
+            if ($fieldLayout->type == Voucher::class) {
+                $e->fields[] = TitleField::class;
             }
         });
     }
 
-    private function _registerResaveCommand()
+    private function _registerResaveCommand(): void: void
     {
         if (!Craft::$app instanceof ConsoleApplication) {
             return;

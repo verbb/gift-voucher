@@ -5,6 +5,7 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\db\VoucherQuery;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotDataEvent;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotFieldsEvent;
+use verbb\giftvoucher\models\VoucherTypeModel;
 use verbb\giftvoucher\records\VoucherRecord;
 
 use Craft;
@@ -17,12 +18,16 @@ use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\base\Purchasable;
 use craft\commerce\models\LineItem;
-use craft\commerce\Plugin as Commerce;
+use craft\commerce\models\ShippingCategory;
+use craft\commerce\models\TaxCategory;
 
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+
+use DateTime;
 
 class Voucher extends Purchasable
 {
@@ -41,19 +46,19 @@ class Voucher extends Purchasable
     // =========================================================================
 
     public ?int $id = null;
-    public $typeId;
-    public $taxCategoryId;
-    public $shippingCategoryId;
-    public $postDate;
+    public ?int $typeId = null;
+    public ?int $taxCategoryId = null;
+    public ?int $shippingCategoryId = null;
+    public ?DateTime $postDate = null;
     public ?DateTime $expiryDate = null;
-    public $sku;
-    public $price;
-    public $customAmount;
-    public $promotable = true;
-    public $availableForPurchase = true;
+    public ?string $sku = null;
+    public ?float $price = null;
+    public ?float $customAmount = null;
+    public bool $promotable = true;
+    public bool $availableForPurchase = true;
 
-    private $_voucherType;
-    private $_existingCodes;
+    private ?VoucherTypeModel $_voucherType = null;
+    private ?array $_existingCodes = null;
 
 
     // Public Methods
@@ -168,18 +173,6 @@ class Voucher extends Purchasable
             self::STATUS_EXPIRED => Craft::t('gift-voucher', 'Expired'),
             self::STATUS_DISABLED => Craft::t('gift-voucher', 'Disabled')
         ];
-    }
-
-    public function getEditorHtml(): string
-    {
-        $viewService = Craft::$app->getView();
-        $html = $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'titleField', [$this]);
-        $html .= parent::getEditorHtml();
-        $html .= $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'generalFields', [$this]);
-        $html .= $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'behavioralMetaFields', [$this]);
-        $html .= $viewService->renderTemplateMacro('gift-voucher/vouchers/_fields', 'generalMetaFields', [$this]);
-
-        return $html;
     }
 
     public function setEagerLoadedElements(string $handle, array $elements): void
@@ -299,7 +292,7 @@ class Voucher extends Purchasable
         return null;
     }
 
-    public function getPdfUrl(LineItem $lineItem, $option = null)
+    public function getPdfUrl(LineItem $lineItem, $option = null): string
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrl($lineItem->order, $lineItem);
     }
@@ -344,7 +337,7 @@ class Voucher extends Purchasable
         return $this->typeId ? $this->_voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId) : null;
     }
 
-    public function getTaxCategory()
+    public function getTaxCategory(): ?TaxCategory
     {
         if ($this->taxCategoryId) {
             return Commerce::getInstance()->getTaxCategories()->getTaxCategoryById($this->taxCategoryId);
@@ -353,7 +346,7 @@ class Voucher extends Purchasable
         return null;
     }
 
-    public function getShippingCategory()
+    public function getShippingCategory(): ?ShippingCategory
     {
         if ($this->shippingCategoryId) {
             return Commerce::getInstance()->getShippingCategories()->getShippingCategoryById($this->shippingCategoryId);
@@ -588,7 +581,6 @@ class Voucher extends Purchasable
 
     protected function tableAttributeHtml(string $attribute): string
     {
-        /* @var $voucherType VoucherType */
         $voucherType = $this->getType();
 
         switch ($attribute) {

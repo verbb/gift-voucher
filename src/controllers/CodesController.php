@@ -29,6 +29,7 @@ class CodesController extends Controller
     public function actionEdit(int $codeId = null, Code $code = null): Response
     {
         $variables = [];
+
         if ($code === null) {
             if ($codeId === null) {
                 $code = new Code();
@@ -55,7 +56,7 @@ class CodesController extends Controller
         }
 
         // include each field layout tab
-        foreach ($code->getFieldLayout()->getTabs() as $index => $tab) {
+        foreach ($code->getFieldLayout()->getTabs() as $tab) {
             // Do any of the fields on this tab have errors?
             $hasErrors = false;
 

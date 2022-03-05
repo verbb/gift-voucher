@@ -17,7 +17,6 @@ class GiftVoucherVariable
     // Public Methods
     // =========================================================================
 
-
     public function getPlugin(): GiftVoucher
     {
         return GiftVoucher::$plugin;
@@ -55,10 +54,10 @@ class GiftVoucherVariable
         return $query;
     }
 
-    public function getVoucherCodes()
+    public function getVoucherCodes(): array
     {
         $cart = Commerce::getInstance()->getCarts()->getCart();
-        return GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($cart);
+        return GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($cart);
     }
 
     public function isVoucher(LineItem $lineItem): bool
@@ -75,7 +74,7 @@ class GiftVoucherVariable
         return $adjuster->sourceSnapshot['codeKey'] ?? false;
     }
 
-    public function getPdfUrl(LineItem $lineItem)
+    public function getPdfUrl(LineItem $lineItem): ?string
     {
         if ($this->isVoucher($lineItem)) {
             $order = $lineItem->order;
@@ -86,7 +85,7 @@ class GiftVoucherVariable
         return null;
     }
 
-    public function getOrderPdfUrl(Order $order)
+    public function getOrderPdfUrl(Order $order): string
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrl($order);
     }

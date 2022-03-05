@@ -9,6 +9,7 @@ use craft\web\Controller;
 use craft\commerce\Plugin as Commerce;
 
 use yii\web\HttpException;
+use yii\web\Response;
 
 class DownloadsController extends Controller
 {
@@ -21,7 +22,7 @@ class DownloadsController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionPdf(): \craft\web\Response|\yii\console\Response
+    public function actionPdf(): Response|string
     {
         $code = [];
         $request = Craft::$app->getRequest();
@@ -55,8 +56,8 @@ class DownloadsController extends Controller
             $order = $codes[0]->order;
         }
 
-        $pdf = GiftVoucher::getInstance()->getPdf()->renderPdf($codes, $order, $lineItem, $option);
-        $filenameFormat = GiftVoucher::getInstance()->getSettings()->voucherCodesPdfFilenameFormat;
+        $pdf = GiftVoucher::$plugin->getPdf()->renderPdf($codes, $order, $lineItem, $option);
+        $filenameFormat = GiftVoucher::$plugin->getSettings()->voucherCodesPdfFilenameFormat;
 
         $fileName = $this->getView()->renderObjectTemplate($filenameFormat, $order);
 

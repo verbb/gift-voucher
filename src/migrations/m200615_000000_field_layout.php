@@ -8,6 +8,9 @@ use craft\records\FieldLayout;
 
 class m200615_000000_field_layout extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         $this->insert(FieldLayout::tableName(), ['type' => Code::class]);

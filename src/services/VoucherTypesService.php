@@ -42,12 +42,12 @@ class VoucherTypesService extends Component
     // =========================================================================
 
     private bool $_fetchedAllVoucherTypes = false;
-    private $_voucherTypesById;
-    private $_voucherTypesByHandle;
-    private ?array $_allVoucherTypeIds;
-    private ?array $_editableVoucherTypeIds;
-    private array $_siteSettingsByVoucherId = [];
-    private array $_savingVoucherTypes = [];
+    private ?array $_voucherTypesById = null;
+    private ?array $_voucherTypesByHandle = null;
+    private ?array $_allVoucherTypeIds = null;
+    private ?array $_editableVoucherTypeIds = null;
+    private ?array $_siteSettingsByVoucherId = null;
+    private ?array $_savingVoucherTypes = null;
 
 
     // Public Methods
@@ -501,7 +501,6 @@ class VoucherTypesService extends Component
 
     public function pruneDeletedField(FieldEvent $event): void
     {
-        /** @var Field $field */
         $field = $event->field;
         $fieldUid = $field->uid;
 

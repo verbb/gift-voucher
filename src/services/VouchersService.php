@@ -57,7 +57,7 @@ class VouchersService extends Component
         $order = $event->order;
         $commerceEmail = $event->commerceEmail;
 
-        $settings = GiftVoucher::getInstance()->getSettings();
+        $settings = GiftVoucher::$plugin->getSettings();
 
         try {
             // Don't proceed further if there's no voucher in this order
@@ -84,7 +84,7 @@ class VouchersService extends Component
             }
 
             // Generate the PDF for the order
-            $pdf = GiftVoucher::getInstance()->getPdf()->renderPdf([], $order, null, null);
+            $pdf = GiftVoucher::$plugin->getPdf()->renderPdf([], $order, null, null);
 
             if (!$pdf) {
                 return;
@@ -111,12 +111,7 @@ class VouchersService extends Component
             }
 
             $event->craftEmail->attach($pdfPath, ['fileName' => $fileName . '.pdf', 'contentType' => 'application/pdf']);
-
-            // Fix a bug with SwiftMailer where setting an attachment clears out the body of the email!
-            $body = $event->craftEmail->getSwiftMessage()->getBody();
-            $event->craftEmail->setHtmlBody($body);
-            $event->craftEmail->setTextBody($body);
-
+            
             // Store for later
             $this->_pdfPaths[] = $pdfPath;
         } catch (Throwable $e) {

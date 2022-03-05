@@ -11,8 +11,6 @@ use verbb\giftvoucher\models\RedemptionModel;
 
 use Craft;
 use craft\base\Element;
-use craft\base\Field;
-use craft\errors\ElementNotFoundException;
 use craft\events\ConfigEvent;
 use craft\helpers\Json;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
@@ -24,7 +22,6 @@ use craft\commerce\models\LineItem;
 
 use yii\base\Component;
 use yii\base\Event;
-use yii\base\Exception;
 use yii\base\ModelEvent;
 
 use DateTime;
@@ -70,7 +67,7 @@ class CodesService extends Component
                             'id' => $lineItem->id,
                         ]));
 
-                        $success = GiftVoucher::getInstance()->getCodes()->codeVoucherByOrder($purchasable, $order, $lineItem);
+                        $success = GiftVoucher::$plugin->getCodes()->codeVoucherByOrder($purchasable, $order, $lineItem);
 
                         if (!$success) {
                             $error = Craft::t('app', 'Unable to save voucher: “{errors}”.', [
@@ -84,7 +81,7 @@ class CodesService extends Component
             }
 
             // Handle redemption of vouchers (when someone is using a code)
-            $giftVoucherCodes = GiftVoucher::getInstance()->getCodeStorage()->getCodeKeys($order);
+            $giftVoucherCodes = GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($order);
 
             if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
                 foreach ($order->getAdjustments() as $adjustment) {
@@ -124,7 +121,7 @@ class CodesService extends Component
                 }
 
                 // Delete the code
-                GiftVoucher::getInstance()->getCodeStorage()->setCodes([], $order);
+                GiftVoucher::$plugin->getCodeStorage()->setCodes([], $order);
             } else {
                 $error = Craft::t('app', 'No vouchers in code storage for order {id}', [
                     'id' => $order->id,
@@ -148,8 +145,6 @@ class CodesService extends Component
      *
      *
      * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
      */
     public function codeVoucherByOrder(Voucher $voucher, Order $order, LineItem $lineItem): bool
     {
@@ -211,7 +206,7 @@ class CodesService extends Component
      */
     public function populateCodeByLineItem(Code $code, LineItem $lineItem): array
     {
-        $settings = GiftVoucher::getInstance()->getSettings();
+        $settings = GiftVoucher::$plugin->getSettings();
 
         $validFields = [];
 
@@ -220,7 +215,6 @@ class CodesService extends Component
 
         if ($fieldLayout = $code->getFieldLayout()) {
             if ($fields = $fieldLayout->getCustomFields()) {
-                /** @var Field $field */
                 foreach ($fields as $field){
                     $fieldHandle = $field->handle;
 
@@ -264,8 +258,8 @@ class CodesService extends Component
 
     public function generateCodeKey(): string
     {
-        $codeAlphabet = GiftVoucher::getInstance()->getSettings()->codeKeyCharacters;
-        $keyLength = GiftVoucher::getInstance()->getSettings()->codeKeyLength;
+        $codeAlphabet = GiftVoucher::$plugin->getSettings()->codeKeyCharacters;
+        $keyLength = GiftVoucher::$plugin->getSettings()->codeKeyLength;
 
         $codeKey = '';
 

@@ -1,6 +1,8 @@
 <?php
 namespace verbb\giftvoucher\events;
 
+use verbb\giftvoucher\elements\Code;
+
 use yii\base\Event;
 
 class GenerateCodeEvent extends Event
@@ -8,7 +10,7 @@ class GenerateCodeEvent extends Event
     // Properties
     // =========================================================================
 
-    public $code;
-    public $codeKey;
+    public Code $code;
+    public string $codeKey;
 
 }

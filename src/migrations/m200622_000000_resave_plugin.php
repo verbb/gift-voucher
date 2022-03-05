@@ -6,6 +6,9 @@ use craft\db\Migration;
 
 class m200622_000000_resave_plugin extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         $projectConfig = Craft::$app->getProjectConfig();
@@ -13,13 +16,13 @@ class m200622_000000_resave_plugin extends Migration
         // Don't make the same config changes twice
         $schemaVersion = $projectConfig->get('plugins.gift-voucher.schemaVersion', true);
         if (version_compare($schemaVersion, '2.0.6', '>=')) {
-            return;
+            return true;
         }
 
         $plugin = Craft::$app->getPlugins()->getPlugin('gift-voucher');
 
         if ($plugin === null) {
-            return;
+            return true;
         }
 
         $settings = $plugin->getSettings()->toArray();

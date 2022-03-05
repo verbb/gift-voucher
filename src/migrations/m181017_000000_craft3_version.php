@@ -10,6 +10,9 @@ use craft\helpers\MigrationHelper;
 
 class m181017_000000_craft3_version extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         // Update all the Element references

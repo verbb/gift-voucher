@@ -6,6 +6,7 @@ use verbb\giftvoucher\GiftVoucher;
 use Craft;
 
 use craft\commerce\Plugin as Commerce;
+use craft\commerce\elements\Order;
 use craft\commerce\controllers\BaseFrontEndController;
 
 use yii\web\Response;
@@ -15,8 +16,8 @@ class CartController extends BaseFrontEndController
     // Properties
     // =========================================================================
 
-    private $_cart;
-    private $_cartVariable;
+    private Order $_cart;
+    private string $_cartVariable;
 
 
     // Public Methods
@@ -42,7 +43,6 @@ class CartController extends BaseFrontEndController
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $session = Craft::$app->getSession();
 
         $voucherCode = $request->getParam('voucherCode');
 
@@ -84,7 +84,7 @@ class CartController extends BaseFrontEndController
 
         // Get already stored voucher codes
         // $giftVoucherCodes = $session->get('giftVoucher.giftVoucherCodes');
-        GiftVoucher::getInstance()->getCodeStorage()->add($voucherCode, $this->_cart);
+        GiftVoucher::$plugin->getCodeStorage()->add($voucherCode, $this->_cart);
 
         return $this->_returnCart();
     }
@@ -95,7 +95,7 @@ class CartController extends BaseFrontEndController
         $request = Craft::$app->getRequest();
 
         $voucherCode = $request->getParam('voucherCode');
-        GiftVoucher::getInstance()->getCodeStorage()->remove($voucherCode, $this->_cart);
+        GiftVoucher::$plugin->getCodeStorage()->remove($voucherCode, $this->_cart);
 
         return $this->_returnCart();
     }

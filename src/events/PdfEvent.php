@@ -1,13 +1,15 @@
 <?php
 namespace verbb\giftvoucher\events;
 
+use craft\commerce\elements\Order;
+
 use yii\base\Event;
 
 class PdfEvent extends Event
 {
-    public $order;
-    public $option;
-    public $template;
-    public $variables;
-    public $pdf;
+    public Order $order;
+    public string $option;
+    public string $template;
+    public array $variables = [];
+    public mixed $pdf = null;
 }

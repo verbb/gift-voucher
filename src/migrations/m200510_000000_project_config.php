@@ -9,6 +9,9 @@ use craft\db\Query;
 
 class m200510_000000_project_config extends Migration
 {
+    // Public Methods
+    // =========================================================================
+
     public function safeUp(): bool
     {
         $projectConfig = Craft::$app->getProjectConfig();
@@ -16,7 +19,7 @@ class m200510_000000_project_config extends Migration
         // Don't make the same config changes twice
         $schemaVersion = $projectConfig->get('plugins.gift-voucher.schemaVersion', true);
         if (version_compare($schemaVersion, '2.0.4', '>=')) {
-            return;
+            return true;
         }
 
         $voucherTypeData = $this->_getVoucherTypeData();

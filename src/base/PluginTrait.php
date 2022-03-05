@@ -24,6 +24,20 @@ trait PluginTrait
     public static GiftVoucher $plugin;
 
 
+    // Static Methods
+    // =========================================================================
+
+    public static function log($message): void
+    {
+        Craft::getLogger()->log($message, Logger::LEVEL_INFO, 'gift-voucher');
+    }
+
+    public static function error($message): void
+    {
+        Craft::getLogger()->log($message, Logger::LEVEL_ERROR, 'gift-voucher');
+    }
+
+
     // Public Methods
     // =========================================================================
 
@@ -60,16 +74,6 @@ trait PluginTrait
     public function getKlaviyoConnect(): KlaviyoConnect
     {
         return $this->get('klaviyoConnect');
-    }
-
-    public static function log($message): void
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_INFO, 'gift-voucher');
-    }
-
-    public static function error($message): void
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_ERROR, 'gift-voucher');
     }
 
 

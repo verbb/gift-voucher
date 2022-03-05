@@ -24,7 +24,7 @@ class Settings extends Model
     public array $attachPdfToEmails = [];
 
     // TODO: Remove at next breakpoint
-    private $fieldLayout;
-    public $fieldLayoutId;
+    private mixed $fieldLayout = null;
+    public mixed $fieldLayoutId = null;
     public string $fieldsPath = 'fields';
 }
