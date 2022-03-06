@@ -43,7 +43,7 @@ class Install extends Migration
     {
         Craft::$app->projectConfig->remove('gift-voucher');
     }
-    
+
 
     // Protected Methods
     // =========================================================================
