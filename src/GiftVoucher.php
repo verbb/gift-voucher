@@ -54,7 +54,7 @@ use fostercommerce\klaviyoconnect\models\EventProperties;
 
 class GiftVoucher extends Plugin
 {
-    // Public Properties
+    // Properties
     // =========================================================================
 
     public bool $hasCpSection = true;
