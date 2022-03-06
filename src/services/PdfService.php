@@ -26,9 +26,9 @@ class PdfService extends Component
     // Constants
     // =========================================================================
 
-    const EVENT_BEFORE_RENDER_PDF = 'beforeRenderPdf';
-    const EVENT_AFTER_RENDER_PDF = 'afterRenderPdf';
-    const EVENT_MODIFY_RENDER_OPTIONS = 'modifyRenderOptions';
+    public const EVENT_BEFORE_RENDER_PDF = 'beforeRenderPdf';
+    public const EVENT_AFTER_RENDER_PDF = 'afterRenderPdf';
+    public const EVENT_MODIFY_RENDER_OPTIONS = 'modifyRenderOptions';
 
 
     // Public Methods

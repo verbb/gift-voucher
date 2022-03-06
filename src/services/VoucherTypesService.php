@@ -33,9 +33,9 @@ class VoucherTypesService extends Component
     // Constants
     // =========================================================================
 
-    const EVENT_BEFORE_SAVE_VOUCHERTYPE = 'beforeSaveVoucherType';
-    const EVENT_AFTER_SAVE_VOUCHERTYPE = 'afterSaveVoucherType';
-    const CONFIG_VOUCHERTYPES_KEY = 'giftVoucher.voucherTypes';
+    public const EVENT_BEFORE_SAVE_VOUCHERTYPE = 'beforeSaveVoucherType';
+    public const EVENT_AFTER_SAVE_VOUCHERTYPE = 'afterSaveVoucherType';
+    public const CONFIG_VOUCHERTYPES_KEY = 'giftVoucher.voucherTypes';
 
 
     // Properties

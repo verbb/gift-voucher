@@ -30,7 +30,7 @@ class Code extends Element
     // Constants
     // =========================================================================
 
-    const EVENT_GENERATE_CODE_KEY = 'beforeGenerateCodeKey';
+    public const EVENT_GENERATE_CODE_KEY = 'beforeGenerateCodeKey';
 
 
     // Static Methods

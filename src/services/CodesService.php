@@ -32,15 +32,15 @@ class CodesService extends Component
     // Constants
     // =========================================================================
 
-    const EVENT_BEFORE_MATCH_CODE = 'beforeMatchCode';
+    public const EVENT_BEFORE_MATCH_CODE = 'beforeMatchCode';
 
     /**
      * This event is fired when a new Code is created after an order is complete
      * to give users a chance to modify the field layout
      */
-    const EVENT_POPULATE_CODE_FROM_LINE_ITEM = 'populateCodeFromLineItem';
+    public const EVENT_POPULATE_CODE_FROM_LINE_ITEM = 'populateCodeFromLineItem';
 
-    const CONFIG_FIELDLAYOUT_KEY = 'giftVoucher.codes.fieldLayouts';
+    public const CONFIG_FIELDLAYOUT_KEY = 'giftVoucher.codes.fieldLayouts';
 
 
     // Public Methods

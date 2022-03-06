@@ -16,7 +16,7 @@ class Session extends Component implements CodeStorageInterface
     // Constants
     // =========================================================================
 
-    const CODE_KEY = 'giftVoucher.giftVoucherCodes';
+    public const CODE_KEY = 'giftVoucher.giftVoucherCodes';
 
 
     // Properties

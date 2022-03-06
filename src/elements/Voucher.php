@@ -34,12 +34,12 @@ class Voucher extends Purchasable
     // Constants
     // =========================================================================
 
-    const STATUS_LIVE = 'live';
-    const STATUS_PENDING = 'pending';
-    const STATUS_EXPIRED = 'expired';
+    public const STATUS_LIVE = 'live';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_EXPIRED = 'expired';
 
-    const EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT = 'beforeCaptureVoucherSnapshot';
-    const EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT = 'afterCaptureVoucherSnapshot';
+    public const EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT = 'beforeCaptureVoucherSnapshot';
+    public const EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT = 'afterCaptureVoucherSnapshot';
 
 
     // Static Methods

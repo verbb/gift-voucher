@@ -16,10 +16,10 @@ class RedemptionsService extends Component
     // Constants
     // =========================================================================
 
-    const EVENT_BEFORE_SAVE_REDEMPTION = 'beforeSaveRedemption';
-    const EVENT_AFTER_SAVE_REDEMPTION = 'afterSaveRedemption';
-    const EVENT_BEFORE_DELETE_REDEMPTION = 'beforeDeleteRedemption';
-    const EVENT_AFTER_DELETE_REDEMPTION = 'afterDeleteRedemption';
+    public const EVENT_BEFORE_SAVE_REDEMPTION = 'beforeSaveRedemption';
+    public const EVENT_AFTER_SAVE_REDEMPTION = 'afterSaveRedemption';
+    public const EVENT_BEFORE_DELETE_REDEMPTION = 'beforeDeleteRedemption';
+    public const EVENT_AFTER_DELETE_REDEMPTION = 'afterDeleteRedemption';
 
 
     // Public Methods

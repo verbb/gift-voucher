@@ -20,8 +20,8 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
     // Constants
     // =========================================================================
 
-    const ADJUSTMENT_TYPE = 'voucher';
-    const EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED = 'afterVoucherAdjustmentsCreated';
+    public const ADJUSTMENT_TYPE = 'voucher';
+    public const EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED = 'afterVoucherAdjustmentsCreated';
 
 
     // Properties
