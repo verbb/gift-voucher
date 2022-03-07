@@ -523,7 +523,7 @@ class VoucherTypesService extends Component
         }
     }
 
-    public function getVoucherTypeById(int $voucherTypeId)
+    public function getVoucherTypeById(int $voucherTypeId): ?VoucherTypeModel
     {
         if (isset($this->_voucherTypesById[$voucherTypeId])) {
             return $this->_voucherTypesById[$voucherTypeId];
@@ -546,7 +546,7 @@ class VoucherTypesService extends Component
         return $this->_voucherTypesById[$voucherTypeId];
     }
 
-    public function getVoucherTypeByUid(string $uid)
+    public function getVoucherTypeByUid(string $uid): ?VoucherTypeModel
     {
         return ArrayHelper::firstWhere($this->getAllVoucherTypes(), 'uid', $uid, true);
     }

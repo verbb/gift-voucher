@@ -27,8 +27,9 @@ class VouchersService extends Component
     // Public Methods
     // =========================================================================
 
-    public function getVoucherById(int $id, $siteId = null): ?ElementInterface
+    public function getVoucherById(int $id, $siteId = null): ?Voucher
     {
+        /* @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::$app->getElements()->getElementById($id, Voucher::class, $siteId);
     }
 

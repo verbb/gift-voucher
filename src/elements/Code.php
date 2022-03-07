@@ -46,7 +46,7 @@ class Code extends Element
         return true;
     }
 
-    public static function find(): ElementQueryInterface
+    public static function find(): CodeQuery
     {
         return new CodeQuery(static::class);
     }

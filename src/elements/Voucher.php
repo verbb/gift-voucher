@@ -75,7 +75,7 @@ class Voucher extends Purchasable
         return true;
     }
 
-    public static function find(): ElementQueryInterface
+    public static function find(): VoucherQuery
     {
         return new VoucherQuery(static::class);
     }

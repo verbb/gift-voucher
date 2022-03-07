@@ -46,6 +46,12 @@ class CodesService extends Component
     // Public Methods
     // =========================================================================
 
+    public function getCodeById(int $codeId, ?int $siteId = null): ?Code
+    {
+        /* @noinspection PhpIncompatibleReturnTypeInspection */
+        return Craft::$app->getElements()->getElementById($codeId, Code::class, $siteId);
+    }
+
     public static function handleCompletedOrder(Event $event): void
     {
         try {

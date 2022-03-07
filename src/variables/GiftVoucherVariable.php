@@ -4,6 +4,8 @@ namespace verbb\giftvoucher\variables;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\elements\db\VoucherQuery;
+use verbb\giftvoucher\elements\db\CodeQuery;
 
 use Craft;
 use craft\elements\db\ElementQueryInterface;
@@ -32,7 +34,7 @@ class GiftVoucherVariable
         return GiftVoucher::$plugin->getVoucherTypes()->getEditableVoucherTypes();
     }
 
-    public function vouchers($criteria = null): ElementQueryInterface
+    public function vouchers($criteria = null): VoucherQuery
     {
         $query = Voucher::find();
 
@@ -43,7 +45,7 @@ class GiftVoucherVariable
         return $query;
     }
 
-    public function codes($criteria = null): ElementQueryInterface
+    public function codes($criteria = null): CodeQuery
     {
         $query = Code::find();
 

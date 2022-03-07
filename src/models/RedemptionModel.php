@@ -9,6 +9,7 @@ use craft\base\Model;
 
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
+use verbb\giftvoucher\GiftVoucher;
 
 class RedemptionModel extends Model
 {
@@ -23,10 +24,10 @@ class RedemptionModel extends Model
     // Public Methods
     // =========================================================================
 
-    public function getCode(): ?ElementInterface
+    public function getCode(): ?Code
     {
         if ($this->codeId) {
-            return Craft::$app->getElements()->getElementById($this->codeId, Code::class);
+            return GiftVoucher::$plugin->getCodes()->getCodeById($this->codeId);
         }
 
         return null;

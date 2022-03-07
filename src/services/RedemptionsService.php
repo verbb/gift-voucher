@@ -128,7 +128,7 @@ class RedemptionsService extends Component
     // Private Methods
     // =========================================================================
 
-    private function _getRedemptionRecordById(int $redemptionId = null): RedemptionRecord
+    private function _getRedemptionRecordById(int $redemptionId = null): ?RedemptionRecord
     {
         if ($redemptionId !== null) {
             $redemptionRecord = RedemptionRecord::findOne($redemptionId);
