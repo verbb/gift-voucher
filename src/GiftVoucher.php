@@ -245,11 +245,14 @@ class GiftVoucher extends Plugin
                 $voucherTypePermissions['giftVoucher-manageVoucherType' . $suffix] = ['label' => Craft::t('gift-voucher', 'Manage “{type}” vouchers', ['type' => $voucherType->name])];
             }
 
-            $event->permissions[Craft::t('gift-voucher', 'Gift Vouchers')] = [
-                'giftVoucher-manageVoucherTypes' => ['label' => Craft::t('gift-voucher', 'Manage voucher types')],
-                'giftVoucher-manageVouchers' => ['label' => Craft::t('gift-voucher', 'Manage vouchers'), 'nested' => $voucherTypePermissions],
-                'giftVoucher-manageCodes' => ['label' => Craft::t('gift-voucher', 'Manage codes')],
-                'giftVoucher-bulkGenerateCodes' => ['label' => Craft::t('gift-voucher', 'Bulk generate codes')],
+            $event->permissions[] = [
+                'heading' => Craft::t('gift-voucher', 'Gift Vouchers'),
+                'permissions' => [
+                    'giftVoucher-manageVoucherTypes' => ['label' => Craft::t('gift-voucher', 'Manage voucher types')],
+                    'giftVoucher-manageVouchers' => ['label' => Craft::t('gift-voucher', 'Manage vouchers'), 'nested' => $voucherTypePermissions],
+                    'giftVoucher-manageCodes' => ['label' => Craft::t('gift-voucher', 'Manage codes')],
+                    'giftVoucher-bulkGenerateCodes' => ['label' => Craft::t('gift-voucher', 'Bulk generate codes')],
+                ],
             ];
         });
     }
