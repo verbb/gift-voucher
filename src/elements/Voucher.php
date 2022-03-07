@@ -305,15 +305,6 @@ class Voucher extends Purchasable
         return $rules;
     }
 
-    public function datetimeAttributes(): array
-    {
-        $attributes = parent::datetimeAttributes();
-        $attributes[] = 'postDate';
-        $attributes[] = 'expiryDate';
-
-        return $attributes;
-    }
-
     public function getIsEditable(): bool
     {
         if ($this->getType()) {

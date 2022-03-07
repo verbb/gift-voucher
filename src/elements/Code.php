@@ -250,14 +250,6 @@ class Code extends Element
         return $rules;
     }
 
-    public function datetimeAttributes(): array
-    {
-        $attributes = parent::datetimeAttributes();
-        $attributes[] = 'expiryDate';
-
-        return $attributes;
-    }
-
     public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('gift-voucher/codes/' . $this->id);
