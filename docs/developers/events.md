@@ -147,7 +147,7 @@ use yii\base\Event;
 Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent $e) {
     do {
         $codeKey = // custom key generation logic...
-    } while (!GiftVoucher::getInstance()->getCodes()->isCodeKeyUnique($codeKey));
+    } while (!GiftVoucher::$plugin->getCodes()->isCodeKeyUnique($codeKey));
 
     $e->codeKey = $codeKey;
 });
