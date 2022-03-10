@@ -5,7 +5,7 @@ use verbb\giftvoucher\elements\Code;
 
 use Craft;
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
+use craft\helpers\Db;
 use craft\records\FieldLayout;
 
 class Install extends Migration
@@ -169,10 +169,10 @@ class Install extends Migration
 
     protected function dropForeignKeys(): void
     {
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_codes}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_redemptions}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchers}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
+        Db::dropAllForeignKeysOnTable('{{%giftvoucher_codes}}', $this);
+        Db::dropAllForeignKeysOnTable('{{%giftvoucher_redemptions}}', $this);
+        Db::dropAllForeignKeysOnTable('{{%giftvoucher_vouchers}}', $this);
+        Db::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes}}', $this);
+        Db::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
     }
 }

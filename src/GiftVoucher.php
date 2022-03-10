@@ -369,7 +369,7 @@ class GiftVoucher extends Plugin
                 'action' => function(): int {
                     $controller = Craft::$app->controller;
                     $query = Voucher::find();
-                    return $controller->saveElements($query);
+                    return $controller->resaveElements($query);
                 },
                 'options' => [],
                 'helpSummary' => 'Re-saves Gift Voucher vouchers.',
@@ -379,7 +379,7 @@ class GiftVoucher extends Plugin
                 'action' => function(): int {
                     $controller = Craft::$app->controller;
                     $query = Code::find();
-                    return $controller->saveElements($query);
+                    return $controller->resaveElements($query);
                 },
                 'options' => [],
                 'helpSummary' => 'Re-saves Gift Voucher codes.',

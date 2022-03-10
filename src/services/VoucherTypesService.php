@@ -368,7 +368,7 @@ class VoucherTypesService extends Component
                 // Get all the voucher IDs in this group
                 $voucherIds = Voucher::find()
                     ->typeId($voucherTypeRecord->id)
-                    ->anyStatus()
+                    ->status(null)
                     ->limit(null)
                     ->ids();
 
@@ -394,7 +394,7 @@ class VoucherTypesService extends Component
                                 $voucher = Voucher::find()
                                     ->id($voucherId)
                                     ->siteId($siteId)
-                                    ->anyStatus()
+                                    ->status(null)
                                     ->one();
 
                                 if ($voucher) {
@@ -454,7 +454,7 @@ class VoucherTypesService extends Component
         try {
             $vouchers = Voucher::find()
                 ->typeId($voucherTypeRecord->id)
-                ->anyStatus()
+                ->status(null)
                 ->limit(null)
                 ->all();
 

@@ -6,7 +6,7 @@ use verbb\giftvoucher\records\VoucherTypeSiteRecord;
 
 use craft\db\Migration;
 use craft\db\Query;
-use craft\helpers\MigrationHelper;
+use craft\helpers\Db;
 
 class m181017_000000_craft3_version extends Migration
 {
@@ -20,12 +20,12 @@ class m181017_000000_craft3_version extends Migration
 
         if ($this->db->tableExists('{{%giftvoucher_vouchertypes_i18n}}')) {
             // Before messing with columns, it's much safer to drop all the FKs and indexes
-            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_i18n}}');
-            MigrationHelper::dropAllIndexesOnTable('{{%giftvoucher_vouchertypes_i18n}}');
+            Db::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_i18n}}');
+            Db::dropAllIndexesOnTable('{{%giftvoucher_vouchertypes_i18n}}');
 
             // Drop the old locale FK column and rename the new siteId FK column
             $this->dropColumn('{{%giftvoucher_vouchertypes_i18n}}', 'locale');
-            MigrationHelper::renameColumn('{{%giftvoucher_vouchertypes_i18n}}', 'locale__siteId', 'siteId', $this);
+            Db::renameColumn('{{%giftvoucher_vouchertypes_i18n}}', 'locale__siteId', 'siteId', $this);
 
             // And then just recreate them.
             $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes_i18n}}', 'voucherTypeId,siteId', true);
@@ -59,8 +59,8 @@ class m181017_000000_craft3_version extends Migration
         }
 
         if ($this->db->tableExists('{{%giftvoucher_vouchertypes_i18n}}')) {
-            MigrationHelper::renameTable('{{%giftvoucher_vouchertypes_i18n}}', VoucherTypeSiteRecord::tableName(), $this);
-            MigrationHelper::renameColumn(VoucherTypeSiteRecord::tableName(), 'urlFormat', 'uriFormat', $this);
+            Db::renameTable('{{%giftvoucher_vouchertypes_i18n}}', VoucherTypeSiteRecord::tableName(), $this);
+            Db::renameColumn(VoucherTypeSiteRecord::tableName(), 'urlFormat', 'uriFormat', $this);
         }
 
         if ($this->db->columnExists('{{%giftvoucher_codes}}', 'manually')) {
