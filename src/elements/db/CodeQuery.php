@@ -29,6 +29,8 @@ class CodeQuery extends ElementQuery
 
     protected array $defaultOrderBy = ['giftvoucher_codes.dateCreated' => SORT_DESC];
 
+    protected $defaultOrderBy = ['giftvoucher_codes.dateCreated' => SORT_DESC];
+
 
     // Public Methods
     // =========================================================================
