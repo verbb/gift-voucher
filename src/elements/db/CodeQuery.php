@@ -29,6 +29,8 @@ class CodeQuery extends ElementQuery
     public $currentAmount;
     public $expiryDate;
 
+    protected $defaultOrderBy = ['giftvoucher_codes.dateCreated' => SORT_DESC];
+
 
     // Public Methods
     // =========================================================================
@@ -210,10 +212,6 @@ class CodeQuery extends ElementQuery
 
         if ($this->expiryDate) {
             $this->subQuery->andWhere(Db::parseDateParam('giftvoucher_codes.expiryDate', $this->expiryDate));
-        }
-
-        if (!$this->orderBy) {
-            $this->orderBy = ['giftvoucher_codes.dateCreated' => SORT_DESC];
         }
 
         return parent::beforePrepare();
