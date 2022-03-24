@@ -84,7 +84,7 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
         }
 
         body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
             font-size: 13px;
             line-height: 1.4em;
             margin: 0px;
@@ -105,12 +105,23 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
         .field-amount {
             position: absolute;
-            top: 236px;
-            right: 353px;
+            top: 178px;
+            right: 337px;
             color: #fff;
             font-size: 57px;
-            line-height: 40px;
-            font-weight: 500;
+            font-weight: bolder;
+            width: 155px;
+            height: 156px;
+            line-height: 57px;
+            text-align: center;
+        }
+
+        .field-amount span {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            margin-top: -25px;
         }
 
         .field-content {
@@ -123,13 +134,13 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
         .demo-title {
             font-size: 35px;
-            font-weight: 300;
+            font-weight: lighter;
             line-height: 1;
         }
 
         .demo-p {
             font-size: 16px;
-            font-weight: 400;
+            font-weight: normal;
             margin-top: 10px;
         }
 
@@ -138,7 +149,7 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
             border: 1px dotted;
             margin: 35px 0 15px;
             font-size: 20px;
-            font-weight: 600;
+            font-weight: bold;
         }
 
         .field-expiry {
@@ -158,7 +169,9 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
     <div class="voucher">
         <img class="voucher-img" src="https://verbb.io/uploads/plugins/gift-voucher/gift-card-img.jpg" />
 
-        <span class="field-amount">{{ code.currentAmount | currency }}</span>
+        <div class="field-amount">
+            <span>{{ code.currentAmount | currency(null, [], [], true) }}</span>
+        </div>
 
         <div class="field-content">
             <div class="demo-title">{{ code.voucher.title }}</div>
