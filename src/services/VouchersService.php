@@ -107,12 +107,13 @@ class VouchersService extends Component
                 return;
             }
 
-            $event->craftEmail->attach($pdfPath, ['fileName' => $fileName . '.pdf', 'contentType' => 'application/pdf']);
+            $craftEmail = $event->craftEmail;
+            $craftEmail->attach($pdfPath, ['fileName' => $fileName . '.pdf', 'contentType' => 'application/pdf']);
 
             // Fix a bug with SwiftMailer where setting an attachment clears out the body of the email!
-            $body = $event->craftEmail->getSwiftMessage()->getBody();
-            $event->craftEmail->setHtmlBody($body);
-            $event->craftEmail->setTextBody($body);
+            $this->_fixSwiftMailerBody($craftEmail);
+
+            $event->craftEmail = $craftEmail;
 
             // Store for later
             $this->_pdfPaths[] = $pdfPath;
@@ -136,4 +137,31 @@ class VouchersService extends Component
             unlink($pdfPath);
         }
     }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function _fixSwiftMailerBody($message)
+    {
+        // Fix a bug with SwiftMailer where setting an attachment clears out the body of the email!
+        $textBody = $message->getSwiftMessage()->getBody();
+        $htmlBody = $message->getSwiftMessage()->getBody();
+        $children = $message->getSwiftMessage()->getChildren();
+
+        // Getting the content from an email is a little more involved...
+        if (!$htmlBody && $children) {
+            foreach ($children as $child) {
+                if ($child->getContentType() == 'text/html') {
+                    $htmlBody = $child->getBody();
+                } else if ($child->getContentType() == 'text/plain') {
+                    $textBody = $child->getBody();
+                }
+            }
+        }
+
+        $message->setHtmlBody($htmlBody);
+        $message->setTextBody($textBody);
+    }
+
 }
