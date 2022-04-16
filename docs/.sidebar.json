@@ -51,12 +51,5 @@
             "developers/code",
             "developers/events"
         ]
-    },
-    {
-        "title": "Support",
-        "collapsable": false,
-        "children": [
-            "support/get-support"
-        ]
     }
 ]
