@@ -22,7 +22,7 @@ return [
 ];
 ```
 
-### Configuration options
+## Configuration options
 - `expiry` - Set a default expiry (in months). 0 to disable.
 - `codeKeyLength` - Set the number of characters for generated codes to be.
 - `codeKeyCharacters` - Supply valid characters to be used in code generation.

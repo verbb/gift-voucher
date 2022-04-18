@@ -1,11 +1,9 @@
 # Events
-
 Events can be used to extend the functionality of Gift Voucher.
 
 ## Voucher related events
 
 ### The `beforeRenderPdf` event
-
 Event handlers can override Gift Voucher’s PDF generation by setting the `pdf` property on the event to a custom-rendered PDF.
 Plugins can get notified before the PDF or a voucher is being rendered.
 
@@ -20,7 +18,6 @@ Event::on(Pdf::class, Pdf::EVENT_BEFORE_RENDER_PDF, function(PdfEvent $e) {
 ```
 
 ### The `afterRenderPdf` event
-
 Plugins can get notified after the PDF or a voucher has been rendered.
 
 ```php
@@ -34,7 +31,6 @@ Event::on(Pdf::class, Pdf::EVENT_AFTER_RENDER_PDF, function(PdfEvent $e) {
 ```
 
 ### The `beforeSaveVoucher` event
-
 Plugins can get notified before a voucher is saved. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
 
 ```php
@@ -48,7 +44,6 @@ Event::on(Voucher::class, Voucher::EVENT_BEFORE_SAVE, function(Event $e) {
 ```
 
 ### The `afterSaveVoucher` event
-
 Plugins can get notified after a voucher has been saved
 
 ```php
@@ -61,7 +56,6 @@ Event::on(Voucher::class, Voucher::EVENT_AFTER_SAVE, function(Event $e) {
 ```
 
 ### The `beforeSaveVoucherType` event
-
 Plugins can get notified before a voucher type is being saved.
 
 ```php
@@ -75,7 +69,6 @@ Event::on(VoucherTypes::class, VoucherTypes::EVENT_BEFORE_SAVE_VOUCHERTYPE, func
 ```
 
 ### The `afterSaveVoucherType` event
-
 Plugins can get notified after a voucher type has been saved.
 
 ```php
@@ -89,7 +82,6 @@ Event::on(VoucherTypes::class, VoucherTypes::EVENT_AFTER_SAVE_VOUCHERTYPE, funct
 ```
 
 ### The `beforeCaptureVoucherSnapshot` event
-
 Plugins can get notified before we capture a voucher's field data, and customize which fields are included.
 
 ```php
@@ -104,7 +96,6 @@ Event::on(Voucher::class, Voucher::EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT, functi
 ```
 
 ### The `afterCaptureVoucherSnapshot` event
-
 Plugins can get notified after we capture a voucher's field data, and customize, extend, or redact the data to be persisted.
 
 ```php
@@ -119,7 +110,6 @@ Event::on(Voucher::class, Voucher::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, functio
 ```
 
 ### The `afterVoucherAdjustmentsCreated` event
-
 Plugins can get notified after the discount has been made on an order, and before it returns it's adjustments. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
 
 ```php
@@ -135,7 +125,6 @@ Event::on(GiftVoucherAdjuster::class, GiftVoucherAdjuster::EVENT_AFTER_VOUCHER_A
 ## Code related events
 
 ### The `beforeGenerateCodeKey` event
-
 Plugins get a chance to provide a code key instead of relying on Gift Voucher to generate one.
 
 ```php
@@ -154,7 +143,6 @@ Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent
 ```
 
 ### The `beforeSaveCode` event
-
 Plugins can get notified before a code is saved. Event handlers can prevent the code from getting sent by setting `$event->isValid` to false.
 
 ```php
@@ -168,7 +156,6 @@ Event::on(Code::class, Code::EVENT_BEFORE_SAVE, function(Event $e) {
 ```
 
 ### The `afterSaveCode` event
-
 Plugins can get notified after a code has been saved
 
 ```php
@@ -184,7 +171,6 @@ Event::on(Code::class, Code::EVENT_AFTER_SAVE, function(Event $e) {
 ## Redemption related events
 
 ### The `beforeSaveRedemption` event
-
 Plugins can get notified before an redemption is saved
 
 ```php
@@ -198,7 +184,6 @@ Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_SAVE_REDEMPTION, functio
 ```
 
 ### The `afterSaveRedemption` event
-
 Plugins can get notified after a redemption has been saved
 
 ```php
@@ -212,7 +197,6 @@ Event::on(Redemptions::class, Redemptions::EVENT_AFTER_SAVE_REDEMPTION, function
 ```
 
 ### The `beforeDeleteRedemption` event
-
 Plugins can get notified before an redemption is deleted
 
 ```php
@@ -226,7 +210,6 @@ Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_DELETE_REDEMPTION, funct
 ```
 
 ### The `afterDeleteRedemption` event
-
 Plugins can get notified after a redemption has been deleted
 
 ```php
@@ -238,4 +221,3 @@ Event::on(Redemptions::class, Redemptions::EVENT_AFTER_DELETE_REDEMPTION, functi
     // Do something
 });
 ```
-

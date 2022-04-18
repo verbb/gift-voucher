@@ -1,5 +1,4 @@
 # Vouchers Index
-
 Create a file named `index.html` file in your `templates/shop/products/gift-voucher` folder. This folder may vary depending on your chosen site structure. Enter the content as below:
 
 :::tip

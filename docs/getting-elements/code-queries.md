@@ -1,5 +1,4 @@
 # Code Queries
-
 You can fetch codes in your templates or PHP code using **code queries**.
 
 :::code
@@ -21,7 +20,6 @@ See Introduction to [Element Queries](https://docs.craftcms.com/v3/dev/element-q
 :::
 
 ## Example
-
 We can display codes for a given order by doing the following:
 
 1. Create an code query with `craft.giftVoucher.codes()`.
@@ -45,7 +43,6 @@ We can display codes for a given order by doing the following:
 ```
 
 ## Parameters
-
 Code queries support the following parameters:
 
 <!-- BEGIN PARAMS -->

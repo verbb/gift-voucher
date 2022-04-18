@@ -1,5 +1,4 @@
 # Single Voucher
-
 Once you've got a list of vouchers, you'll want to allow your customers to drill-into a single voucher page for more detail. This takes many cues from the single Product page for Commerce.
 
 You'll have access to a `voucher` variable, which represents the single voucher you're looking at. You can also interchangeably use `product` if you wish.
@@ -37,7 +36,6 @@ You'll have access to a `voucher` variable, which represents the single voucher 
 ```
 
 ## Adding vouchers to your cart
-
 Adding a voucher to your cart works in very much the same way as [Craft Commerce](https://docs.craftcms.com/commerce/v3/adding-to-and-updating-the-cart.html):
 
 ```twig
@@ -54,7 +52,6 @@ Adding a voucher to your cart works in very much the same way as [Craft Commerce
 ```
 
 ### Setting a custom amount
-
 You can also allow your customers to set a custom amount to purchase on their gift voucher. Be sure to check the `Custom amount?` option in the control panel for the voucher you want to enable this on. 
 
 ```twig
@@ -64,7 +61,6 @@ You can also allow your customers to set a custom amount to purchase on their gi
 ```
 
 ### Line item options
-
 You can also set additional data through [line item options](https://docs.craftcms.com/commerce/v3/adding-to-and-updating-the-cart.html#line-item-options-and-notes). These values can be whatever you like, and very flexible.
 
 ```twig

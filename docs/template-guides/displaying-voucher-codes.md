@@ -1,5 +1,4 @@
 # Displaying Voucher Codes
-
 Once a user has purchased a gift voucher, its important to actually provide the voucher code for them to pass on to the required party. For example, on our order summary template (`shop/customer/order.html` for example), we have the following code looping through line items for the order.
 
 ```twig

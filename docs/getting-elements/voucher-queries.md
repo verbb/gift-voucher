@@ -1,5 +1,4 @@
 # Voucher Queries
-
 You can fetch vouchers in your templates or PHP code using **voucher queries**.
 
 :::code
@@ -21,7 +20,6 @@ See Introduction to [Element Queries](https://docs.craftcms.com/v3/dev/element-q
 :::
 
 ## Example
-
 We can display vouchers for a given type by doing the following:
 
 1. Create an voucher query with `craft.giftVoucher.vouchers()`.
@@ -45,7 +43,6 @@ We can display vouchers for a given type by doing the following:
 ```
 
 ## Parameters
-
 Voucher queries support the following parameters:
 
 <!-- BEGIN PARAMS -->

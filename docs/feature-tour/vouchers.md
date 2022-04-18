@@ -1,8 +1,7 @@
 # Vouchers
-
 Vouchers are very similar to Commerce Products, and in fact are [purchasables](https://docs.craftcms.com/commerce/v2/purchasables.html), allowing it to make use of many core Commerce functions. You should treat it like a regular Product, with a few handy extras.
 
-### Create a Voucher
+## Create a Voucher
 
 Go to the main section for Gift Voucher in your control panel main menu. This will list all the vouchers you've created.
 
