@@ -22,8 +22,8 @@ See Introduction to [Element Queries](https://docs.craftcms.com/v3/dev/element-q
 ## Example
 We can display codes for a given order by doing the following:
 
-1. Create an code query with `craft.giftVoucher.codes()`.
-2. Set the [orderId](#orderId) an [limit](#limit) parameters on it.
+1. Create a code query with `craft.giftVoucher.codes()`.
+2. Set the [orderId](#orderId) a [limit](#limit) parameters on it.
 3. Fetch all codes with `.all()` and output.
 4. Loop through the codes using a [for](https://twig.symfony.com/doc/2.x/tags/for.html) tag to output the contents.
 
@@ -374,7 +374,7 @@ Possible values include:
 ```
 
 ```php
-// Fetch codes for an line item with an ID of 1
+// Fetch codes for a line item with an ID of 1
 $codes = \verbb\giftvoucher\elements\Code::find()
     ->lineItemId(1)
     ->all();
@@ -436,9 +436,9 @@ Possible values include:
 | Value | Fetches codes…
 | - | -
 | `1` | of a order with an ID of 1.
-| `'not 1'` | not of a order with an ID of 1.
-| `[1, 2]` | of a order with an ID of 1 or 2.
-| `['not', 1, 2]` | not of a order with an ID of 1 or 2.
+| `'not 1'` | not of an order with an ID of 1.
+| `[1, 2]` | of an order with an ID of 1 or 2.
+| `['not', 1, 2]` | not of an order with an ID of 1 or 2.
 
 ::: code
 ```twig

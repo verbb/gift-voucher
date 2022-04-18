@@ -1,7 +1,7 @@
 # PDF Template
 You can create PDFs for your gift vouchers, using a template that you have total control over.
 
-Start by ensuring you've setup the **Voucher PDF Template** under the [General Settings](docs:get-started/installation-setup) for Gift Voucher.
+Start by ensuring you've set up the **Voucher PDF Template** under the [General Settings](docs:get-started/installation-setup) for Gift Voucher.
 
 Also check out [Configuration](docs:get-started/configuration) for more options to adjust your PDF.
 
@@ -56,7 +56,7 @@ If you have added any custom fields to your Code field layout (in the Gift Vouch
 {% endfor %}
 ```
 
-Make sure you follow our [guide](docs:template-guides/single-voucher) for adding custom fields to vouchers when adding them to the cart. Otherwise, you custom fields won't have any content when codes are generated.
+Make sure you follow our [guide](docs:template-guides/single-voucher) for adding custom fields to vouchers when adding them to the cart. Otherwise, your custom fields won't have any content when codes are generated.
 
 ## Example template
 Below we've prepared a ready-to-go template, complete with provided CSS to get you started quickly.

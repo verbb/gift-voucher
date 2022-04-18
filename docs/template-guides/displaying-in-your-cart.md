@@ -74,7 +74,7 @@ For example, let's say we want to allow users to modify the "To" line item optio
 {% endfor %}
 ```
 
-If we update the cart with _just_ this line item option, we will loose the `amount` line item option. So, the easiest method is to include it again. You can use a `text`, `number` or `hidden` input, depending on your needs.
+If we update the cart with _just_ this line item option, we will lose the `amount` line item option. So, the easiest method is to include it again. You can use a `text`, `number` or `hidden` input, depending on your needs.
 
 ```twig
 {% for item in cart.lineItems %}

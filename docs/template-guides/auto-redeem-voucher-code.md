@@ -1,5 +1,5 @@
 # Auto Redeem Voucher Code
-You might like to setup a particular URL on your site for the customer to visit, and have their gift voucher automatically redeemed (applied) to their cart. Commonly, this might be a URL in an email marketing mailout, or a link directly from their account.
+You might like to set up a particular URL on your site for the customer to visit, and have their gift voucher automatically redeemed (applied) to their cart. Commonly, this might be a URL in an email marketing mailout, or a link directly from their account.
 
 You can facilitate this by creating a template that fetches the voucher code from the URL and applies it on the users' current cart.
 

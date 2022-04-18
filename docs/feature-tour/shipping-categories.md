@@ -12,7 +12,7 @@ The customer has a gift voucher and a physical product in their cart. Shipping o
 **Scenario 3:**
 The customer has only gift vouchers in their cart. We should only show a "Download" shipping option for the customer to pick, which would be free.
 
-To deal with the above scenarios, we'll setup two Shipping Categories, "General" and "Download". Go to Commerce → Shipping → Shipping Categories and create these categories. General should be the default for products on your store.
+To deal with the above scenarios, we'll set up two Shipping Categories, "General" and "Download". Go to Commerce → Shipping → Shipping Categories and create these categories. General should be the default for products on your store.
 
 Next, ensure every Gift Voucher element you've created is assigned to the "Download" category, by selecting it as the "Shipping Category" when editing the voucher.
 

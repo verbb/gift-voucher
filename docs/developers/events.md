@@ -110,7 +110,7 @@ Event::on(Voucher::class, Voucher::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, functio
 ```
 
 ### The `afterVoucherAdjustmentsCreated` event
-Plugins can get notified after the discount has been made on an order, and before it returns it's adjustments. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
+Plugins can get notified after the discount has been made on an order, and before it returns its adjustments. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
 
 ```php
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
@@ -171,7 +171,7 @@ Event::on(Code::class, Code::EVENT_AFTER_SAVE, function(Event $e) {
 ## Redemption related events
 
 ### The `beforeSaveRedemption` event
-Plugins can get notified before an redemption is saved
+Plugins can get notified before a redemption is saved
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
@@ -197,7 +197,7 @@ Event::on(Redemptions::class, Redemptions::EVENT_AFTER_SAVE_REDEMPTION, function
 ```
 
 ### The `beforeDeleteRedemption` event
-Plugins can get notified before an redemption is deleted
+Plugins can get notified before a redemption is deleted
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;

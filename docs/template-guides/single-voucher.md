@@ -80,7 +80,7 @@ You can also set additional data through [line item options](https://docs.craftc
 </form>
 ```
 
-If you have any custom fields setup in your Gift Voucher settings for Codes, you can also set content on those fields through your line item options, and they'll be automatically 'pushed' to the resulting [Code](docs:developers/code) generated at the end of checkout.
+If you have any custom fields' setup in your Gift Voucher settings for Codes, you can also set content on those fields through your line item options, and they'll be automatically 'pushed' to the resulting [Code](docs:developers/code) generated at the end of checkout.
 
 For example, let's say you have a 'Message' plain text field in your Code Field Layout, with the handle `message`. In this instance, you want to include additional information such as a personal message to be show on the PDF voucher to send to the voucher recipient. You include this field in your add-to-cart form:
 
@@ -98,7 +98,7 @@ For example, let's say you have a 'Message' plain text field in your Code Field 
 </form>
 ```
 
-You can also automate this to show _all_ of the custom fields assigned to the Code field layout.
+You can also automate this to show _all_ the custom fields assigned to the Code field layout.
 
 ```twig
 <form method="POST">

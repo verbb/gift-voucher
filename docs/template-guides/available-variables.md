@@ -11,7 +11,7 @@ See [Code Queries](docs:getting-elements/code-queries)
 Returns all Voucher Types available.
 
 ### `craft.giftVoucher.getVoucherCodes()`
-Returns any currently-applied vouchers. This occurs when a customer apply's a voucher to their cart.
+Returns any currently-applied vouchers. This occurs when a customer applies a voucher to their cart.
 
 ### `craft.giftVoucher.isVoucher(lineItem)`
 Returns whether a provided Line Item object is a gift voucher or not.

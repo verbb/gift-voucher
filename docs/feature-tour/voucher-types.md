@@ -17,7 +17,7 @@ Each field is fairly self-explanatory, but any additional information is provide
 
 If you ticked **Vouchers of this type have their own URLs**, the following fields appear:
 
-- **Voucher URL Format** - What the voucher URLs should look like. You can include tags that output voucher properties, such as such as `{slug}` or `{publishDate|date("Y")}`.
+- **Voucher URL Format** - What the voucher URLs should look like. You can include tags that output voucher properties, such as `{slug}` or `{publishDate|date("Y")}`.
 - **Voucher Template** - The template to use when a voucher’s URL is requested.
 
 Be sure to check out our [Template Guide →](docs:template-guides/single-voucher) to get started quickly to show vouchers.

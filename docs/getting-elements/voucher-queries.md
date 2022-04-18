@@ -22,8 +22,8 @@ See Introduction to [Element Queries](https://docs.craftcms.com/v3/dev/element-q
 ## Example
 We can display vouchers for a given type by doing the following:
 
-1. Create an voucher query with `craft.giftVoucher.vouchers()`.
-2. Set the [type](#type) an [limit](#limit) parameters on it.
+1. Create a voucher query with `craft.giftVoucher.vouchers()`.
+2. Set the [type](#type) a [limit](#limit) parameters on it.
 3. Fetch all vouchers with `.all()` and output.
 4. Loop through the vouchers using a [for](https://twig.symfony.com/doc/2.x/tags/for.html) tag to output the contents.
 
@@ -467,7 +467,7 @@ Possible values include:
 ```
 
 ```php
-// Fetch the voucher with an sku
+// Fetch the voucher with a sku
 $voucher = \verbb\giftvoucher\elements\Voucher::find()
     ->sku('some-sku')
     ->one();
@@ -594,7 +594,7 @@ Possible values include:
 | `'not foo'` | not of a type with a handle of `foo`.
 | `['foo', 'bar']` | of a type with a handle of `foo` or `bar`.
 | `['not', 'foo', 'bar']` | not of a type with a handle of `foo` or `bar`.
-| an Voucher Type object | of a type represented by the object.
+| a Voucher Type object | of a type represented by the object.
 
 ::: code
 ```twig
