@@ -2,12 +2,12 @@
 You can fetch vouchers in your templates or PHP code using **voucher queries**.
 
 :::code
-```twig
+```twig Twig
 {# Create a new voucher query #}
 {% set myQuery = craft.giftVoucher.vouchers() %}
 ```
 
-```php
+```php PHP
 // Create a new voucher query
 $myQuery = \verbb\giftvoucher\elements\Voucher::find();
 ```

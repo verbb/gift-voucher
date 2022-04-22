@@ -2,12 +2,12 @@
 You can fetch codes in your templates or PHP code using **code queries**.
 
 :::code
-```twig
+```twig Twig
 {# Create a new code query #}
 {% set myQuery = craft.giftVoucher.codes() %}
 ```
 
-```php
+```php PHP
 // Create a new code query
 $myQuery = \verbb\giftvoucher\elements\Code::find();
 ```
