@@ -51,6 +51,7 @@ class Install extends Migration
 
     protected function createTables(): void
     {
+        $this->archiveTableIfExists('{{%giftvoucher_codes}}');
         $this->createTable('{{%giftvoucher_codes}}', [
             'id' => $this->primaryKey(),
             'voucherId' => $this->integer(),
@@ -65,6 +66,7 @@ class Install extends Migration
             'uid' => $this->uid(),
         ]);
 
+        $this->archiveTableIfExists('{{%giftvoucher_redemptions}}');
         $this->createTable('{{%giftvoucher_redemptions}}', [
             'id' => $this->primaryKey(),
             'codeId' => $this->integer(),
@@ -75,6 +77,7 @@ class Install extends Migration
             'uid' => $this->uid(),
         ]);
 
+        $this->archiveTableIfExists('{{%giftvoucher_vouchers}}');
         $this->createTable('{{%giftvoucher_vouchers}}', [
             'id' => $this->primaryKey(),
             'typeId' => $this->integer(),
@@ -92,6 +95,7 @@ class Install extends Migration
             'uid' => $this->uid(),
         ]);
 
+        $this->archiveTableIfExists('{{%giftvoucher_vouchertypes}}');
         $this->createTable('{{%giftvoucher_vouchertypes}}', [
             'id' => $this->primaryKey(),
             'fieldLayoutId' => $this->integer(),
@@ -103,6 +107,7 @@ class Install extends Migration
             'uid' => $this->uid(),
         ]);
 
+        $this->archiveTableIfExists('{{%giftvoucher_vouchertypes_sites}}');
         $this->createTable('{{%giftvoucher_vouchertypes_sites}}', [
             'id' => $this->primaryKey(),
             'voucherTypeId' => $this->integer()->notNull(),
@@ -127,24 +132,24 @@ class Install extends Migration
 
     protected function createIndexes(): void
     {
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'codeKey', true);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'voucherId', false);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'orderId', false);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_codes}}', 'lineItemId', false);
+        $this->createIndex(null, '{{%giftvoucher_codes}}', 'codeKey', true);
+        $this->createIndex(null, '{{%giftvoucher_codes}}', 'voucherId', false);
+        $this->createIndex(null, '{{%giftvoucher_codes}}', 'orderId', false);
+        $this->createIndex(null, '{{%giftvoucher_codes}}', 'lineItemId', false);
 
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_redemptions}}', 'codeId', false);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_redemptions}}', 'orderId', false);
+        $this->createIndex(null, '{{%giftvoucher_redemptions}}', 'codeId', false);
+        $this->createIndex(null, '{{%giftvoucher_redemptions}}', 'orderId', false);
 
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'sku', true);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'typeId', false);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'taxCategoryId', false);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchers}}', 'shippingCategoryId', false);
+        $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'sku', true);
+        $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'typeId', false);
+        $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'taxCategoryId', false);
+        $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'shippingCategoryId', false);
 
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes}}', 'handle', true);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes}}', 'fieldLayoutId', false);
+        $this->createIndex(null, '{{%giftvoucher_vouchertypes}}', 'handle', true);
+        $this->createIndex(null, '{{%giftvoucher_vouchertypes}}', 'fieldLayoutId', false);
 
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId', 'siteId'], true);
-        $this->createIndex($this->db->getIndexName(), '{{%giftvoucher_vouchertypes_sites}}', 'siteId', false);
+        $this->createIndex(null, '{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId', 'siteId'], true);
+        $this->createIndex(null, '{{%giftvoucher_vouchertypes_sites}}', 'siteId', false);
     }
 
     protected function addForeignKeys(): void
