@@ -2,7 +2,7 @@
 namespace verbb\giftvoucher\services;
 
 use verbb\giftvoucher\events\RedemptionEvent;
-use verbb\giftvoucher\models\RedemptionModel;
+use verbb\giftvoucher\models\Redemption;
 use verbb\giftvoucher\records\Redemption as RedemptionRecord;
 
 use Craft;
@@ -25,13 +25,13 @@ class Redemptions extends Component
     // Public Methods
     // =========================================================================
 
-    public function getRedemptionById(int $id): ?RedemptionModel
+    public function getRedemptionById(int $id): ?Redemption
     {
         $result = $this->_createRedemptionsQuery()
             ->where(['id' => $id])
             ->one();
 
-        return $result ? new RedemptionModel($result) : null;
+        return $result ? new Redemption($result) : null;
     }
 
     public function getRedemptionsByCodeId(int $codeId): array
@@ -43,13 +43,13 @@ class Redemptions extends Component
         $redemptions = [];
 
         foreach ($results as $result) {
-            $redemptions[] = new RedemptionModel($result);
+            $redemptions[] = new Redemption($result);
         }
 
         return $redemptions;
     }
 
-    public function saveRedemption(RedemptionModel $redemption, bool $runValidation = true): bool
+    public function saveRedemption(Redemption $redemption, bool $runValidation = true): bool
     {
         $isNewRedemption = !$redemption->id;
 
@@ -103,7 +103,7 @@ class Redemptions extends Component
         return $this->deleteRedemption($redemption);
     }
 
-    public function deleteRedemption(RedemptionModel $redemption): bool
+    public function deleteRedemption(Redemption $redemption): bool
     {
         if ($this->hasEventHandlers(self::EVENT_BEFORE_DELETE_REDEMPTION)) {
             $this->trigger(self::EVENT_BEFORE_DELETE_REDEMPTION, new RedemptionEvent([

@@ -7,7 +7,7 @@ use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\events\MatchCodeEvent;
 use verbb\giftvoucher\events\PopulateCodeFromLineItemEvent;
-use verbb\giftvoucher\models\RedemptionModel;
+use verbb\giftvoucher\models\Redemption;
 
 use Craft;
 use craft\base\Element;
@@ -99,7 +99,7 @@ class Codes extends Component
                             Craft::$app->getElements()->saveElement($code, false);
 
                             // Track code redemption
-                            $redemption = new RedemptionModel();
+                            $redemption = new Redemption();
                             $redemption->codeId = $code->id;
                             $redemption->orderId = $order->id;
                             $redemption->amount = $adjustment->amount * -1;

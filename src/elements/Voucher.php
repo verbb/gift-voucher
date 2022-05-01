@@ -5,7 +5,7 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\db\VoucherQuery;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotDataEvent;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotFieldsEvent;
-use verbb\giftvoucher\models\VoucherTypeModel;
+use verbb\giftvoucher\models\VoucherType;
 use verbb\giftvoucher\records\Voucher as VoucherRecord;
 
 use Craft;
@@ -224,7 +224,7 @@ class Voucher extends Purchasable
     public bool $promotable = true;
     public bool $availableForPurchase = true;
 
-    private ?VoucherTypeModel $_voucherType = null;
+    private ?VoucherType $_voucherType = null;
     private ?array $_existingCodes = null;
 
 

@@ -13,7 +13,7 @@ use craft\models\FieldLayout;
 use craft\validators\HandleValidator;
 use craft\validators\UniqueValidator;
 
-class VoucherTypeModel extends Model
+class VoucherType extends Model
 {
     // Properties
     // =========================================================================

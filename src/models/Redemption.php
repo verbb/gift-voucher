@@ -11,7 +11,7 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use verbb\giftvoucher\GiftVoucher;
 
-class RedemptionModel extends Model
+class Redemption extends Model
 {
     // Properties
     // =========================================================================

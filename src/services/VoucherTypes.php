@@ -4,8 +4,8 @@ namespace verbb\giftvoucher\services;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\errors\VoucherTypeNotFoundException;
 use verbb\giftvoucher\events\VoucherTypeEvent;
-use verbb\giftvoucher\models\VoucherTypeModel;
-use verbb\giftvoucher\models\VoucherTypeSiteModel;
+use verbb\giftvoucher\models\VoucherType;
+use verbb\giftvoucher\models\VoucherTypeSite;
 use verbb\giftvoucher\records\VoucherType as VoucherTypeRecord;
 use verbb\giftvoucher\records\VoucherTypeSite as VoucherTypeSiteRecord;
 
@@ -103,7 +103,7 @@ class VoucherTypes extends Component
             $results = $this->_createVoucherTypeQuery()->all();
 
             foreach ($results as $result) {
-                $this->_memoizeVoucherType(new VoucherTypeModel($result));
+                $this->_memoizeVoucherType(new VoucherType($result));
             }
 
             $this->_fetchedAllVoucherTypes = true;
@@ -130,7 +130,7 @@ class VoucherTypes extends Component
             return null;
         }
 
-        $this->_memoizeVoucherType(new VoucherTypeModel($result));
+        $this->_memoizeVoucherType(new VoucherType($result));
 
         return $this->_voucherTypesByHandle[$handle];
     }
@@ -154,14 +154,14 @@ class VoucherTypes extends Component
             $this->_siteSettingsByVoucherId[$voucherTypeId] = [];
 
             foreach ($rows as $row) {
-                $this->_siteSettingsByVoucherId[$voucherTypeId][] = new VoucherTypeSiteModel($row);
+                $this->_siteSettingsByVoucherId[$voucherTypeId][] = new VoucherTypeSite($row);
             }
         }
 
         return $this->_siteSettingsByVoucherId[$voucherTypeId];
     }
 
-    public function saveVoucherType(VoucherTypeModel $voucherType, bool $runValidation = true): bool
+    public function saveVoucherType(VoucherType $voucherType, bool $runValidation = true): bool
     {
         $isNewVoucherType = !$voucherType->id;
 
@@ -523,7 +523,7 @@ class VoucherTypes extends Component
         }
     }
 
-    public function getVoucherTypeById(int $voucherTypeId): ?VoucherTypeModel
+    public function getVoucherTypeById(int $voucherTypeId): ?VoucherType
     {
         if (isset($this->_voucherTypesById[$voucherTypeId])) {
             return $this->_voucherTypesById[$voucherTypeId];
@@ -541,17 +541,17 @@ class VoucherTypes extends Component
             return null;
         }
 
-        $this->_memoizeVoucherType(new VoucherTypeModel($result));
+        $this->_memoizeVoucherType(new VoucherType($result));
 
         return $this->_voucherTypesById[$voucherTypeId];
     }
 
-    public function getVoucherTypeByUid(string $uid): ?VoucherTypeModel
+    public function getVoucherTypeByUid(string $uid): ?VoucherType
     {
         return ArrayHelper::firstWhere($this->getAllVoucherTypes(), 'uid', $uid, true);
     }
 
-    public function isVoucherTypeTemplateValid(VoucherTypeModel $voucherType, int $siteId): bool
+    public function isVoucherTypeTemplateValid(VoucherType $voucherType, int $siteId): bool
     {
         $voucherTypeSiteSettings = $voucherType->getSiteSettings();
 
@@ -605,7 +605,7 @@ class VoucherTypes extends Component
     // Private methods
     // =========================================================================
 
-    private function _memoizeVoucherType(VoucherTypeModel $voucherType): void
+    private function _memoizeVoucherType(VoucherType $voucherType): void
     {
         $this->_voucherTypesById[$voucherType->id] = $voucherType;
         $this->_voucherTypesByHandle[$voucherType->handle] = $voucherType;

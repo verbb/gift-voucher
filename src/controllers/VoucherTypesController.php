@@ -3,8 +3,8 @@ namespace verbb\giftvoucher\controllers;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
-use verbb\giftvoucher\models\VoucherTypeModel;
-use verbb\giftvoucher\models\VoucherTypeSiteModel;
+use verbb\giftvoucher\models\VoucherType;
+use verbb\giftvoucher\models\VoucherTypeSite;
 
 use Craft;
 use craft\web\Controller;
@@ -24,7 +24,7 @@ class VoucherTypesController extends Controller
         parent::init();
     }
 
-    public function actionEdit(int $voucherTypeId = null, VoucherTypeModel $voucherType = null): Response
+    public function actionEdit(int $voucherTypeId = null, VoucherType $voucherType = null): Response
     {
         $variables = [
             'voucherTypeId' => $voucherTypeId,
@@ -41,7 +41,7 @@ class VoucherTypesController extends Controller
                     throw new NotFoundHttpException();
                 }
             } else {
-                $variables['voucherType'] = new VoucherTypeModel();
+                $variables['voucherType'] = new VoucherType();
                 $variables['brandNewVoucherType'] = true;
             }
         }
@@ -59,7 +59,7 @@ class VoucherTypesController extends Controller
     {
         $this->requirePostRequest();
 
-        $voucherType = new VoucherTypeModel();
+        $voucherType = new VoucherType();
 
         $request = Craft::$app->getRequest();
 
@@ -74,7 +74,7 @@ class VoucherTypesController extends Controller
         foreach (Craft::$app->getSites()->getAllSites() as $site) {
             $postedSettings = $request->getBodyParam('sites.' . $site->handle);
 
-            $siteSettings = new VoucherTypeSiteModel();
+            $siteSettings = new VoucherTypeSite();
             $siteSettings->siteId = $site->id;
             $siteSettings->hasUrls = !empty($postedSettings['uriFormat']);
 

@@ -3,7 +3,7 @@ namespace verbb\giftvoucher\elements\db;
 
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
-use verbb\giftvoucher\models\VoucherTypeModel;
+use verbb\giftvoucher\models\VoucherType;
 
 use craft\base\Element;
 use craft\db\Query;
@@ -80,7 +80,7 @@ class CodeQuery extends ElementQuery
 
     public function type($value): static
     {
-        if ($value instanceof VoucherTypeModel) {
+        if ($value instanceof VoucherType) {
             $this->typeId = $value->id;
         } else if ($value !== null) {
             $this->typeId = (new Query())

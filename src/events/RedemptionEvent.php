@@ -1,7 +1,7 @@
 <?php
 namespace verbb\giftvoucher\events;
 
-use verbb\giftvoucher\models\RedemptionModel;
+use verbb\giftvoucher\models\Redemption;
 
 use yii\base\Event;
 
@@ -10,7 +10,7 @@ class RedemptionEvent extends Event
     // Properties
     // =========================================================================
 
-    public RedemptionModel $redemption;
+    public Redemption $redemption;
     public bool $isNew = false;
     
 }

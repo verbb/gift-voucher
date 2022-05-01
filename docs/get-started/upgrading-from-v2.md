@@ -6,6 +6,9 @@ The following classes have been renamed.
 
 Old | What to do instead
 --- | ---
+| `verbb\giftvoucher\models\RedemptionModel` | `verbb\giftvoucher\models\Redemption`
+| `verbb\giftvoucher\models\VoucherTypeModel` | `verbb\giftvoucher\models\VoucherType`
+| `verbb\giftvoucher\models\VoucherTypeSiteModel` | `verbb\giftvoucher\models\VoucherTypeSite`
 | `verbb\giftvoucher\records\CodeRecord` | `verbb\giftvoucher\records\Code`
 | `verbb\giftvoucher\records\RedemptionRecord` | `verbb\giftvoucher\records\Redemption`
 | `verbb\giftvoucher\records\VoucherRecord` | `verbb\giftvoucher\records\Voucher`
