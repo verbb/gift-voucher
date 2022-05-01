@@ -6,7 +6,7 @@ use craft\db\ActiveRecord;
 
 use craft\commerce\records\Order;
 
-class RedemptionRecord extends ActiveRecord
+class Redemption extends ActiveRecord
 {
     // Public Methods
     // =========================================================================
@@ -18,7 +18,7 @@ class RedemptionRecord extends ActiveRecord
 
     public function getCode(): ActiveQuery
     {
-        return $this->hasOne(CodeRecord::class, ['id' => 'codeId']);
+        return $this->hasOne(Code::class, ['id' => 'codeId']);
     }
 
     public function getOrder(): ActiveQuery

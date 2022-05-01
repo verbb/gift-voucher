@@ -6,8 +6,8 @@ use verbb\giftvoucher\errors\VoucherTypeNotFoundException;
 use verbb\giftvoucher\events\VoucherTypeEvent;
 use verbb\giftvoucher\models\VoucherTypeModel;
 use verbb\giftvoucher\models\VoucherTypeSiteModel;
-use verbb\giftvoucher\records\VoucherTypeRecord;
-use verbb\giftvoucher\records\VoucherTypeSiteRecord;
+use verbb\giftvoucher\records\VoucherType as VoucherTypeRecord;
+use verbb\giftvoucher\records\VoucherTypeSite as VoucherTypeSiteRecord;
 
 
 use Craft;

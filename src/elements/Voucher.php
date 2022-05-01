@@ -6,7 +6,7 @@ use verbb\giftvoucher\elements\db\VoucherQuery;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotDataEvent;
 use verbb\giftvoucher\events\CustomizeVoucherSnapshotFieldsEvent;
 use verbb\giftvoucher\models\VoucherTypeModel;
-use verbb\giftvoucher\records\VoucherRecord;
+use verbb\giftvoucher\records\Voucher as VoucherRecord;
 
 use Craft;
 use craft\elements\db\ElementQueryInterface;

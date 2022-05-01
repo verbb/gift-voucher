@@ -5,7 +5,7 @@ use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 use craft\records\FieldLayout;
 
-class VoucherTypeRecord extends ActiveRecord
+class VoucherType extends ActiveRecord
 {
     // Public Methods
     // =========================================================================

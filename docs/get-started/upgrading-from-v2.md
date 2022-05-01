@@ -6,10 +6,13 @@ The following classes have been renamed.
 
 Old | What to do instead
 --- | ---
+| `verbb\giftvoucher\records\CodeRecord` | `verbb\giftvoucher\records\Code`
+| `verbb\giftvoucher\records\RedemptionRecord` | `verbb\giftvoucher\records\Redemption`
+| `verbb\giftvoucher\records\VoucherRecord` | `verbb\giftvoucher\records\Voucher`
+| `verbb\giftvoucher\records\VoucherTypeRecord` | `verbb\giftvoucher\records\VoucherType`
+| `verbb\giftvoucher\records\VoucherTypeSiteRecord` | `verbb\giftvoucher\records\VoucherTypeSite`
 | `verbb\giftvoucher\services\CodesService` | `verbb\giftvoucher\services\Codes`
 | `verbb\giftvoucher\services\PdfService` | `verbb\giftvoucher\services\Pdf`
 | `verbb\giftvoucher\services\RedemptionsService` | `verbb\giftvoucher\services\Redemptions`
 | `verbb\giftvoucher\services\VouchersService` | `verbb\giftvoucher\services\Vouchers`
 | `verbb\giftvoucher\services\VoucherTypesService` | `verbb\giftvoucher\services\VoucherTypes`
-
-

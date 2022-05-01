@@ -3,7 +3,7 @@ namespace verbb\giftvoucher\services;
 
 use verbb\giftvoucher\events\RedemptionEvent;
 use verbb\giftvoucher\models\RedemptionModel;
-use verbb\giftvoucher\records\RedemptionRecord;
+use verbb\giftvoucher\records\Redemption as RedemptionRecord;
 
 use Craft;
 use craft\base\Component;

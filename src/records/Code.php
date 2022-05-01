@@ -8,7 +8,7 @@ use craft\records\Element;
 use craft\commerce\records\Order;
 use craft\commerce\records\LineItem;
 
-class CodeRecord extends ActiveRecord
+class Code extends ActiveRecord
 {
     // Public Methods
     // =========================================================================
@@ -30,7 +30,7 @@ class CodeRecord extends ActiveRecord
 
     public function getVoucher(): ActiveQuery
     {
-        return $this->hasOne(VoucherRecord::class, ['id' => 'voucherId']);
+        return $this->hasOne(Voucher::class, ['id' => 'voucherId']);
     }
 
     public function getOrder(): ActiveQuery

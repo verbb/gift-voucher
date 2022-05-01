@@ -3,7 +3,7 @@ namespace verbb\giftvoucher\models;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
-use verbb\giftvoucher\records\VoucherTypeRecord;
+use verbb\giftvoucher\records\VoucherType as VoucherTypeRecord;
 
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;

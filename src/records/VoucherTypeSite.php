@@ -5,7 +5,7 @@ use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 use craft\records\Site;
 
-class VoucherTypeSiteRecord extends ActiveRecord
+class VoucherTypeSite extends ActiveRecord
 {
     // Public Methods
     // =========================================================================
@@ -17,7 +17,7 @@ class VoucherTypeSiteRecord extends ActiveRecord
 
     public function getVoucherType(): ActiveQuery
     {
-        return $this->hasOne(VoucherTypeRecord::class, ['id', 'voucherTypeId']);
+        return $this->hasOne(VoucherType::class, ['id', 'voucherTypeId']);
     }
 
     public function getSite(): ActiveQuery

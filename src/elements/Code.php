@@ -4,7 +4,7 @@ namespace verbb\giftvoucher\elements;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\db\CodeQuery;
 use verbb\giftvoucher\events\GenerateCodeEvent;
-use verbb\giftvoucher\records\CodeRecord;
+use verbb\giftvoucher\records\Code as CodeRecord;
 
 use Craft;
 use craft\base\Element;

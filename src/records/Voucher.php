@@ -8,7 +8,7 @@ use craft\records\Element;
 use craft\commerce\records\TaxCategory;
 use craft\commerce\records\ShippingCategory;
 
-class VoucherRecord extends ActiveRecord
+class Voucher extends ActiveRecord
 {
     // Public Methods
     // =========================================================================
@@ -20,7 +20,7 @@ class VoucherRecord extends ActiveRecord
 
     public function getType(): ActiveQuery
     {
-        return $this->hasOne(VoucherTypeRecord::class, ['id' => 'typeId']);
+        return $this->hasOne(VoucherType::class, ['id' => 'typeId']);
     }
 
     public function getTaxCategory(): ActiveQuery
