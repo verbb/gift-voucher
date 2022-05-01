@@ -9,8 +9,8 @@ use verbb\giftvoucher\models\VoucherTypeSite;
 use verbb\giftvoucher\records\VoucherType as VoucherTypeRecord;
 use verbb\giftvoucher\records\VoucherTypeSite as VoucherTypeSiteRecord;
 
-
 use Craft;
+use craft\base\MemoizableArray;
 use craft\db\Query;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
@@ -41,124 +41,71 @@ class VoucherTypes extends Component
     // Properties
     // =========================================================================
 
-    private bool $_fetchedAllVoucherTypes = false;
-    private ?array $_voucherTypesById = null;
-    private ?array $_voucherTypesByHandle = null;
-    private ?array $_allVoucherTypeIds = null;
-    private ?array $_editableVoucherTypeIds = null;
-    private ?array $_siteSettingsByVoucherId = null;
-    private ?array $_savingVoucherTypes = null;
+    private ?MemoizableArray $_voucherTypes = null;
 
 
     // Public Methods
     // =========================================================================
 
-    public function getEditableVoucherTypes(): array
-    {
-        $editableVoucherTypeIds = $this->getEditableVoucherTypeIds();
-        $editableVoucherTypes = [];
-
-        foreach ($this->getAllVoucherTypes() as $voucherTypes) {
-            if (in_array($voucherTypes->id, $editableVoucherTypeIds, false)) {
-                $editableVoucherTypes[] = $voucherTypes;
-            }
-        }
-
-        return $editableVoucherTypes;
-    }
-
-    public function getEditableVoucherTypeIds(): ?array
-    {
-        if (null === $this->_editableVoucherTypeIds) {
-            $this->_editableVoucherTypeIds = [];
-            $allVoucherTypes = $this->getAllVoucherTypes();
-
-            foreach ($allVoucherTypes as $voucherType) {
-                if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $voucherType->uid)) {
-                    $this->_editableVoucherTypeIds[] = $voucherType->id;
-                }
-            }
-        }
-
-        return $this->_editableVoucherTypeIds;
-    }
-
-    public function getAllVoucherTypeIds(): ?array
-    {
-        if (null === $this->_allVoucherTypeIds) {
-            $this->_allVoucherTypeIds = [];
-            $voucherTypes = $this->getAllVoucherTypes();
-
-            foreach ($voucherTypes as $voucherType) {
-                $this->_allVoucherTypeIds[] = $voucherType->id;
-            }
-        }
-
-        return $this->_allVoucherTypeIds;
-    }
-
     public function getAllVoucherTypes(): array
     {
-        if (!$this->_fetchedAllVoucherTypes) {
-            $results = $this->_createVoucherTypeQuery()->all();
-
-            foreach ($results as $result) {
-                $this->_memoizeVoucherType(new VoucherType($result));
-            }
-
-            $this->_fetchedAllVoucherTypes = true;
-        }
-
-        return $this->_voucherTypesById ?: [];
+        return $this->_voucherTypes()->all();
     }
 
-    public function getVoucherTypeByHandle($handle)
+    public function getAllVoucherTypeIds(): array
     {
-        if (isset($this->_voucherTypesByHandle[$handle])) {
-            return $this->_voucherTypesByHandle[$handle];
-        }
-
-        if ($this->_fetchedAllVoucherTypes) {
-            return null;
-        }
-
-        $result = $this->_createVoucherTypeQuery()
-            ->where(['handle' => $handle])
-            ->one();
-
-        if (!$result) {
-            return null;
-        }
-
-        $this->_memoizeVoucherType(new VoucherType($result));
-
-        return $this->_voucherTypesByHandle[$handle];
+        return ArrayHelper::getColumn($this->getAllVoucherTypes(), 'id', false);
     }
 
-    public function getVoucherTypeSites($voucherTypeId): array
+    public function getVoucherTypeByHandle(string $handle): ?VoucherType
     {
-        if (!isset($this->_siteSettingsByVoucherId[$voucherTypeId])) {
-            $rows = (new Query())
-                ->select([
-                    'id',
-                    'voucherTypeId',
-                    'siteId',
-                    'uriFormat',
-                    'hasUrls',
-                    'template',
-                ])
-                ->from('{{%giftvoucher_vouchertypes_sites}}')
-                ->where(['voucherTypeId' => $voucherTypeId])
-                ->all();
+        return $this->_voucherTypes()->firstWhere('handle', $handle, true);
+    }
 
-            $this->_siteSettingsByVoucherId[$voucherTypeId] = [];
+    public function getVoucherTypeById(int $id): ?VoucherType
+    {
+        return $this->_voucherTypes()->firstWhere('id', $id);
+    }
 
-            foreach ($rows as $row) {
-                $this->_siteSettingsByVoucherId[$voucherTypeId][] = new VoucherTypeSite($row);
-            }
+    public function getVoucherTypeByUid(string $uid): ?VoucherType
+    {
+        return $this->_voucherTypes()->firstWhere('uid', $uid, true);
+    }
+
+    public function getEditableVoucherTypes(): array
+    {
+        $userSession = Craft::$app->getUser();
+        
+        return ArrayHelper::where($this->getAllVoucherTypes(), function(VoucherType $voucherType) use ($userSession) {
+            return $userSession->checkPermission("giftVoucher-manageVoucherType:$voucherType->uid");
+        }, true, true, false);
+    }
+
+    public function getEditableVoucherTypeIds(): array
+    {
+        return ArrayHelper::getColumn($this->getEditableVoucherTypes(), 'id', false);
+    }
+
+    public function getVoucherTypeSites(int $voucherTypeId): array
+    {
+        $results = VoucherTypeSiteRecord::find()
+            ->where(['voucherTypeId' => $voucherTypeId])
+            ->all();
+
+        $siteSettings = [];
+
+        foreach ($results as $result) {
+            $siteSettings[] = new VoucherTypeSite($result->toArray([
+                'id',
+                'voucherTypeId',
+                'siteId',
+                'uriFormat',
+                'hasUrls',
+                'template',
+            ]));
         }
 
-        return $this->_siteSettingsByVoucherId[$voucherTypeId];
+        return $siteSettings;
     }
 
     public function saveVoucherType(VoucherType $voucherType, bool $runValidation = true): bool
@@ -192,8 +139,6 @@ class VoucherTypes extends Component
 
             $voucherType->uid = $existingVoucherTypeRecord->uid;
         }
-
-        $this->_savingVoucherTypes[$voucherType->uid] = $voucherType;
 
         $projectConfig = Craft::$app->getProjectConfig();
 
@@ -413,21 +358,12 @@ class VoucherTypes extends Component
         }
 
         // Clear caches
-        $this->_allVoucherTypeIds = null;
-        $this->_editableVoucherTypeIds = null;
-        $this->_fetchedAllVoucherTypes = false;
-
-        unset(
-            $this->_voucherTypesById[$voucherTypeRecord->id],
-            $this->_voucherTypesByHandle[$voucherTypeRecord->handle],
-            $this->_siteSettingsByVoucherId[$voucherTypeRecord->id]
-        );
+        $this->_voucherTypes = null;
 
         // Fire an 'afterSaveVoucherType' event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_VOUCHERTYPE)) {
             $this->trigger(self::EVENT_AFTER_SAVE_VOUCHERTYPE, new VoucherTypeEvent([
                 'voucherType' => $this->getVoucherTypeById($voucherTypeRecord->id),
-                'isNew' => empty($this->_savingVoucherTypes[$voucherTypeUid]),
             ]));
         }
     }
@@ -474,14 +410,7 @@ class VoucherTypes extends Component
         }
 
         // Clear caches
-        $this->_allVoucherTypeIds = null;
-        $this->_editableVoucherTypeIds = null;
-        $this->_fetchedAllVoucherTypes = false;
-        unset(
-            $this->_voucherTypesById[$voucherTypeRecord->id],
-            $this->_voucherTypesByHandle[$voucherTypeRecord->handle],
-            $this->_siteSettingsByVoucherId[$voucherTypeRecord->id]
-        );
+        $this->_voucherTypes = null;
     }
 
     public function pruneDeletedSite(DeleteSiteEvent $event): void
@@ -521,34 +450,6 @@ class VoucherTypes extends Component
                 }
             }
         }
-    }
-
-    public function getVoucherTypeById(int $voucherTypeId): ?VoucherType
-    {
-        if (isset($this->_voucherTypesById[$voucherTypeId])) {
-            return $this->_voucherTypesById[$voucherTypeId];
-        }
-
-        if ($this->_fetchedAllVoucherTypes) {
-            return null;
-        }
-
-        $result = $this->_createVoucherTypeQuery()
-            ->where(['id' => $voucherTypeId])
-            ->one();
-
-        if (!$result) {
-            return null;
-        }
-
-        $this->_memoizeVoucherType(new VoucherType($result));
-
-        return $this->_voucherTypesById[$voucherTypeId];
-    }
-
-    public function getVoucherTypeByUid(string $uid): ?VoucherType
-    {
-        return ArrayHelper::firstWhere($this->getAllVoucherTypes(), 'uid', $uid, true);
     }
 
     public function isVoucherTypeTemplateValid(VoucherType $voucherType, int $siteId): bool
@@ -605,10 +506,19 @@ class VoucherTypes extends Component
     // Private methods
     // =========================================================================
 
-    private function _memoizeVoucherType(VoucherType $voucherType): void
+    private function _voucherTypes(): MemoizableArray
     {
-        $this->_voucherTypesById[$voucherType->id] = $voucherType;
-        $this->_voucherTypesByHandle[$voucherType->handle] = $voucherType;
+        if (!isset($this->_voucherTypes)) {
+            $voucherTypes = [];
+
+            foreach ($this->_createVoucherTypeQuery()->all() as $result) {
+                $voucherTypes[] = new VoucherType($result);
+            }
+
+            $this->_voucherTypes = new MemoizableArray($voucherTypes);
+        }
+
+        return $this->_voucherTypes;
     }
 
     private function _createVoucherTypeQuery(): Query

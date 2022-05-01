@@ -7,7 +7,10 @@ use verbb\giftvoucher\records\Redemption as RedemptionRecord;
 
 use Craft;
 use craft\base\Component;
+use craft\base\MemoizableArray;
 use craft\db\Query;
+use craft\helpers\ArrayHelper;
+use craft\helpers\Db;
 
 use Exception;
 
@@ -22,31 +25,23 @@ class Redemptions extends Component
     public const EVENT_AFTER_DELETE_REDEMPTION = 'afterDeleteRedemption';
 
 
+    // Properties
+    // =========================================================================
+
+    private ?MemoizableArray $_redemptions = null;
+
+
     // Public Methods
     // =========================================================================
 
     public function getRedemptionById(int $id): ?Redemption
     {
-        $result = $this->_createRedemptionsQuery()
-            ->where(['id' => $id])
-            ->one();
-
-        return $result ? new Redemption($result) : null;
+        return $this->_redemptions()->firstWhere('id', $id);
     }
 
     public function getRedemptionsByCodeId(int $codeId): array
     {
-        $results = $this->_createRedemptionsQuery()
-            ->where(['codeId' => $codeId])
-            ->all();
-
-        $redemptions = [];
-
-        foreach ($results as $result) {
-            $redemptions[] = new Redemption($result);
-        }
-
-        return $redemptions;
+        return $this->_redemptions()->where('codeId', $codeId);
     }
 
     public function saveRedemption(Redemption $redemption, bool $runValidation = true): bool
@@ -65,8 +60,7 @@ class Redemptions extends Component
             return false;
         }
 
-        $redemptionRecord = $this->_getRedemptionRecordById($redemption->id);
-
+        $redemptionRecord = $this->_getRedemptionRecord($redemption->id);
         $redemptionRecord->codeId = $redemption->codeId;
         $redemptionRecord->orderId = $redemption->orderId;
         $redemptionRecord->amount = $redemption->amount;
@@ -79,8 +73,7 @@ class Redemptions extends Component
             $redemption->id = $redemptionRecord->id;
         }
 
-        // Might as well update our cache of the model while we have it.
-        $this->_redemptionsById[$redemption->id] = $redemption;
+        $this->_redemptions = null;
 
         if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_REDEMPTION)) {
             $this->trigger(self::EVENT_AFTER_SAVE_REDEMPTION, new RedemptionEvent([
@@ -111,9 +104,9 @@ class Redemptions extends Component
             ]));
         }
 
-        Craft::$app->getDb()->createCommand()
-            ->delete('{{%giftvoucher_redemptions}}', ['id' => $redemption->id])
-            ->execute();
+        Db::delete('{{%giftvoucher_redemptions}}', [
+            'id' => $redemption->id,
+        ]);
 
         if ($this->hasEventHandlers(self::EVENT_AFTER_DELETE_REDEMPTION)) {
             $this->trigger(self::EVENT_AFTER_DELETE_REDEMPTION, new RedemptionEvent([
@@ -128,19 +121,19 @@ class Redemptions extends Component
     // Private Methods
     // =========================================================================
 
-    private function _getRedemptionRecordById(int $redemptionId = null): ?RedemptionRecord
+    private function _redemptions(): MemoizableArray
     {
-        if ($redemptionId !== null) {
-            $redemptionRecord = RedemptionRecord::findOne($redemptionId);
+        if (!isset($this->_redemptions)) {
+            $redemptions = [];
 
-            if (!$redemptionRecord) {
-                throw new Exception("No redemption exists with the ID '{$redemptionId}'");
+            foreach ($this->_createRedemptionsQuery()->all() as $result) {
+                $redemptions[] = new Redemption($result);
             }
-        } else {
-            $redemptionRecord = new RedemptionRecord();
+
+            $this->_redemptions = new MemoizableArray($redemptions);
         }
 
-        return $redemptionRecord;
+        return $this->_redemptions;
     }
 
     private function _createRedemptionsQuery(): Query
@@ -153,5 +146,10 @@ class Redemptions extends Component
                 'amount',
             ])
             ->from(['{{%giftvoucher_redemptions}}']);
+    }
+
+    private function _getRedemptionRecord(string $id): RedemptionRecord
+    {
+        return RedemptionRecord::findOne(['id' => $id]) ?? new RedemptionRecord();
     }
 }
