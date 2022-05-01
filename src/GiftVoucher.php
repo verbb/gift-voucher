@@ -80,19 +80,27 @@ class GiftVoucher extends Plugin
 
         $this->_registerComponents();
         $this->_registerLogTarget();
-        $this->_registerCpRoutes();
         $this->_registerElementTypes();
         $this->_registerFieldTypes();
         $this->_registerPurchasableTypes();
         $this->_registerVariable();
         $this->_registerEventHandlers();
-        $this->_registerCpRoutes();
-        $this->_registerPermissions();
         $this->_registerAdjusters();
         $this->_registerCraftEventListeners();
         $this->_registerProjectConfigEventListeners();
-        $this->_defineFieldLayoutElements();
-        $this->_registerResaveCommand();
+
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
+            $this->_registerCpRoutes();
+            $this->_registerFieldLayoutListener();
+        }
+
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            $this->_registerResaveCommand();
+        }
+
+        if (Craft::$app->getEdition() === Craft::Pro) {
+            $this->_registerPermissions();
+        }
     }
 
     public function afterInstall(): void
@@ -348,7 +356,7 @@ class GiftVoucher extends Plugin
         });
     }
 
-    private function _defineFieldLayoutElements(): void
+    private function _registerFieldLayoutListener(): void
     {
         Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS, function(DefineFieldLayoutFieldsEvent $e) {
             /** @var FieldLayout $fieldLayout */
