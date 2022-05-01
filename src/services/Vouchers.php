@@ -16,7 +16,7 @@ use yii\base\Component;
 
 use Throwable;
 
-class VouchersService extends Component
+class Vouchers extends Component
 {
     // Properties
     // =========================================================================

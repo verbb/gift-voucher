@@ -28,7 +28,7 @@ use yii\base\Exception;
 
 use Throwable;
 
-class VoucherTypesService extends Component
+class VoucherTypes extends Component
 {
     // Constants
     // =========================================================================

@@ -11,7 +11,7 @@ Plugins can get notified before the PDF or a voucher is being rendered.
 
 ```php
 use craft\commerce\events\PdfEvent;
-use verbb\giftvoucher\services\PdfService as Pdf;
+use verbb\giftvoucher\services\Pdf;
 use yii\base\Event;
 
 Event::on(Pdf::class, Pdf::EVENT_BEFORE_RENDER_PDF, function(PdfEvent $e) {
@@ -25,7 +25,7 @@ Plugins can get notified after the PDF or a voucher has been rendered.
 
 ```php
 use craft\commerce\events\PdfEvent;
-use verbb\giftvoucher\services\PdfService as Pdf;
+use verbb\giftvoucher\services\Pdf;
 use yii\base\Event;
 
 Event::on(Pdf::class, Pdf::EVENT_AFTER_RENDER_PDF, function(PdfEvent $e) {
@@ -66,7 +66,7 @@ Plugins can get notified before a voucher type is being saved.
 
 ```php
 use verbb\giftvoucher\events\VoucherTypeEvent;
-use verbb\giftvoucher\services\VoucherTypesService as VoucherTypes;
+use verbb\giftvoucher\services\VoucherTypes;
 use yii\base\Event;
 
 Event::on(VoucherTypes::class, VoucherTypes::EVENT_BEFORE_SAVE_VOUCHERTYPE, function(VoucherTypeEvent $e) {
@@ -80,7 +80,7 @@ Plugins can get notified after a voucher type has been saved.
 
 ```php
 use verbb\giftvoucher\events\VoucherTypeEvent;
-use verbb\giftvoucher\services\VoucherTypesService as VoucherTypes;
+use verbb\giftvoucher\services\VoucherTypes;
 use yii\base\Event;
 
 Event::on(VoucherTypes::class, VoucherTypes::EVENT_AFTER_SAVE_VOUCHERTYPE, function(VoucherTypeEvent $e) {
@@ -189,7 +189,7 @@ Plugins can get notified before an redemption is saved
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
-use verbb\giftvoucher\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\services\Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_SAVE_REDEMPTION, function(RedemptionEvent $e) {
@@ -203,7 +203,7 @@ Plugins can get notified after a redemption has been saved
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
-use verbb\giftvoucher\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\services\Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_AFTER_SAVE_REDEMPTION, function(RedemptionEvent $e) {
@@ -217,7 +217,7 @@ Plugins can get notified before an redemption is deleted
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
-use verbb\giftvoucher\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\services\Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_DELETE_REDEMPTION, function(RedemptionEvent $e) {
@@ -231,7 +231,7 @@ Plugins can get notified after a redemption has been deleted
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
-use verbb\giftvoucher\services\RedemptionsService as Redemptions;
+use verbb\giftvoucher\services\Redemptions;
 use yii\base\Event;
 
 Event::on(Redemptions::class, Redemptions::EVENT_AFTER_DELETE_REDEMPTION, function(RedemptionEvent $e) {

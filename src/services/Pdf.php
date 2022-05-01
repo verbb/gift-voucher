@@ -21,7 +21,7 @@ use yii\base\Component;
 use yii\base\ErrorException;
 use yii\base\Exception;
 
-class PdfService extends Component
+class Pdf extends Component
 {
     // Constants
     // =========================================================================

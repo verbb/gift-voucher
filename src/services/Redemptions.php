@@ -11,7 +11,7 @@ use craft\db\Query;
 
 use Exception;
 
-class RedemptionsService extends Component
+class Redemptions extends Component
 {
     // Constants
     // =========================================================================

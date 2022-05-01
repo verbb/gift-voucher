@@ -27,7 +27,7 @@ use yii\base\ModelEvent;
 use DateTime;
 use Throwable;
 
-class CodesService extends Component
+class Codes extends Component
 {
     // Constants
     // =========================================================================

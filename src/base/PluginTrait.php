@@ -3,11 +3,11 @@ namespace verbb\giftvoucher\base;
 
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\integrations\klaviyoconnect\KlaviyoConnect;
-use verbb\giftvoucher\services\CodesService;
-use verbb\giftvoucher\services\PdfService;
-use verbb\giftvoucher\services\RedemptionsService;
-use verbb\giftvoucher\services\VouchersService;
-use verbb\giftvoucher\services\VoucherTypesService;
+use verbb\giftvoucher\services\Codes;
+use verbb\giftvoucher\services\Pdf;
+use verbb\giftvoucher\services\Redemptions;
+use verbb\giftvoucher\services\Vouchers;
+use verbb\giftvoucher\services\VoucherTypes;
 use verbb\giftvoucher\storage\CodeStorageInterface;
 use verbb\base\BaseHelper;
 
@@ -44,27 +44,27 @@ trait PluginTrait
     // Public Methods
     // =========================================================================
 
-    public function getCodes(): CodesService
+    public function getCodes(): Codes
     {
         return $this->get('codes');
     }
 
-    public function getPdf(): PdfService
+    public function getPdf(): Pdf
     {
         return $this->get('pdf');
     }
 
-    public function getRedemptions(): RedemptionsService
+    public function getRedemptions(): Redemptions
     {
         return $this->get('redemptions');
     }
 
-    public function getVouchers(): VouchersService
+    public function getVouchers(): Vouchers
     {
         return $this->get('vouchers');
     }
 
-    public function getVoucherTypes(): VoucherTypesService
+    public function getVoucherTypes(): VoucherTypes
     {
         return $this->get('voucherTypes');
     }
@@ -88,12 +88,12 @@ trait PluginTrait
         $settings = $this->getSettings();
 
         $this->setComponents([
-            'codes' => CodesService::class,
+            'codes' => Codes::class,
             'klaviyoConnect' => KlaviyoConnect::class,
-            'pdf' => PdfService::class,
-            'redemptions' => RedemptionsService::class,
-            'vouchers' => VouchersService::class,
-            'voucherTypes' => VoucherTypesService::class,
+            'pdf' => Pdf::class,
+            'redemptions' => Redemptions::class,
+            'vouchers' => Vouchers::class,
+            'voucherTypes' => VoucherTypes::class,
             'codeStorage' => $settings->codeStorage,
         ]);
 
