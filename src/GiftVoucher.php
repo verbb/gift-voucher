@@ -10,7 +10,7 @@ use verbb\giftvoucher\fields\Codes;
 use verbb\giftvoucher\fields\Vouchers;
 use verbb\giftvoucher\helpers\ProjectConfigData;
 use verbb\giftvoucher\models\Settings;
-use verbb\giftvoucher\services\Codes;
+use verbb\giftvoucher\services\Codes as CodesService;
 use verbb\giftvoucher\services\VoucherTypes;
 use verbb\giftvoucher\variables\GiftVoucherVariable;
 
@@ -313,9 +313,9 @@ class GiftVoucher extends Plugin
             ->onUpdate(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleChangedVoucherType'])
             ->onRemove(VoucherTypes::CONFIG_VOUCHERTYPES_KEY . '.{uid}', [$voucherTypeService, 'handleDeletedVoucherType']);
 
-        $projectConfigService->onAdd(Codes::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
-            ->onUpdate(Codes::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
-            ->onRemove(Codes::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleDeletedFieldLayout']);
+        $projectConfigService->onAdd(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
+            ->onUpdate(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleChangedFieldLayout'])
+            ->onRemove(CodesService::CONFIG_FIELDLAYOUT_KEY, [$codesService, 'handleDeletedFieldLayout']);
 
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$voucherTypeService, 'pruneDeletedField']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$voucherTypeService, 'pruneDeletedSite']);
