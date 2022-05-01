@@ -1,6 +1,7 @@
 <?php
 namespace verbb\giftvoucher\helpers;
 
+use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Code;
 
 use Craft;
@@ -13,74 +14,35 @@ class ProjectConfigData
 
     public static function rebuildProjectConfig(): array
     {
-        $output = [];
+        $configData = [];
 
-        $output['voucherTypes'] = self::_getVoucherTypeData();
+        $configData['voucherTypes'] = self::_getVoucherTypeData();
 
         $codeFieldLayout = Craft::$app->getFields()->getLayoutByType(Code::class);
 
         if ($codeFieldLayout->uid) {
-            $output['codes'] = [
+            $configData['codes'] = [
                 'fieldLayouts' => [
                     $codeFieldLayout->uid => $codeFieldLayout->getConfig(),
                 ],
             ];
         }
 
-        return $output;
+        return array_filter($configData);
     }
+
+    
+    // Private Methods
+    // =========================================================================
 
     private static function _getVoucherTypeData(): array
     {
-        $voucherTypeRows = (new Query())
-            ->select([
-                'fieldLayoutId',
-                'name',
-                'handle',
-                'skuFormat',
-                'uid',
-            ])
-            ->from(['{{%giftvoucher_vouchertypes}} voucherTypes'])
-            ->all();
+        $data = [];
 
-        $typeData = [];
-
-        foreach ($voucherTypeRows as $voucherTypeRow) {
-            $rowUid = $voucherTypeRow['uid'];
-
-            if (!empty($voucherTypeRow['fieldLayoutId'])) {
-                $layout = Craft::$app->getFields()->getLayoutById($voucherTypeRow['fieldLayoutId']);
-
-                if ($layout) {
-                    $voucherTypeRow['voucherFieldLayouts'] = [$layout->uid => $layout->getConfig()];
-                }
-            }
-
-            unset($voucherTypeRow['uid'], $voucherTypeRow['fieldLayoutId']);
-            $voucherTypeRow['siteSettings'] = [];
-            $typeData[$rowUid] = $voucherTypeRow;
+        foreach (GiftVoucher::$plugin->getVoucherTypes()->getAllVoucherTypes() as $voucherType) {
+            $data[$voucherType->uid] = $voucherType->getConfig();
         }
 
-        $voucherTypeSiteRows = (new Query())
-            ->select([
-                'vouchertypes_sites.hasUrls',
-                'vouchertypes_sites.uriFormat',
-                'vouchertypes_sites.template',
-                'sites.uid AS siteUid',
-                'vouchertypes.uid AS typeUid',
-            ])
-            ->from(['{{%giftvoucher_vouchertypes_sites}} vouchertypes_sites'])
-            ->innerJoin('{{%sites}} sites', '[[sites.id]] = [[vouchertypes_sites.siteId]]')
-            ->innerJoin('{{%giftvoucher_vouchertypes}} vouchertypes', '[[vouchertypes.id]] = [[vouchertypes_sites.voucherTypeId]]')
-            ->all();
-
-        foreach ($voucherTypeSiteRows as $voucherTypeSiteRow) {
-            $typeUid = $voucherTypeSiteRow['typeUid'];
-            $siteUid = $voucherTypeSiteRow['siteUid'];
-            unset($voucherTypeSiteRow['siteUid'], $voucherTypeSiteRow['typeUid']);
-            $typeData[$typeUid]['siteSettings'][$siteUid] = $voucherTypeSiteRow;
-        }
-
-        return $typeData;
+        return $data;
     }
 }

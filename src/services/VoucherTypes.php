@@ -140,55 +140,8 @@ class VoucherTypes extends Component
             $voucherType->uid = $existingVoucherTypeRecord->uid;
         }
 
-        $projectConfig = Craft::$app->getProjectConfig();
-
-        $configData = [
-            'name' => $voucherType->name,
-            'handle' => $voucherType->handle,
-            'skuFormat' => $voucherType->skuFormat,
-            'siteSettings' => [],
-        ];
-
-        $generateLayoutConfig = function(FieldLayout $fieldLayout): array {
-            $fieldLayoutConfig = $fieldLayout->getConfig();
-
-            if ($fieldLayoutConfig) {
-                if (empty($fieldLayout->id)) {
-                    $layoutUid = StringHelper::UUID();
-                    $fieldLayout->uid = $layoutUid;
-                } else {
-                    $layoutUid = Db::uidById('{{%fieldlayouts}}', $fieldLayout->id);
-                }
-
-                return [$layoutUid => $fieldLayoutConfig];
-            }
-
-            return [];
-        };
-
-        $configData['voucherFieldLayouts'] = $generateLayoutConfig($voucherType->getFieldLayout());
-
-        // Get the site settings
-        $allSiteSettings = $voucherType->getSiteSettings();
-
-        // Make sure they're all there
-        foreach (Craft::$app->getSites()->getAllSiteIds() as $siteId) {
-            if (!isset($allSiteSettings[$siteId])) {
-                throw new Exception('Tried to save a voucher type that is missing site settings');
-            }
-        }
-
-        foreach ($allSiteSettings as $siteId => $settings) {
-            $siteUid = Db::uidById('{{%sites}}', $siteId);
-            $configData['siteSettings'][$siteUid] = [
-                'hasUrls' => $settings['hasUrls'],
-                'uriFormat' => $settings['uriFormat'],
-                'template' => $settings['template'],
-            ];
-        }
-
         $configPath = self::CONFIG_VOUCHERTYPES_KEY . '.' . $voucherType->uid;
-        $projectConfig->set($configPath, $configData);
+        Craft::$app->getProjectConfig()->set($configPath, $voucherType->getConfig());
 
         if ($isNewVoucherType) {
             $voucherType->id = Db::idByUid('{{%giftvoucher_vouchertypes}}', $voucherType->uid);

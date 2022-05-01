@@ -5,13 +5,18 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\records\VoucherType as VoucherTypeRecord;
 
+use Craft;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Db;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\HandleValidator;
 use craft\validators\UniqueValidator;
+
+use Exception;
 
 class VoucherType extends Model
 {
@@ -91,5 +96,55 @@ class VoucherType extends Model
                 'idAttribute' => 'fieldLayoutId',
             ],
         ];
+    }
+
+    public function getConfig(): array
+    {
+        $config = [
+            'name' => $this->name,
+            'handle' => $this->handle,
+            'skuFormat' => $this->skuFormat,
+            'siteSettings' => [],
+        ];
+
+        $generateLayoutConfig = function(FieldLayout $fieldLayout): array {
+            $fieldLayoutConfig = $fieldLayout->getConfig();
+
+            if ($fieldLayoutConfig) {
+                if (empty($fieldLayout->id)) {
+                    $layoutUid = StringHelper::UUID();
+                    $fieldLayout->uid = $layoutUid;
+                } else {
+                    $layoutUid = Db::uidById('{{%fieldlayouts}}', $fieldLayout->id);
+                }
+
+                return [$layoutUid => $fieldLayoutConfig];
+            }
+
+            return [];
+        };
+
+        $config['voucherFieldLayouts'] = $generateLayoutConfig($this->getFieldLayout());
+
+        // Get the site settings
+        $allSiteSettings = $this->getSiteSettings();
+
+        // Make sure they're all there
+        foreach (Craft::$app->getSites()->getAllSiteIds() as $siteId) {
+            if (!isset($allSiteSettings[$siteId])) {
+                throw new Exception('Tried to save a voucher type that is missing site settings');
+            }
+        }
+
+        foreach ($allSiteSettings as $siteId => $settings) {
+            $siteUid = Db::uidById('{{%sites}}', $siteId);
+            $config['siteSettings'][$siteUid] = [
+                'hasUrls' => $settings['hasUrls'],
+                'uriFormat' => $settings['uriFormat'],
+                'template' => $settings['template'],
+            ];
+        }
+
+        return $config;
     }
 }
