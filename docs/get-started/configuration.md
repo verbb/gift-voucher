@@ -1,6 +1,7 @@
 # Configuration
+Create a `gift-voucher.php` file under your `/config` directory with the following options available to you. You can also use multi-environment options to change these per environment.
 
-Create an `gift-voucher.php` file under your `/config` directory with the following options available to you. You can also use multi-environment options to change these per environment.
+The below shows the defaults already used by Gift Voucher, so you don't need to add these options unless you want to modify the values.
 
 ```php
 <?php
@@ -21,13 +22,12 @@ return [
 ];
 ```
 
-### Configuration options
-
+## Configuration options
 - `expiry` - Set a default expiry (in months). 0 to disable.
 - `codeKeyLength` - Set the number of characters for generated codes to be.
 - `codeKeyCharacters` - Supply valid characters to be used in code generation.
 - `voucherCodesPdfPath` - Set the path to your PDF.
-- `voucherCodesPdfFilenameFormat` - Set the defaulf PDF filename format.
+- `voucherCodesPdfFilenameFormat` - Set the default PDF filename format.
 - `pdfAllowRemoteImages` - Whether to allow remote images in the PDF.
 - `pdfPaperSize` - Sets the paper size for the PDF.
 - `pdfPaperOrientation` - Sets the paper orientation for the PDF.
@@ -35,7 +35,7 @@ return [
 - `attachPdfToEmails` - A collection of Commerce Email UIDs that Gift Voucher should automatically attach the voucher PDF to.
 
 #### `attachPdfToEmails`
-To populate the `attachPdfToEmails` setting, you'll need the UIDs of Commerce Emails. To determine these, create your Commerce emails, then look up the `commerce_emails` table in your database. Use the values in the `uid` column in an array, passing `true/false` as to whether the PDF should be attached to the email. For example:
+To populate the `attachPdfToEmails` setting, you'll need the UIDs of Commerce Emails. To determine these, create your Commerce emails, then look up the `commerce_emails` table in your database. Use the values in the `uid` column in an array, passing `true/false` for whether the PDF should be attached to the email. For example:
 
 ```php
 'attachPdfToEmails' => [
@@ -45,5 +45,4 @@ To populate the `attachPdfToEmails` setting, you'll need the UIDs of Commerce Em
 ```
 
 ## Control Panel
-
 You can also manage configuration settings through the Control Panel by visiting Settings → Gift Voucher.

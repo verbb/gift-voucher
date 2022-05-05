@@ -110,6 +110,7 @@ class Vouchers extends Component
                 return;
             }
 
+            $craftEmail = $event->craftEmail;
             $event->craftEmail->attach($pdfPath, ['fileName' => $fileName . '.pdf', 'contentType' => 'application/pdf']);
 
             // Store for later
@@ -134,4 +135,31 @@ class Vouchers extends Component
             unlink($pdfPath);
         }
     }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function _fixSwiftMailerBody($message)
+    {
+        // Fix a bug with SwiftMailer where setting an attachment clears out the body of the email!
+        $textBody = $message->getSwiftMessage()->getBody();
+        $htmlBody = $message->getSwiftMessage()->getBody();
+        $children = $message->getSwiftMessage()->getChildren();
+
+        // Getting the content from an email is a little more involved...
+        if (!$htmlBody && $children) {
+            foreach ($children as $child) {
+                if ($child->getContentType() == 'text/html') {
+                    $htmlBody = $child->getBody();
+                } else if ($child->getContentType() == 'text/plain') {
+                    $textBody = $child->getBody();
+                }
+            }
+        }
+
+        $message->setHtmlBody($htmlBody);
+        $message->setTextBody($textBody);
+    }
+
 }

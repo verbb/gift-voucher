@@ -1,5 +1,4 @@
 # PDF Vouchers
-
 Gift Voucher supports creating your vouchers as PDFs to be downloaded by the user and sent to their recipient. This allows you to create visually attractive designs for your vouchers, as opposed to a simple number in an email (which you can of course also do!).
 
 Behind the scenes, we use [Dompdf](https://github.com/dompdf/dompdf/), the same PDF library that Craft Commerce uses.

@@ -1,5 +1,4 @@
 # Code
-
 Whenever you're dealing with a code in your template, you're actually working with a `Code` object.
 
 ## Attributes

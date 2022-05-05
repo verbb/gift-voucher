@@ -1,5 +1,4 @@
 # Single Voucher
-
 Once you've got a list of vouchers, you'll want to allow your customers to drill-into a single voucher page for more detail. This takes many cues from the single Product page for Commerce.
 
 You'll have access to a `voucher` variable, which represents the single voucher you're looking at. You can also interchangeably use `product` if you wish.
@@ -37,7 +36,6 @@ You'll have access to a `voucher` variable, which represents the single voucher 
 ```
 
 ## Adding vouchers to your cart
-
 Adding a voucher to your cart works in very much the same way as [Craft Commerce](https://docs.craftcms.com/commerce/v3/adding-to-and-updating-the-cart.html):
 
 ```twig
@@ -54,7 +52,6 @@ Adding a voucher to your cart works in very much the same way as [Craft Commerce
 ```
 
 ### Setting a custom amount
-
 You can also allow your customers to set a custom amount to purchase on their gift voucher. Be sure to check the `Custom amount?` option in the control panel for the voucher you want to enable this on. 
 
 ```twig
@@ -64,7 +61,6 @@ You can also allow your customers to set a custom amount to purchase on their gi
 ```
 
 ### Line item options
-
 You can also set additional data through [line item options](https://docs.craftcms.com/commerce/v3/adding-to-and-updating-the-cart.html#line-item-options-and-notes). These values can be whatever you like, and very flexible.
 
 ```twig
@@ -84,7 +80,7 @@ You can also set additional data through [line item options](https://docs.craftc
 </form>
 ```
 
-If you have any custom fields setup in your Gift Voucher settings for Codes, you can also set content on those fields through your line item options, and they'll be automatically 'pushed' to the resulting [Code](docs:developers/code) generated at the end of checkout.
+If you have any custom fields' setup in your Gift Voucher settings for Codes, you can also set content on those fields through your line item options, and they'll be automatically 'pushed' to the resulting [Code](docs:developers/code) generated at the end of checkout.
 
 For example, let's say you have a 'Message' plain text field in your Code Field Layout, with the handle `message`. In this instance, you want to include additional information such as a personal message to be show on the PDF voucher to send to the voucher recipient. You include this field in your add-to-cart form:
 
@@ -102,7 +98,7 @@ For example, let's say you have a 'Message' plain text field in your Code Field 
 </form>
 ```
 
-You can also automate this to show _all_ of the custom fields assigned to the Code field layout.
+You can also automate this to show _all_ the custom fields assigned to the Code field layout.
 
 ```twig
 <form method="POST">

@@ -1,5 +1,4 @@
 # Voucher
-
 Whenever you're dealing with a vouchers in your template, you're actually working with a `Voucher` object.
 
 ## Attributes

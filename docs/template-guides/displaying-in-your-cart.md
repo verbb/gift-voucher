@@ -55,7 +55,7 @@ The above shows a very simplified output of your cart items. To add special hand
 
 Here, we're checking if the line item is a Gift Voucher, and then showing some content specifically for Gift Vouchers.
 
-### Using Custom Amounts
+## Using Custom Amounts
 If you are using custom amounts for your Gift Vouchers (users can set their own price), you'll need to be mindful when updating the cart. What can happen is the custom amount can be discarded, if you are updating other line item options at the same time.
 
 For example, let's say we want to allow users to modify the "To" line item option on the cart:
@@ -74,7 +74,7 @@ For example, let's say we want to allow users to modify the "To" line item optio
 {% endfor %}
 ```
 
-If we update the cart with _just_ this line item option, we will loose the `amount` line item option. So, the easiest method is to include it again. You can use a `text`, `number` or `hidden` input, depending on your needs.
+If we update the cart with _just_ this line item option, we will lose the `amount` line item option. So, the easiest method is to include it again. You can use a `text`, `number` or `hidden` input, depending on your needs.
 
 ```twig
 {% for item in cart.lineItems %}

@@ -1,13 +1,11 @@
 # PDF Template
-
 You can create PDFs for your gift vouchers, using a template that you have total control over.
 
-Start by ensuring you've setup the **Voucher PDF Template** under the [General Settings](docs:get-started/installation-setup) for Gift Voucher.
+Start by ensuring you've set up the **Voucher PDF Template** under the [General Settings](docs:get-started/installation-setup) for Gift Voucher.
 
 Also check out [Configuration](docs:get-started/configuration) for more options to adjust your PDF.
 
 ## Create a link for customers to download
-
 Next, you'll want to produce an actual link for your customer to download their PDF voucher. In most cases, this will be on the order summary page, an email, or both.
 
 For example, on our order summary template (`shop/customer/order.html`), we have the following code looping through line items for the order. You can use the following single-line Twig variable:
@@ -31,26 +29,21 @@ In both cases, the URL will look something similar to:
 This URL will be using the template you have defined under the Gift Voucher plugin settings.
 
 ### Additional parameters
-
 You may find the additional parameters useful, especially during testing and development of these templates. Simply use one of the following values to append to the URL produced above.
 
 - `&attach=false` - Add this to not force the PDF to download. Instead, it'll be rendered inside the browser window. This will still render as a PDF and is useful for debugging layout issues.
 - `&format=plain` - Produces the same template as HTML, as opposed to PDF. Again, useful for debugging layout issues, or quickly prototyping layouts.
 
 ## Template variables
-
 In the template itself, you'll have access to the following Twig variables:
 
 ### order
-
 The parent order that this voucher was purchased from
 
 ### codes
-
 A collection of [Codes](docs:developers/code). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
 
 ## Custom Fields
-
 If you have added any custom fields to your Code field layout (in the Gift Voucher plugin settings), you can also use those custom fields in your templates.
 
 ```twig
@@ -63,10 +56,9 @@ If you have added any custom fields to your Code field layout (in the Gift Vouch
 {% endfor %}
 ```
 
-Make sure you follow our [guide](docs:template-guides/single-voucher) for adding custom fields to vouchers when adding them to the cart. Otherwise, you custom fields won't have any content when codes are generated.
+Make sure you follow our [guide](docs:template-guides/single-voucher) for adding custom fields to vouchers when adding them to the cart. Otherwise, your custom fields won't have any content when codes are generated.
 
 ## Example template
-
 Below we've prepared a ready-to-go template, complete with provided CSS to get you started quickly.
 
 ```twig
@@ -84,7 +76,7 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
         }
 
         body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
             font-size: 13px;
             line-height: 1.4em;
             margin: 0px;
@@ -105,12 +97,23 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
         .field-amount {
             position: absolute;
-            top: 236px;
-            right: 353px;
+            top: 178px;
+            right: 337px;
             color: #fff;
             font-size: 57px;
-            line-height: 40px;
-            font-weight: 500;
+            font-weight: bolder;
+            width: 155px;
+            height: 156px;
+            line-height: 57px;
+            text-align: center;
+        }
+
+        .field-amount span {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            margin-top: -25px;
         }
 
         .field-content {
@@ -123,13 +126,13 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
         .demo-title {
             font-size: 35px;
-            font-weight: 300;
+            font-weight: lighter;
             line-height: 1;
         }
 
         .demo-p {
             font-size: 16px;
-            font-weight: 400;
+            font-weight: normal;
             margin-top: 10px;
         }
 
@@ -138,7 +141,7 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
             border: 1px dotted;
             margin: 35px 0 15px;
             font-size: 20px;
-            font-weight: 600;
+            font-weight: bold;
         }
 
         .field-expiry {
@@ -158,7 +161,9 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
     <div class="voucher">
         <img class="voucher-img" src="https://verbb.io/uploads/plugins/gift-voucher/gift-card-img.jpg" />
 
-        <span class="field-amount">{{ code.currentAmount | currency }}</span>
+        <div class="field-amount">
+            <span>{{ code.currentAmount | currency(null, [], [], true) }}</span>
+        </div>
 
         <div class="field-content">
             <div class="demo-title">{{ code.voucher.title }}</div>
