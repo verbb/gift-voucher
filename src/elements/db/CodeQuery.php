@@ -27,7 +27,7 @@ class CodeQuery extends ElementQuery
     public mixed $currentAmount = null;
     public mixed $expiryDate = null;
 
-    protected $defaultOrderBy = ['giftvoucher_codes.dateCreated' => SORT_DESC];
+    protected array $defaultOrderBy = ['giftvoucher_codes.dateCreated' => SORT_DESC];
 
 
     // Public Methods
