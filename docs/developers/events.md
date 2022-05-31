@@ -34,10 +34,11 @@ Event::on(Pdf::class, Pdf::EVENT_AFTER_RENDER_PDF, function(PdfEvent $e) {
 Plugins can get notified before a voucher is saved. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
 
 ```php
+use craft\events\ModelEvent;
 use verbb\giftvoucher\elements\Voucher;
 use yii\base\Event;
 
-Event::on(Voucher::class, Voucher::EVENT_BEFORE_SAVE, function(Event $e) {
+Event::on(Voucher::class, Voucher::EVENT_BEFORE_SAVE, function(ModelEvent $e) {
     $voucher = $event->sender;
     $event->isValid = false;
 });
@@ -47,10 +48,11 @@ Event::on(Voucher::class, Voucher::EVENT_BEFORE_SAVE, function(Event $e) {
 Plugins can get notified after a voucher has been saved
 
 ```php
+use craft\events\ModelEvent;
 use verbb\giftvoucher\elements\Voucher;
 use yii\base\Event;
 
-Event::on(Voucher::class, Voucher::EVENT_AFTER_SAVE, function(Event $e) {
+Event::on(Voucher::class, Voucher::EVENT_AFTER_SAVE, function(ModelEvent $e) {
     $voucher = $event->sender;
 });
 ```
@@ -146,10 +148,11 @@ Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent
 Plugins can get notified before a code is saved. Event handlers can prevent the code from getting sent by setting `$event->isValid` to false.
 
 ```php
+use craft\events\ModelEvent;
 use verbb\giftvoucher\elements\Code;
 use yii\base\Event;
 
-Event::on(Code::class, Code::EVENT_BEFORE_SAVE, function(Event $e) {
+Event::on(Code::class, Code::EVENT_BEFORE_SAVE, function(ModelEvent $e) {
     $code = $event->sender;
     $event->isValid = false;
 });
@@ -159,10 +162,11 @@ Event::on(Code::class, Code::EVENT_BEFORE_SAVE, function(Event $e) {
 Plugins can get notified after a code has been saved
 
 ```php
+use craft\events\ModelEvent;
 use verbb\giftvoucher\elements\Code;
 use yii\base\Event;
 
-Event::on(Code::class, Code::EVENT_AFTER_SAVE, function(Event $e) {
+Event::on(Code::class, Code::EVENT_AFTER_SAVE, function(ModelEvent $e) {
     $code = $event->sender;
 });
 ```
