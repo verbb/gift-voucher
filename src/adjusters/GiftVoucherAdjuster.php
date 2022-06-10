@@ -96,6 +96,11 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
 
     private function _getAdjustment(Order $order, Code $voucherCode)
     {
+        // If no attached voucher, discard
+        if (!$voucherCode->getVoucher()) {
+            return false;
+        }
+
         //preparing model
         $adjustment = new OrderAdjustment;
         $adjustment->type = self::ADJUSTMENT_TYPE;
