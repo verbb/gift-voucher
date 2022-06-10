@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.1 - 2022-06-10
+
+### Fixed
+- Fix an error when trying to redeem a voucher code, when the linked voucher has been deleted.
+- Fix being unable to modify a code’s voucher in the control panel.
+- Fix Swiftmailer dropping message after attaching voucher PDF.
+- Fix an error in Postgres when resaving a voucher code.
+- Fix PDF generation URLs not being correct in headless environments.
+
 ## 2.7.0 - 2021-12-12
 
 ### Added
