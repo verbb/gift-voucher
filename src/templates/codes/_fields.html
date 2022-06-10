@@ -10,31 +10,18 @@
     value: code.codeKey,
 }) }}
 
-{% if code.codeKey and not code.voucherId %}
-    {% set pvoucherInput %}
-        <div class="input ltr">
-            <input class="text ltr fullwidth" type="text" disabled="disabled" value="{{ code.getVoucherName() }}" autocomplete="off" />
-        </div>
-    {% endset %}
-
-    {{ forms.field({
-        label: 'Voucher' | t('gift-voucher'),
-        instructions: 'A deleted gift voucher' | t('gift-voucher')
-    }, voucherInput) }}
-{% else %}
-    {{ forms.elementSelectField({
-        label: 'Voucher' | t('gift-voucher'),
-        instructions: 'Select a voucher to be associated with this voucher code.' | t('gift-voucher'),
-        elementType: voucherElementType,
-        elements: code.voucherId ? craft.giftVoucher.vouchers.id(code.voucherId).anyStatus().all() : null,
-        id: 'voucher',
-        errors: code.getErrors('voucherId'),
-        class: 'ltr',
-        name: 'voucher',
-        limit: 1,
-        addButtonLabel: 'Select a Voucher' | t('gift-voucher'),
-    }) }}
-{% endif %}
+{{ forms.elementSelectField({
+    label: 'Voucher' | t('gift-voucher'),
+    instructions: 'Select a voucher to be associated with this voucher code.' | t('gift-voucher'),
+    elementType: voucherElementType,
+    elements: code.voucherId ? craft.giftVoucher.vouchers.id(code.voucherId).anyStatus().all() : null,
+    id: 'voucher',
+    errors: code.getErrors('voucherId'),
+    class: 'ltr',
+    name: 'voucher',
+    limit: 1,
+    addButtonLabel: 'Select a Voucher' | t('gift-voucher'),
+}) }}
 
 {% if not code.id %}
     {% set amountLabel = 'Amount' | t('gift-voucher') %}
