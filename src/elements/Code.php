@@ -79,12 +79,14 @@ class Code extends Element
             $voucherTypeIds[] = $voucherType->id;
         }
 
-        $sources = [[
-            'key' => '*',
-            'label' => Craft::t('gift-voucher', 'All voucher types'),
-            'criteria' => ['typeId' => $voucherTypeIds],
-            'defaultSort' => ['dateCreated', 'desc']
-        ]];
+        $sources = [
+            [
+                'key' => '*',
+                'label' => Craft::t('gift-voucher', 'All voucher types'),
+                'criteria' => ['typeId' => $voucherTypeIds],
+                'defaultSort' => ['dateCreated', 'desc'],
+            ],
+        ];
 
         $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
 
@@ -95,9 +97,9 @@ class Code extends Element
                 'key' => $key,
                 'label' => $voucherType->name,
                 'data' => [
-                    'handle' => $voucherType->handle
+                    'handle' => $voucherType->handle,
                 ],
-                'criteria' => ['typeId' => $voucherType->id]
+                'criteria' => ['typeId' => $voucherType->id],
             ];
         }
 
@@ -145,10 +147,10 @@ class Code extends Element
                 ->where(['in', 'id', $sourceElementIds])
                 ->all();
 
-            return array(
+            return [
                 'elementType' => Voucher::class,
-                'map' => $map
-            );
+                'map' => $map,
+            ];
         }
 
         if ($handle === 'order') {
@@ -158,10 +160,10 @@ class Code extends Element
                 ->where(['in', 'id', $sourceElementIds])
                 ->all();
 
-            return array(
+            return [
                 'elementType' => Order::class,
-                'map' => $map
-            );
+                'map' => $map,
+            ];
         }
 
         return parent::eagerLoadingMap($sourceElements, $handle);
@@ -258,7 +260,7 @@ class Code extends Element
 
     public function getVoucherName(): string
     {
-        return (string) $this->getVoucher();
+        return (string)$this->getVoucher();
     }
 
     public function getAmount()

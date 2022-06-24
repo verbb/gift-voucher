@@ -100,7 +100,7 @@ class CodesService extends Component
                             $redemption->codeId = $code->id;
                             $redemption->orderId = $order->id;
                             $redemption->amount = (float)$adjustment->amount * -1;
-                            
+
                             if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
                                 $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
                                     'errors' => Json::encode($redemption->getErrors()),
@@ -142,13 +142,13 @@ class CodesService extends Component
      * Create a Code after an Order is completed
      *
      * @param \verbb\giftvoucher\elements\Voucher $voucher
-     * @param \craft\commerce\elements\Order      $order
-     * @param \craft\commerce\models\LineItem     $lineItem
+     * @param \craft\commerce\elements\Order $order
+     * @param \craft\commerce\models\LineItem $lineItem
      *
-     * @throws \Throwable
+     * @return bool
      * @throws \craft\errors\ElementNotFoundException
      * @throws \yii\base\Exception
-     * @return bool
+     * @throws \Throwable
      */
     public function codeVoucherByOrder(Voucher $voucher, Order $order, LineItem $lineItem): bool
     {
@@ -169,11 +169,11 @@ class CodesService extends Component
             // give plugins a chance to change/modify it
             if ($this->hasEventHandlers(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM)) {
                 $this->trigger(self::EVENT_POPULATE_CODE_FROM_LINE_ITEM, new PopulateCodeFromLineItemEvent([
-                    'code'          => $code,
-                    'order'         => $order,
-                    'lineItem'      => $lineItem,
-                    'customFields'  => $customFields,
-                    'voucher'       => $voucher
+                    'code' => $code,
+                    'order' => $order,
+                    'lineItem' => $lineItem,
+                    'customFields' => $customFields,
+                    'voucher' => $voucher,
                 ]));
             }
 
@@ -207,7 +207,7 @@ class CodesService extends Component
      * Populates a Code by LineItem options and return the valid custom fields
      *
      * @param \verbb\giftvoucher\elements\Code $code
-     * @param \craft\commerce\models\LineItem  $lineItem
+     * @param \craft\commerce\models\LineItem $lineItem
      *
      * @return array
      */
@@ -223,7 +223,7 @@ class CodesService extends Component
         if ($fieldLayout = $code->getFieldLayout()) {
             if ($fields = $fieldLayout->getFields()) {
                 /** @var \craft\base\Field $field */
-                foreach ($fields as $field){
+                foreach ($fields as $field) {
                     $fieldHandle = $field->handle;
 
                     if (isset($options[$fieldHandle])) {
@@ -255,12 +255,12 @@ class CodesService extends Component
             $code->voucherId = $purchasable->id;
             $this->populateCodeByLineItem($code, $lineItem);
             $code->setScenario(Element::SCENARIO_LIVE);
-            
+
             // if validation fails it means you can't create a code with the current settings
             if ($code->validate() === false) {
                 // invalidate it -> let users know about missing/wrong fields
                 $lineItem->addErrors($code->getErrors());
-                
+
                 $event->isValid = false;
             }
         }

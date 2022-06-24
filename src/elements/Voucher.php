@@ -124,16 +124,16 @@ class Voucher extends Purchasable
                 'label' => Craft::t('gift-voucher', 'All vouchers'),
                 'criteria' => [
                     'typeId' => $voucherTypeIds,
-                    'editable' => $editable
+                    'editable' => $editable,
                 ],
-                'defaultSort' => ['postDate', 'desc']
-            ]
+                'defaultSort' => ['postDate', 'desc'],
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('gift-voucher', 'Voucher Types')];
 
         foreach ($voucherTypes as $voucherType) {
-            $key = 'voucherType:'.$voucherType->id;
+            $key = 'voucherType:' . $voucherType->id;
             $canEditVouchers = Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $voucherType->id);
 
             $sources[$key] = [
@@ -141,9 +141,9 @@ class Voucher extends Purchasable
                 'label' => $voucherType->name,
                 'data' => [
                     'handle' => $voucherType->handle,
-                    'editable' => $canEditVouchers
+                    'editable' => $canEditVouchers,
                 ],
-                'criteria' => ['typeId' => $voucherType->id, 'editable' => $editable]
+                'criteria' => ['typeId' => $voucherType->id, 'editable' => $editable],
             ];
         }
 
@@ -169,7 +169,7 @@ class Voucher extends Purchasable
             self::STATUS_LIVE => Craft::t('gift-voucher', 'Live'),
             self::STATUS_PENDING => Craft::t('gift-voucher', 'Pending'),
             self::STATUS_EXPIRED => Craft::t('gift-voucher', 'Expired'),
-            self::STATUS_DISABLED => Craft::t('gift-voucher', 'Disabled')
+            self::STATUS_DISABLED => Craft::t('gift-voucher', 'Disabled'),
         ];
     }
 
@@ -201,8 +201,7 @@ class Voucher extends Purchasable
         if ($handle === 'existingCodes') {
             $userId = Craft::$app->getUser()->getId();
 
-            if ($userId)
-            {
+            if ($userId) {
                 $sourceElementIds = ArrayHelper::getColumn($sourceElements, 'id');
 
                 $map = (new Query())
@@ -212,10 +211,10 @@ class Voucher extends Purchasable
                     ->andWhere(['userId' => $userId])
                     ->all();
 
-                return array(
+                return [
                     'elementType' => Code::class,
-                    'map' => $map
-                );
+                    'map' => $map,
+                ];
             }
         }
 
@@ -395,13 +394,13 @@ class Voucher extends Purchasable
             $voucherRecord = VoucherRecord::findOne($this->id);
 
             if (!$voucherRecord) {
-                throw new Exception('Invalid voucher id: '.$this->id);
+                throw new Exception('Invalid voucher id: ' . $this->id);
             }
         } else {
             $voucherRecord = new VoucherRecord();
             $voucherRecord->id = $this->id;
         }
-        
+
         $voucherRecord->postDate = $this->postDate;
         $voucherRecord->expiryDate = $this->expiryDate;
         $voucherRecord->typeId = $this->typeId;
@@ -437,7 +436,7 @@ class Voucher extends Purchasable
     {
         return $this->id;
     }
-    
+
     public function getSnapshot(): array
     {
         $data = [];
@@ -552,8 +551,8 @@ class Voucher extends Purchasable
                 'variables' => [
                     'voucher' => $this,
                     'product' => $this,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

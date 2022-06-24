@@ -40,7 +40,7 @@ class m190825_000000_migrate_codes_to_elements extends Migration
                 $elementRecord->enabled = true;
                 $elementRecord->dateCreated = $codeRecord->dateCreated;
                 $elementRecord->dateUpdated = $codeRecord->dateUpdated;
-                
+
                 $elementRecord->save(false);
 
                 echo 'Created element ' . $elementRecord->id . PHP_EOL;

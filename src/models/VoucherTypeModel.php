@@ -90,8 +90,8 @@ class VoucherTypeModel extends Model
             'voucherFieldLayout' => [
                 'class' => FieldLayoutBehavior::class,
                 'elementType' => Voucher::class,
-                'idAttribute' => 'fieldLayoutId'
-            ]
+                'idAttribute' => 'fieldLayoutId',
+            ],
         ];
     }
 }

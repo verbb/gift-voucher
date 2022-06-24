@@ -18,7 +18,7 @@ class Session extends Component implements CodeStorageInterface
      * The key for code storing
      */
     const CODE_KEY = 'giftVoucher.giftVoucherCodes';
-    
+
     /** @var \craft\web\Request */
     public $request;
 
@@ -66,7 +66,7 @@ class Session extends Component implements CodeStorageInterface
      * remove a code
      *
      * @param \verbb\giftvoucher\elements\Code|string|int|null $code
-     * @param \craft\commerce\elements\Order                   $order
+     * @param \craft\commerce\elements\Order $order
      *
      * @return bool
      *
@@ -78,7 +78,7 @@ class Session extends Component implements CodeStorageInterface
     {
         $code = CodeHelper::getCode($code);
         $success = false;
-        
+
         if ($code !== null && $this->_isActive() === true) {
             $codeKeys = $this->getCodeKeys($order);
 
@@ -138,7 +138,7 @@ class Session extends Component implements CodeStorageInterface
     /**
      * Set Codes
      *
-     * @param array                          $codes
+     * @param array $codes
      * @param \craft\commerce\elements\Order $order
      *
      * @return bool
@@ -155,10 +155,10 @@ class Session extends Component implements CodeStorageInterface
             $codeKeys = [];
             $success = true;
 
-            foreach ($codes as $code){
+            foreach ($codes as $code) {
                 $codeElement = CodeHelper::getCode($code);
-                
-                if ($codeElement !== null){
+
+                if ($codeElement !== null) {
                     $codeKeys[] = $codeElement->codeKey;
                 } else {
                     $success = false;
@@ -193,5 +193,5 @@ class Session extends Component implements CodeStorageInterface
     {
         return self::CODE_KEY . ':' . $order->id;
     }
-    
+
 }

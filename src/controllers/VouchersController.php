@@ -86,7 +86,7 @@ class VouchersController extends Controller
                         'typeId' => $variables['voucherType']->id,
                         'voucherId' => $voucher->id,
                         'siteId' => $voucher->siteId,
-                    ]
+                    ],
                 ]) . ');');
 
             $variables['showPreviewBtn'] = true;
@@ -99,7 +99,7 @@ class VouchersController extends Controller
                 } else {
                     $variables['shareUrl'] = UrlHelper::actionUrl('gift-voucher/vouchers-preview/share-voucher', [
                         'voucherId' => $voucher->id,
-                        'siteId' => $voucher->siteId
+                        'siteId' => $voucher->siteId,
                     ]);
                 }
             }
@@ -118,7 +118,7 @@ class VouchersController extends Controller
         $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId);
 
         if (!$voucher) {
-            throw new Exception(Craft::t('gift-voucher', 'No voucher exists with the ID “{id}”.',['id' => $voucherId]));
+            throw new Exception(Craft::t('gift-voucher', 'No voucher exists with the ID “{id}”.', ['id' => $voucherId]));
         }
 
         $this->enforceVoucherPermissions($voucher);
@@ -130,7 +130,7 @@ class VouchersController extends Controller
 
             Craft::$app->getSession()->setError(Craft::t('gift-voucher', 'Couldn’t delete voucher.'));
             Craft::$app->getUrlManager()->setRouteParams([
-                'voucher' => $voucher
+                'voucher' => $voucher,
             ]);
 
             return null;
@@ -180,7 +180,7 @@ class VouchersController extends Controller
                     $oldVoucher->addErrors($clone->getErrors());
 
                     Craft::$app->getUrlManager()->setRouteParams([
-                        'voucher' => $oldVoucher
+                        'voucher' => $oldVoucher,
                     ]);
 
                     return null;
@@ -226,7 +226,7 @@ class VouchersController extends Controller
                 }
 
                 Craft::$app->getUrlManager()->setRouteParams([
-                    'voucher' => $oldVoucher
+                    'voucher' => $oldVoucher,
                 ]);
 
                 return null;
@@ -245,7 +245,7 @@ class VouchersController extends Controller
                 'title' => $voucher->title,
                 'status' => $voucher->getStatus(),
                 'url' => $voucher->getUrl(),
-                'cpEditUrl' => $voucher->getCpEditUrl()
+                'cpEditUrl' => $voucher->getCpEditUrl(),
             ]);
         }
 
@@ -348,7 +348,7 @@ class VouchersController extends Controller
             } else {
                 $variables['voucher'] = new Voucher();
                 $variables['voucher']->typeId = $variables['voucherType']->id;
-                
+
                 $variables['voucher']->typeId = $variables['voucherType']->id;
                 $variables['voucher']->enabled = true;
                 $variables['voucher']->siteId = $site->id;

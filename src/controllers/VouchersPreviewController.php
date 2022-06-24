@@ -58,7 +58,7 @@ class VouchersPreviewController extends Controller
 
         // Create the token and redirect to the voucher URL with the token in place
         $token = Craft::$app->getTokens()->createToken([
-            'gift-voucher/vouchers-preview/view-shared-voucher', ['voucherId' => $voucher->id, 'siteId' => $siteId]
+            'gift-voucher/vouchers-preview/view-shared-voucher', ['voucherId' => $voucher->id, 'siteId' => $siteId],
         ]);
 
         $url = UrlHelper::urlWithToken($voucher->getUrl(), $token);
@@ -108,7 +108,7 @@ class VouchersPreviewController extends Controller
 
             // Send the category back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'voucher' => $voucher
+                'voucher' => $voucher,
             ]);
 
             return null;
@@ -121,7 +121,7 @@ class VouchersPreviewController extends Controller
                 'title' => $voucher->title,
                 'status' => $voucher->getStatus(),
                 'url' => $voucher->getUrl(),
-                'cpEditUrl' => $voucher->getCpEditUrl()
+                'cpEditUrl' => $voucher->getCpEditUrl(),
             ]);
         }
 
@@ -165,7 +165,7 @@ class VouchersPreviewController extends Controller
         $this->getView()->getTwig()->disableStrictVariables();
 
         return $this->renderTemplate($siteSettings[$voucher->siteId]->template, [
-            'voucher' => $voucher
+            'voucher' => $voucher,
         ]);
     }
 

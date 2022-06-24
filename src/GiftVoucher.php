@@ -273,7 +273,7 @@ class GiftVoucher extends Plugin
                 }
 
                 $event->types = $types;
-            } elseif ($settings->registerAdjuster === 'afterTax') {
+            } else if ($settings->registerAdjuster === 'afterTax') {
                 $event->types[] = GiftVoucherAdjuster::class;
             }
         });
@@ -315,7 +315,7 @@ class GiftVoucher extends Plugin
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$voucherTypeService, 'pruneDeletedField']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$voucherTypeService, 'pruneDeletedSite']);
 
-        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
             $event->config['giftVoucher'] = ProjectConfigData::rebuildProjectConfig();
         });
     }

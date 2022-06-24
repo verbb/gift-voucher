@@ -137,7 +137,7 @@ class Order extends Component implements CodeStorageInterface
      * Set Codes
      *
      * @param \verbb\giftvoucher\elements\Code[]|int[]|string[] $codes
-     * @param \craft\commerce\elements\Order                    $order
+     * @param \craft\commerce\elements\Order $order
      *
      * @return bool
      *
@@ -154,7 +154,7 @@ class Order extends Component implements CodeStorageInterface
         }
 
         $codeIds = [];
-        foreach ($codes as $code){
+        foreach ($codes as $code) {
             $code = CodeHelper::getCode($code);
 
             if ($code !== null) {

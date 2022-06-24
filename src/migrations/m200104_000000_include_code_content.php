@@ -46,8 +46,6 @@ class m200104_000000_include_code_content extends Migration
                 }
             }
         }
-
-
     }
 
     public function safeDown()

@@ -46,7 +46,7 @@ class m200510_000000_project_config extends Migration
                 'name',
                 'handle',
                 'skuFormat',
-                'uid'
+                'uid',
             ])
             ->from(['{{%giftvoucher_vouchertypes}} voucherTypes'])
             ->all();

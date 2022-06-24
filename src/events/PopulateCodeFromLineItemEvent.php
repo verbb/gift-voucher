@@ -13,5 +13,5 @@ class PopulateCodeFromLineItemEvent extends Event
     public $code;
     public $customFields;
     public $voucher;
-    
+
 }
