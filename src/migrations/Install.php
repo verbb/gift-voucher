@@ -40,16 +40,7 @@ class Install extends Migration
         return true;
     }
 
-    public function dropProjectConfig(): void
-    {
-        Craft::$app->projectConfig->remove('gift-voucher');
-    }
-
-
-    // Protected Methods
-    // =========================================================================
-
-    protected function createTables(): void
+    public function createTables(): void
     {
         $this->archiveTableIfExists('{{%giftvoucher_codes}}');
         $this->createTable('{{%giftvoucher_codes}}', [
@@ -121,16 +112,7 @@ class Install extends Migration
         ]);
     }
 
-    protected function dropTables(): void
-    {
-        $this->dropTable('{{%giftvoucher_codes}}');
-        $this->dropTable('{{%giftvoucher_redemptions}}');
-        $this->dropTable('{{%giftvoucher_vouchers}}');
-        $this->dropTable('{{%giftvoucher_vouchertypes}}');
-        $this->dropTable('{{%giftvoucher_vouchertypes_sites}}');
-    }
-
-    protected function createIndexes(): void
+    public function createIndexes(): void
     {
         $this->createIndex(null, '{{%giftvoucher_codes}}', 'codeKey', true);
         $this->createIndex(null, '{{%giftvoucher_codes}}', 'voucherId', false);
@@ -152,7 +134,7 @@ class Install extends Migration
         $this->createIndex(null, '{{%giftvoucher_vouchertypes_sites}}', 'siteId', false);
     }
 
-    protected function addForeignKeys(): void
+    public function addForeignKeys(): void
     {
         $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'id', '{{%elements}}', ['id'], 'CASCADE');
         $this->addForeignKey(null, '{{%giftvoucher_codes}}', 'lineItemId', '{{%commerce_lineitems}}', ['id'], 'SET NULL');
@@ -173,12 +155,40 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%giftvoucher_vouchertypes_sites}}', ['voucherTypeId'], '{{%giftvoucher_vouchertypes}}', ['id'], 'CASCADE');
     }
 
-    protected function dropForeignKeys(): void
+    public function dropTables(): void
     {
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_codes}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_redemptions}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchers}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes}}', $this);
-        MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
+        $this->dropTableIfExists('{{%giftvoucher_codes}}');
+        $this->dropTableIfExists('{{%giftvoucher_redemptions}}');
+        $this->dropTableIfExists('{{%giftvoucher_vouchers}}');
+        $this->dropTableIfExists('{{%giftvoucher_vouchertypes}}');
+        $this->dropTableIfExists('{{%giftvoucher_vouchertypes_sites}}');
+    }
+
+    public function dropForeignKeys(): void
+    {
+        if ($this->db->tableExists('{{%giftvoucher_codes}}')) {
+            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_codes}}', $this);
+        }
+
+        if ($this->db->tableExists('{{%giftvoucher_redemptions}}')) {
+            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_redemptions}}', $this);
+        }
+
+        if ($this->db->tableExists('{{%giftvoucher_vouchers}}')) {
+            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchers}}', $this);
+        }
+
+        if ($this->db->tableExists('{{%giftvoucher_vouchertypes}}')) {
+            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes}}', $this);
+        }
+
+        if ($this->db->tableExists('{{%giftvoucher_vouchertypes_sites}}')) {
+            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
+        }
+    }
+
+    public function dropProjectConfig(): void
+    {
+        Craft::$app->projectConfig->remove('gift-voucher');
     }
 }
