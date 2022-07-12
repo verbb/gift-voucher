@@ -92,15 +92,21 @@ Craft.GiftVoucher.AddCodeModal = Garnish.Modal.extend({
         var data = this.$form.serialize();
 
         // Save everything through the normal update-cart action, just like we were doing it on the front-end
-        Craft.postActionRequest('gift-voucher/cart/add-code', data, $.proxy(function(response) {
-            this.$footerSpinner.addClass('hidden');
-
-            if (response.success) {
+        Craft.sendActionRequest('POST', 'gift-voucher/cart/add-code', { data })
+            .then((response) => {
                 location.reload();
-            } else {
-                Craft.cp.displayError(response.error);
-            }
-        }, this));
+            })
+            .catch(({response}) => {
+                if (response && response.data && response.data.message) {
+                    Craft.cp.displayError(response.data.message);
+                } else {
+                    Craft.cp.displayError();
+                }
+            })
+            .finally(() => {
+                this.$footerSpinner.addClass('hidden');
+            });
+
     },
 });
 
