@@ -139,7 +139,7 @@ class VouchersPreviewController extends Controller
         $siteSettings = $voucherType->getSiteSettings();
 
         if (!isset($siteSettings[$voucher->siteId]) || !$siteSettings[$voucher->siteId]->hasUrls) {
-            throw new ServerErrorHttpException('The voucher ' . $voucher->id . ' doesn\'t have a URL for the site ' . $voucher->siteId . '.');
+            throw new ServerErrorHttpException('The voucher ' . $voucher->id . ' doesn‘t have a URL for the site ' . $voucher->siteId . '.');
         }
 
         $site = Craft::$app->getSites()->getSiteById($voucher->siteId);
