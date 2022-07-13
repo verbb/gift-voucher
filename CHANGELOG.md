@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.0-beta.2 - 2022-07-14
+
+### Added
+- Add translations.
+
+### Changed
+- Replace deprecated `Craft.postActionRequest()` for JS.
+
+### Fixed
+- Fix an error when uninstalling.
+
 ## 3.0.0-beta.1 - 2022-03-10
 
 ### Changed
