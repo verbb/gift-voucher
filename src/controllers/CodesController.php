@@ -106,6 +106,8 @@ class CodesController extends Controller
 
         if (is_array($voucherIds) && !empty($voucherIds)) {
             $code->voucherId = reset($voucherIds);
+        } else {
+            $code->voucherId = null;
         }
 
         $code->id = $request->getBodyParam('codeId');

@@ -515,7 +515,7 @@ See [Searching](https://docs.craftcms.com/v3/searching.html) for a full explanat
 
 ```php PHP
 // Get the search query from the 'q' query string param
-$searchQuery = \Craft::$app->request->getQueryParam('q');
+$searchQuery = \Craft::$app->getRequest()->getQueryParam('q');
 
 // Fetch all codes that match the search query
 $codes = \verbb\giftvoucher\elements\Code::find()
@@ -555,7 +555,7 @@ Possible values include:
 
 ```php PHP
 // Get the requested code SKU from the URL
-$requestedSlug = \Craft::$app->request->getSegment(3);
+$requestedSlug = \Craft::$app->getRequest()->getSegment(3);
 
 // Fetch the code with that slug
 $code = \verbb\giftvoucher\elements\Code::find()
@@ -595,7 +595,7 @@ Possible values include:
 
 ```php PHP
 // Get the requested code slug from the URL
-$requestedSlug = \Craft::$app->request->getSegment(3);
+$requestedSlug = \Craft::$app->getRequest()->getSegment(3);
 
 // Fetch the code with that slug
 $code = \verbb\giftvoucher\elements\Code::find()
@@ -786,7 +786,7 @@ Possible values include:
 
 ```php PHP
 // Get the requested URI
-$requestedUri = \Craft::$app->request->getPathInfo();
+$requestedUri = \Craft::$app->getRequest()->getPathInfo();
 
 // Fetch the code with that URI
 $code = \verbb\giftvoucher\elements\Code::find()
