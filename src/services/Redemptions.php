@@ -148,8 +148,13 @@ class Redemptions extends Component
             ->from(['{{%giftvoucher_redemptions}}']);
     }
 
-    private function _getRedemptionRecord(string $id): RedemptionRecord
+    private function _getRedemptionRecord(int|string|null $id): RedemptionRecord
     {
-        return RedemptionRecord::findOne(['id' => $id]) ?? new RedemptionRecord();
+        /** @var RedemptionRecord $redemption */
+        if ($id && $redemption = RedemptionRecord::find()->where(['id' => $id])->one()) {
+            return $redemption;
+        }
+
+        return new RedemptionRecord();
     }
 }
