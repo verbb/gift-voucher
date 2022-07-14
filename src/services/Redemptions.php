@@ -41,7 +41,7 @@ class Redemptions extends Component
 
     public function getRedemptionsByCodeId(int $codeId): array
     {
-        return $this->_redemptions()->where('codeId', $codeId);
+        return $this->_redemptions()->where('codeId', $codeId)->all();
     }
 
     public function saveRedemption(Redemption $redemption, bool $runValidation = true): bool
