@@ -16,7 +16,7 @@ $myQuery = \verbb\giftvoucher\elements\Voucher::find();
 Once you’ve created a voucher query, you can set parameters on it to narrow down the results, and then execute it by calling `.all()`. An array of [Voucher](docs:developers/voucher) objects will be returned.
 
 :::tip
-See Introduction to [Element Queries](https://docs.craftcms.com/v3/dev/element-queries/) in the Craft docs to learn about how element queries work.
+See Introduction to [Element Queries](https://craftcms.com/docs/4.x/element-queries/) in the Craft docs to learn about how element queries work.
 :::
 
 ## Example
@@ -82,7 +82,7 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 ### `anyStatus`
 
-Clears out the [status()](https://docs.craftcms.com/api/v3/craft-elements-db-elementquery.html#method-status) and [enabledForSite()](https://docs.craftcms.com/api/v3/craft-elements-db-elementquery.html#method-enabledforsite) parameters.
+Clears out the [status()](https://docs.craftcms.com/api/v4/craft-elements-db-elementquery.html#method-status) and [enabledForSite()](https://docs.craftcms.com/api/v4/craft-elements-db-elementquery.html#method-enabledforsite) parameters.
 
 ::: code
 ```twig Twig
@@ -392,7 +392,7 @@ Possible values include:
 
 Narrows the query results to only vouchers that are related to certain other elements.
 
-See [Relations](https://docs.craftcms.com/v3/relations.html) for a full explanation of how to work with this parameter.
+See [Relations](https://craftcms.com/docs/4.x/relations.html) for a full explanation of how to work with this parameter.
 
 ::: code
 ```twig Twig
@@ -416,7 +416,7 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 Narrows the query results to only vouchers that match a search query.
 
-See [Searching](https://docs.craftcms.com/v3/searching.html) for a full explanation of how to work with this parameter.
+See [Searching](https://craftcms.com/docs/4.x/searching.html) for a full explanation of how to work with this parameter.
 
 ::: code
 ```twig Twig
@@ -711,7 +711,7 @@ $voucher = \verbb\giftvoucher\elements\Voucher::find()
 
 Causes the query to return matching vouchers eager-loaded with related elements.
 
-See [Eager-Loading Elements](https://docs.craftcms.com/v3/dev/eager-loading-elements.html) for a full explanation of how to work with this parameter.
+See [Eager-Loading Elements](https://craftcms.com/docs/4.x/eager-loading-elements.html) for a full explanation of how to work with this parameter.
 
 ::: code
 ```twig Twig
