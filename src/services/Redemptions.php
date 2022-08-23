@@ -39,7 +39,7 @@ class Redemptions extends Component
         return $this->_redemptions()->firstWhere('id', $id);
     }
 
-    public function getRedemptionsByCodeId(int $codeId): array
+    public function getRedemptionsByCodeId(int $codeId): MemoizableArray
     {
         return $this->_redemptions()->where('codeId', $codeId)->all();
     }
