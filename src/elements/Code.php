@@ -16,6 +16,7 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
+use craft\base\MemoizableArray;
 
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
@@ -331,7 +332,7 @@ class Code extends Element
         return Craft::$app->getFields()->getLayoutByType(self::class);
     }
 
-    public function getRedemptions(): array
+    public function getRedemptions(): MemoizableArray
     {
         if ($this->id) {
             return GiftVoucher::$plugin->getRedemptions()->getRedemptionsByCodeId($this->id);
