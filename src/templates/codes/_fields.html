@@ -70,19 +70,28 @@
             {% for redemption in code.getRedemptions() %}
                 <tr>
                     <td>
-                        {{ redemption.getOrder().getLink() | raw }}
+                        {% if redemption.getOrder() %}
+                            {{ redemption.getOrder().getLink() | raw }}
+                        {% else %}
+                            {{ 'No order' | t('gift-voucher') }}
+                        {% endif %}
                     </td>
 
                     <td>
-                        {{ redemption.getOrder().dateOrdered | date('Y-m-d H:i:s') }}
+                        {% if redemption.getOrder() %}
+                            {{ redemption.getOrder().dateOrdered | date('Y-m-d H:i:s') }}
+                        {% else %}
+                            {{ '-' | t('gift-voucher') }}
+                        {% endif %}
                     </td>
 
                     <td class="nowrap" width="10%">
-                        {{ redemption.amount|commerceCurrency(
-                            redemption.getOrder().currency,
-                            convert=true
-                            )
+                        {% if redemption.getOrder() %}
+                            {{ redemption.amount | commerceCurrency(redemption.getOrder().currency, convert=true)
                         }}
+                        {% else %}
+                            {{ redemption.amount | commerceCurrency(craft.commerce.paymentCurrencies.getPrimaryPaymentCurrencyIso(), convert=true) }}
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
