@@ -78,11 +78,7 @@
                     </td>
 
                     <td>
-                        {% if redemption.getOrder() %}
-                            {{ redemption.getOrder().dateOrdered | date('Y-m-d H:i:s') }}
-                        {% else %}
-                            {{ '-' | t('gift-voucher') }}
-                        {% endif %}
+                        {{ redemption.dateCreated | datetime('short') }}
                     </td>
 
                     <td class="nowrap" width="10%">
