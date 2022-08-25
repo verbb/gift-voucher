@@ -1,12 +1,15 @@
 <?php
 namespace verbb\giftvoucher\models;
 
+use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Code;
 
 use Craft;
 use craft\base\Model;
 
 use craft\commerce\Plugin as Commerce;
+
+use DateTime;
 
 class RedemptionModel extends Model
 {
@@ -17,6 +20,10 @@ class RedemptionModel extends Model
     public $codeId;
     public $orderId;
     public $amount;
+    public ?DateTime $dateCreated = null;
+    public ?DateTime $dateUpdated = null;
+    public ?string $uid = null;
+
 
     // Public Methods
     // =========================================================================

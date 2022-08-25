@@ -155,6 +155,9 @@ class RedemptionsService extends Component
                 'codeId',
                 'orderId',
                 'amount',
+                'dateCreated',
+                'dateUpdated',
+                'uid',
             ])
             ->from(['{{%giftvoucher_redemptions}}']);
     }
