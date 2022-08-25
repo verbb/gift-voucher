@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.2 - 2022-08-25
+
+### Added
+- Add `dateCreated`, `dateUpdated` and `uid` to Redemption model.
+
+### Fixed
+- Fix redemptions table showing the order date instead of the date of the redemption date.
+- Fix an error when viewing a redemption without and order in the control panel.
+
 ## 2.7.1 - 2022-06-10
 
 ### Fixed
