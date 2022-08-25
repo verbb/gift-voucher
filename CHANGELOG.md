@@ -1,22 +1,23 @@
 # Changelog
 
-## 3.0.0-beta.2 - 2022-07-14
+## 3.0.0 - 2022-08-25
 
 ### Added
-- Add translations.
+- Add missing English translations.
+- Add `dateCreated`, `dateUpdated` and `uid` to Redemption model.
 
 ### Changed
+- Now requires PHP `^8.0.2`.
+- Now requires Craft `^4.0.0`.
+- Now requires Craft Commerce `^4.0.0`.
 - Replace deprecated `Craft.postActionRequest()` for JS.
 
 ### Fixed
 - Fix an error when uninstalling.
-
-## 3.0.0-beta.1 - 2022-03-10
-
-### Changed
-- Now requires PHP `^8.0.2`.
-- Now requires Craft `^4.0.0-beta.1`.
-- Now requires Craft Commerce `^4.0.0-beta.1`.
+- Fix redemptions table showing the order date instead of the date of the redemption date.
+- Fix an error when viewing a redemption without and order in the control panel.
+- Fix an error fetching new redemption records.
+- Fix a type error with redemption codes.
 
 ## 2.7.1 - 2022-06-10
 
