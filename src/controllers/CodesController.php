@@ -46,7 +46,7 @@ class CodesController extends Controller
 
         // prepend the first tab as general setting in case there are no field layout tabs
         if (empty($tabs) === false) {
-            $variables['tabs'][] = [
+            $variables['tabs']['general'] = [
                 // TODO: Maybe There is a better wording for it ¯\_(ツ)_/¯
                 'label' => Craft::t('app', 'Settings'),
                 'url' => '#general',
@@ -68,7 +68,7 @@ class CodesController extends Controller
                 }
             }
 
-            $variables['tabs'][] = [
+            $variables['tabs'][$tab->getHtmlId()] = [
                 'label' => Craft::t('site', $tab->name),
                 'url' => '#' . $tab->getHtmlId(),
                 'class' => $hasErrors ? 'error' : null,
