@@ -9,7 +9,7 @@ class MatchCodeEvent extends CancelableEvent
     // Properties
     // =========================================================================
 
-    public Code $code;
+    public ?Code $code = null;
     public ?string $codeKey = null;
     public ?string $error = null;
 }
