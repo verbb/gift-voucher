@@ -19,7 +19,7 @@ class Settings extends Model
     public bool $pdfAllowRemoteImages = false;
     public string $pdfPaperSize = 'letter';
     public string $pdfPaperOrientation = 'portrait';
-    public string $codeStorage = Session::class;
+    public mixed $codeStorage = Session::class;
     public string $registerAdjuster = 'beforeTax';
     public array $attachPdfToEmails = [];
 
