@@ -83,7 +83,10 @@ class VoucherHelper
         // Last checks
         if (empty($voucher->sku)) {
             $voucherType = $voucher->getType();
-            $voucher->sku = Craft::$app->getView()->renderObjectTemplate($voucherType->skuFormat, $voucher);
+
+            if ($voucherType->skuFormat) {
+                $voucher->sku = Craft::$app->getView()->renderObjectTemplate($voucherType->skuFormat, $voucher);
+            }
         }
 
         return $voucher;
