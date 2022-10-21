@@ -7,6 +7,7 @@ use verbb\giftvoucher\events\VoucherAdjustmentsEvent;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\ArrayHelper;
 
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\base\AdjusterInterface;
@@ -66,8 +67,11 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
             foreach ($discounts as $discount) {
                 // Is this discount set to stop processing?
                 if ($discount->stopProcessing) {
+                    // Get all the coupon codes for the discount
+                    $codes = ArrayHelper::getColumn($discount->getCoupons(), 'code');
+
                     // Is this discount applied on the order?
-                    if ($order->couponCode && (strcasecmp($order->couponCode, $discount->code) == 0)) {
+                    if ($order->couponCode && in_array($order->couponCode, $codes)) {
                         return [];
                     }
                 }
