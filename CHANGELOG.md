@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.1 - 2022-10-21
+
+### Fixed
+- Fix an error when combining a Commerce discount and Gift Voucher code with `stopProcessing` enabled.
+- Fix an error when saving a voucher without an SKU.
+- Fix an error when applying a Craft discount code.
+- Fix `codeStorage` type.
+- Fix an error running `resave` console commands.
+
 ## 3.0.0 - 2022-08-25
 
 ### Added
