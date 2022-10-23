@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.2 - 2022-10-23
+
+### Added
+- Add tabs for codes not working correctly in the control panel.
+
 ## 3.0.1 - 2022-10-21
 
 ### Fixed
