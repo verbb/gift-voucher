@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.3 - 2022-11-10
+
+### Fixed
+- Fix an error when trying to edit a Code object in the control panel.
+
 ## 3.0.2 - 2022-10-23
 
 ### Added
