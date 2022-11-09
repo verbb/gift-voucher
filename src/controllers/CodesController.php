@@ -62,7 +62,7 @@ class CodesController extends Controller
 
             // check if there are any errors for this tab
             if ($code->hasErrors()) {
-                foreach ($tab->getFields() as $field) {
+                foreach ($tab->getCustomFields() as $field) {
                     if ($hasErrors = $code->hasErrors($field->handle . '.*')) {
                         break;
                     }
