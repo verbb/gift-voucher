@@ -17,6 +17,7 @@
     elements: code.voucherId ? craft.giftVoucher.vouchers.id(code.voucherId).anyStatus().all() : null,
     id: 'voucher',
     errors: code.getErrors('voucherId'),
+    required: true,
     class: 'ltr',
     name: 'voucher',
     limit: 1,
