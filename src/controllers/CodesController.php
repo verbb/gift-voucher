@@ -61,7 +61,7 @@ class CodesController extends Controller
             $hasErrors = false;
 
             // check if there are any errors for this tab
-            if ($code->hasErrors()) {
+            if ($tab->hasErrors()) {
                 foreach ($tab->getCustomFields() as $field) {
                     if ($hasErrors = $code->hasErrors($field->handle . '.*')) {
                         break;
@@ -113,7 +113,7 @@ class CodesController extends Controller
         $code->id = $request->getBodyParam('codeId');
         $code->enabled = (bool)$request->getBodyParam('enabled');
         $code->originalAmount = $request->getBodyParam('originalAmount');
-        $code->currentAmount = $request->getBodyParam('currentAmount');
+        $code->currentAmount = (int)$request->getBodyParam('currentAmount');
         $code->expiryDate = (($date = $request->getParam('expiryDate')) !== false ? (DateTimeHelper::toDateTime($date) ?: null) : $code->expiryDate);
 
         if (!$code->originalAmount) {
