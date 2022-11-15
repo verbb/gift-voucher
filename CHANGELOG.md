@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.4 - 2022-11-15
+
+### Fixed
+- Fix an error when trying to generate a PDF for a voucher in the control panel.
+- Fix issues with int type check, and error checking in tabs. (thanks @darinlarimore).
+
 ## 3.0.3 - 2022-11-10
 
 ### Fixed
