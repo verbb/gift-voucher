@@ -11,6 +11,7 @@ use verbb\giftvoucher\records\Voucher as VoucherRecord;
 use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\db\Query;
+use craft\elements\User;
 use craft\elements\actions\Delete;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
@@ -239,6 +240,11 @@ class Voucher extends Purchasable
     public function getName(): ?string
     {
         return $this->title;
+    }
+
+    public function canView(User $user): bool
+    {
+        return true;
     }
 
     public function getStatuses(): array

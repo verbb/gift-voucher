@@ -9,6 +9,7 @@ use verbb\giftvoucher\records\Code as CodeRecord;
 use Craft;
 use craft\base\Element;
 use craft\db\Query;
+use craft\elements\User;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Delete;
 use craft\helpers\ArrayHelper;
@@ -221,6 +222,11 @@ class Code extends Element
     public function getName(): string
     {
         return Craft::t('gift-voucher', 'Code');
+    }
+
+    public function canView(User $user): bool
+    {
+        return true;
     }
 
     public function setEagerLoadedElements(string $handle, array $elements): void
