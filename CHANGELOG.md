@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.5 - 2022-11-30
+
+### Fixed
+- Fix permissions check for managing Vouchers and Codes.
+- Fix voucher and code element indexes not providing edit links due to Craft 4.3.2 changes.
+- Fix cannot assign Dompdf\Options to property PdfRenderOptionsEvent::$options. (thanks @CMeldgaard).
+- Fix an error when saving vouchers containing commas in price.
+
 ## 3.0.4 - 2022-11-15
 
 ### Fixed
