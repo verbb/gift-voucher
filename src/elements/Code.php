@@ -8,6 +8,7 @@ use verbb\giftvoucher\records\Code as CodeRecord;
 
 use Craft;
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\User;
 use craft\elements\db\ElementQueryInterface;
@@ -226,7 +227,48 @@ class Code extends Element
 
     public function canView(User $user): bool
     {
-        return true;
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('giftVoucher-manageCodes');
+    }
+
+    public function canSave(User $user): bool
+    {
+        if (parent::canSave($user)) {
+            return true;
+        }
+
+        return $user->can('giftVoucher-manageCodes');
+    }
+
+    public function canDuplicate(User $user): bool
+    {
+        if (parent::canDuplicate($user)) {
+            return true;
+        }
+
+        return $user->can('giftVoucher-manageCodes');
+    }
+
+    public function canDelete(User $user): bool
+    {
+        if (parent::canDelete($user)) {
+            return true;
+        }
+
+        return $user->can('giftVoucher-manageCodes');
+    }
+
+    public function canDeleteForSite(User $user): bool
+    {
+        return $this->canDelete($user);
+    }
+
+    public function createAnother(): ?ElementInterface
+    {
+        return null;
     }
 
     public function setEagerLoadedElements(string $handle, array $elements): void

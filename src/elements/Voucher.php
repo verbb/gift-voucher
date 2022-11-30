@@ -9,10 +9,11 @@ use verbb\giftvoucher\models\VoucherType;
 use verbb\giftvoucher\records\Voucher as VoucherRecord;
 
 use Craft;
-use craft\elements\db\ElementQueryInterface;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\User;
 use craft\elements\actions\Delete;
+use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
@@ -244,7 +245,72 @@ class Voucher extends Purchasable
 
     public function canView(User $user): bool
     {
-        return true;
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        try {
+            $voucherType = $this->getType();
+        } catch (\Exception) {
+            return false;
+        }
+
+        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+    }
+
+    public function canSave(User $user): bool
+    {
+        if (parent::canSave($user)) {
+            return true;
+        }
+
+        try {
+            $voucherType = $this->getType();
+        } catch (\Exception) {
+            return false;
+        }
+
+        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+    }
+
+    public function canDuplicate(User $user): bool
+    {
+        if (parent::canDuplicate($user)) {
+            return true;
+        }
+
+        try {
+            $voucherType = $this->getType();
+        } catch (\Exception) {
+            return false;
+        }
+
+        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+    }
+
+    public function canDelete(User $user): bool
+    {
+        if (parent::canDelete($user)) {
+            return true;
+        }
+
+        try {
+            $voucherType = $this->getType();
+        } catch (\Exception) {
+            return false;
+        }
+
+        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+    }
+
+    public function canDeleteForSite(User $user): bool
+    {
+        return $this->canDelete($user);
+    }
+
+    public function createAnother(): ?ElementInterface
+    {
+        return null;
     }
 
     public function getStatuses(): array
