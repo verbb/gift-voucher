@@ -482,8 +482,8 @@ class Code extends Element
             case 'orderLink':
             {
 
-                if ($this->getOrder()) {
-                    return '<a href="' . $this->getOrder()->getCpEditUrl() . '">' . $this->getOrder() . '</a>';
+                if ($order = $this->getOrder()) {
+                    return '<a href="' . $order->getCpEditUrl() . '">' . $order . '</a>';
                 }
 
                 return '-';

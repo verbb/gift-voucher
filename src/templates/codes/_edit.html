@@ -137,7 +137,7 @@
             label: 'Voucher Type' | t('gift-voucher'),
         }, voucherTypeInput) }}
 
-        {% if code.orderId %}
+        {% if code.getOrder() %}
             {% set productInput %}
                 <a href="{{ code.getOrder().getCpEditUrl() }}">{{ code.getOrder() }}</a>
             {% endset %}
