@@ -533,7 +533,7 @@ Possible values include:
 ::: code
 ```twig Twig
 {# Fetch disabled vouchers #}
-{% set vouchers = {twig-function}
+{% set vouchers = craft.giftVoucher.vouchers()
     .status('disabled')
     .all() %}
 ```
