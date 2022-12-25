@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.6 - 2022-12-25
+
+### Fixed
+- Fix an error when viewing a voucher code with no order associated with it.
+
 ## 3.0.5 - 2022-11-30
 
 ### Fixed
