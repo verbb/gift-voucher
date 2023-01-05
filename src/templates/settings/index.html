@@ -1,6 +1,8 @@
 {% extends 'gift-voucher/_layouts' %}
 {% import '_includes/forms' as forms %}
 
+{% requireAdmin %}
+
 {% set crumbs = [
     { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
     { label: 'Settings' | t('app'), url: url('gift-voucher/settings') }
