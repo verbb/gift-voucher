@@ -52,7 +52,7 @@ class VoucherHelper
 
         $voucher->enabled = (bool)$request->getBodyParam('enabled');
 
-        $voucher->price = Localization::normalizeNumber($request->getBodyParam('price'));
+        $voucher->price = (Localization::normalizeNumber($request->getBodyParam('price', 0))) ?: 0;
         $voucher->sku = $request->getBodyParam('sku');
 
         $voucher->customAmount = (bool)$request->getBodyParam('customAmount');
