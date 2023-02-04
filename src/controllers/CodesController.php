@@ -109,7 +109,7 @@ class CodesController extends Controller
             $code->voucherId = null;
         }
 
-        $code->id = $request->getBodyParam('codeId');
+        $code->id = (int)$request->getBodyParam('codeId');
         $code->enabled = (bool)$request->getBodyParam('enabled');
         $code->originalAmount = $request->getBodyParam('originalAmount');
         $code->currentAmount = $request->getBodyParam('currentAmount');
