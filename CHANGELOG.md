@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.7 - 2023-03-09
+
+### Changed
+- Only admins are now allowed to access plugin settings.
+
+### Fixed
+- Fix an error when creating a voucher of custom value with no value provided.
+- Fix an error when creating a voucher code. (thanks @darinlarimore).
+
 ## 3.0.6 - 2022-12-25
 
 ### Fixed
