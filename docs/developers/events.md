@@ -8,7 +8,7 @@ Event handlers can override Gift Voucher’s PDF generation by setting the `pdf`
 Plugins can get notified before the PDF or a voucher is being rendered.
 
 ```php
-use craft\commerce\events\PdfEvent;
+use verbb\giftvoucher\events\PdfEvent;
 use verbb\giftvoucher\services\Pdf;
 use yii\base\Event;
 
@@ -21,12 +21,25 @@ Event::on(Pdf::class, Pdf::EVENT_BEFORE_RENDER_PDF, function(PdfEvent $e) {
 Plugins can get notified after the PDF or a voucher has been rendered.
 
 ```php
-use craft\commerce\events\PdfEvent;
+use verbb\giftvoucher\events\PdfEvent;
 use verbb\giftvoucher\services\Pdf;
 use yii\base\Event;
 
 Event::on(Pdf::class, Pdf::EVENT_AFTER_RENDER_PDF, function(PdfEvent $e) {
      // Add a watermark to the PDF or forward it to the accounting dpt.
+});
+```
+
+### The `modifyRenderOptions` event
+Plugins can get modify the DomPDF render options
+
+```php
+use verbb\giftvoucher\events\PdfRenderOptionsEvent;
+use verbb\giftvoucher\services\Pdf;
+use yii\base\Event;
+
+Event::on(Pdf::class, Pdf::EVENT_MODIFY_RENDER_OPTIONS, function(PdfRenderOptionsEvent $event) {
+
 });
 ```
 
