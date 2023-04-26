@@ -159,7 +159,7 @@ Below we've prepared a ready-to-go template, complete with provided CSS to get y
 
 {% for code in codes %}
     <div class="voucher">
-        <img class="voucher-img" src="https://verbb.io/uploads/plugins/gift-voucher/gift-card-img.jpg" />
+        <img class="voucher-img" src="https://verbb.imgix.net/plugins/gift-voucher/gift-card-img.jpg" />
 
         <div class="field-amount">
             <span>{{ code.currentAmount | currency(null, [], [], true) }}</span>
