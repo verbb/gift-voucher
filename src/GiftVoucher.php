@@ -358,12 +358,12 @@ class GiftVoucher extends Plugin
 
     private function _registerFieldLayoutListener(): void
     {
-        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS, function(DefineFieldLayoutFieldsEvent $e) {
+        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS, function(DefineFieldLayoutFieldsEvent $event) {
             /** @var FieldLayout $fieldLayout */
-            $fieldLayout = $e->sender;
+            $fieldLayout = $event->sender;
 
             if ($fieldLayout->type == Voucher::class) {
-                $e->fields[] = TitleField::class;
+                $event->fields[] = TitleField::class;
             }
         });
     }
@@ -374,8 +374,8 @@ class GiftVoucher extends Plugin
             return;
         }
 
-        Event::on(ResaveController::class, ConsoleController::EVENT_DEFINE_ACTIONS, function(DefineConsoleActionsEvent $e) {
-            $e->actions['gift-voucher-vouchers'] = [
+        Event::on(ResaveController::class, ConsoleController::EVENT_DEFINE_ACTIONS, function(DefineConsoleActionsEvent $event) {
+            $event->actions['gift-voucher-vouchers'] = [
                 'action' => function(): int {
                     $controller = Craft::$app->controller;
                     
@@ -385,7 +385,7 @@ class GiftVoucher extends Plugin
                 'helpSummary' => 'Re-saves Gift Voucher vouchers.',
             ];
 
-            $e->actions['gift-voucher-codes'] = [
+            $event->actions['gift-voucher-codes'] = [
                 'action' => function(): int {
                     $controller = Craft::$app->controller;
 
