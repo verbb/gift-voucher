@@ -1,6 +1,6 @@
 # Gift Voucher Plugin for Craft Commerce
 
-<img width="500" src="https://verbb.imgix.net/plugins/gift-voucher/gift-voucher-social-card.png">
+<img width="500" src="https://verbb.imgix.net/plugins/gift-voucher/gift-voucher-social-card.png?v=1">
 
 Gift Voucher is a Craft Commerce plugin allowing your customers to purchase digital gift vouchers, which can be redeemed by other customers during checkout for a discount on their order. Support for intelligent redemptions, PDF generation, customer-entered amounts, and lots more!
 
