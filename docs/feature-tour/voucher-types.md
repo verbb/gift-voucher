@@ -3,13 +3,8 @@ Voucher types act to group your gift vouchers, and depending on your needs, you 
 
 Go to the main section for Gift Voucher in your control panel main menu, and select **Voucher Types**. This will list all the voucher types you've created.
 
-![Voucher Types Overview](/docs/screenshots/voucher-types-overview.png)
-
 ## Create a Voucher Type
-
 Each field is fairly self-explanatory, but any additional information is provided below.
-
-![Voucher Types Edit](/docs/screenshots/voucher-types-edit.png)
 
 - **Name** - What this voucher type will be called in the control panel.
 - **Handle** - How you’ll refer to this voucher type in the templates.

@@ -48,7 +48,6 @@ Voucher queries support the following parameters:
 <!-- BEGIN PARAMS -->
 
 ### `after`
-
 Narrows the query results to only vouchers that were posted on or after a certain date.
 
 Possible values include:
@@ -81,7 +80,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `anyStatus`
-
 Clears out the [status()](https://docs.craftcms.com/api/v4/craft-elements-db-elementquery.html#method-status) and [enabledForSite()](https://docs.craftcms.com/api/v4/craft-elements-db-elementquery.html#method-enabledforsite) parameters.
 
 ::: code
@@ -103,7 +101,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `asArray`
-
 Causes the query to return matching vouchers as arrays of data, rather than [Voucher](docs:developers/voucher) objects.
 
 ::: code
@@ -125,7 +122,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `before`
-
 Narrows the query results to only vouchers that were posted before a certain date.
 
 Possible values include:
@@ -158,7 +154,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `dateCreated`
-
 Narrows the query results based on the vouchers’ creation dates.
 
 Possible values include:
@@ -194,7 +189,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `dateUpdated`
-
 Narrows the query results based on the vouchers’ last-updated dates.
 
 Possible values include:
@@ -228,7 +222,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `fixedOrder`
-
 Causes the query results to be returned in the order specified by [id](#id).
 
 ::: code
@@ -252,7 +245,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `id`
-
 Narrows the query results based on the vouchers’ IDs.
 
 Possible values include:
@@ -287,7 +279,6 @@ This can be combined with [fixedOrder](#fixedorder) if you want the results to b
 
 
 ### `inReverse`
-
 Causes the query results to be returned in reverse order.
 
 ::: code
@@ -309,7 +300,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `limit`
-
 Determines the number of vouchers that should be returned.
 
 ::: code
@@ -331,7 +321,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `offset`
-
 Determines how many vouchers should be skipped in the results.
 
 ::: code
@@ -353,7 +342,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `orderBy`
-
 Determines the order that the vouchers should be returned in.
 
 ::: code
@@ -375,7 +363,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `price`
-
 Narrows the query results based on the vouchers’ price.
 
 Possible values include:
@@ -389,7 +376,6 @@ Possible values include:
 
 
 ### `relatedTo`
-
 Narrows the query results to only vouchers that are related to certain other elements.
 
 See [Relations](https://craftcms.com/docs/4.x/relations.html) for a full explanation of how to work with this parameter.
@@ -413,7 +399,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `search`
-
 Narrows the query results to only vouchers that match a search query.
 
 See [Searching](https://craftcms.com/docs/4.x/searching.html) for a full explanation of how to work with this parameter.
@@ -443,7 +428,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `sku`
-
 Narrows the query results based on the vouchers’ SKUs.
 
 Possible values include:
@@ -477,7 +461,6 @@ $voucher = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `slug`
-
 Narrows the query results based on the vouchers’ slugs.
 
 Possible values include:
@@ -517,7 +500,6 @@ $voucher = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `status`
-
 Narrows the query results based on the vouchers’ statuses.
 
 Possible values include:
@@ -549,7 +531,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `title`
-
 Narrows the query results based on the vouchers’ titles.
 
 Possible values include:
@@ -583,7 +564,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `type`
-
 Narrows the query results based on the vouchers’ types.
 
 Possible values include:
@@ -615,7 +595,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `typeId`
-
 Narrows the query results based on the vouchers’ types, per the types’ IDs.
 
 Possible values include:
@@ -646,7 +625,6 @@ $vouchers = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `uid`
-
 Narrows the query results based on the vouchers’ UIDs.
 
 ::: code
@@ -668,7 +646,6 @@ $voucher = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `uri`
-
 Narrows the query results based on the vouchers’ URIs.
 
 Possible values include:
@@ -708,7 +685,6 @@ $voucher = \verbb\giftvoucher\elements\Voucher::find()
 
 
 ### `with`
-
 Causes the query to return matching vouchers eager-loaded with related elements.
 
 See [Eager-Loading Elements](https://craftcms.com/docs/4.x/eager-loading-elements.html) for a full explanation of how to work with this parameter.
