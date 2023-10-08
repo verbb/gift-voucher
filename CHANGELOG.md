@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.8 - 2023-10-08
+
+### Fixed
+- Fix an issue when creating new sites and not propagating voucher types correctly.
+
 ## 3.0.7 - 2023-03-09
 
 ### Changed
