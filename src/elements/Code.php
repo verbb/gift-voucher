@@ -38,6 +38,11 @@ class Code extends Element
     // Static Methods
     // =========================================================================
 
+    public static function trackChanges(): bool
+    {
+        return true;
+    }
+
     public static function hasContent(): bool
     {
         return true;
