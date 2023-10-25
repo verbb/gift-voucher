@@ -59,7 +59,9 @@ class DownloadsController extends Controller
         $pdf = GiftVoucher::$plugin->getPdf()->renderPdf($codes, $order, $lineItem, $option);
         $filenameFormat = GiftVoucher::$plugin->getSettings()->voucherCodesPdfFilenameFormat;
 
-        $fileName = $this->getView()->renderObjectTemplate($filenameFormat, $order);
+        $fileName = $this->getView()->renderObjectTemplate($filenameFormat, $order, [
+            'codeKey' => $code[0]->codeKey ?? null,
+        ]);
 
         if (!$fileName) {
             if ($order) {
