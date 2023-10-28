@@ -24,7 +24,6 @@ class DownloadsController extends Controller
 
     public function actionPdf(): Response|string
     {
-        $code = [];
         $request = Craft::$app->getRequest();
 
         $codes = [];
@@ -60,14 +59,14 @@ class DownloadsController extends Controller
         $filenameFormat = GiftVoucher::$plugin->getSettings()->voucherCodesPdfFilenameFormat;
 
         $fileName = $this->getView()->renderObjectTemplate($filenameFormat, $order, [
-            'codeKey' => $code[0]->codeKey ?? null,
+            'codeKey' => $codes[0]->codeKey ?? null,
         ]);
 
         if (!$fileName) {
             if ($order) {
                 $fileName = 'Voucher-' . $order->number;
             } else if ($codes) {
-                $fileName = 'Voucher-' . $code[0]->codeKey;
+                $fileName = 'Voucher-' . $codes[0]->codeKey;
             }
         }
 
