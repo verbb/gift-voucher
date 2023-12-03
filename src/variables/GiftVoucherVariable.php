@@ -17,7 +17,6 @@ class GiftVoucherVariable
     // Public Methods
     // =========================================================================
 
-
     public function getPlugin(): GiftVoucher
     {
         return GiftVoucher::$plugin;

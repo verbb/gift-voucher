@@ -132,7 +132,7 @@
             label: 'Enabled' | t('gift-voucher'),
             id: 'enabled',
             name: 'enabled',
-            on: voucher.enabled
+            on: voucher.enabled,
         }) }}
 
         {% if craft.app.getIsMultiSite() %}
@@ -140,7 +140,7 @@
                 label: 'Enabled for site' | t('gift-voucher'),
                 id: 'enabledForSite',
                 name: 'enabledForSite',
-                on: voucher.enabledForSite
+                on: voucher.enabledForSite,
             }) }}
         {% endif %}
     </div>

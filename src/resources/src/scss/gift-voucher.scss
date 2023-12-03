@@ -7,3 +7,12 @@
 
 @import "welcome";
 
+.gift-voucher-modal .body {
+    height: calc(100% - 62px);
+    overflow: auto;
+}
+
+.gift-voucher-modal .spinner.big {
+    margin: auto;
+    display: flex;
+}

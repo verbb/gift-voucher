@@ -28,6 +28,8 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
+use craft\commerce\elements\Order;
+
 class VouchersController extends Controller
 {
     // Public Methods
@@ -257,6 +259,29 @@ class VouchersController extends Controller
     public function actionDuplicate()
     {
         return $this->runAction('save', ['duplicate' => true]);
+    }
+
+    public function actionGetModalBody()
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $orderId = $this->request->getParam('orderId');
+        $order = Order::find()->id($orderId)->one();
+
+        $codes = GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($order);
+
+        $variables = [
+            'order' => $order,
+            'codes' => $codes,
+        ];
+
+        $html = $this->getView()->renderTemplate('gift-voucher/vouchers/_modal', $variables);
+
+        return $this->asJson([
+            'success' => true,
+            'html' => $html,
+        ]);
     }
 
 
