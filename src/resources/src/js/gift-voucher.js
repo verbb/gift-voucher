@@ -60,8 +60,8 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
 
         Craft.initUiElements(this.$form);
 
-        this.addListener(this.$cancelBtn, 'activate', 'onFadeOut');
-        this.addListener(this.$saveBtn, 'activate', 'onSubmit');
+        this.addListener(this.$cancelBtn, 'click', 'onFadeOut');
+        this.addListener(this.$saveBtn, 'click', 'onSubmit');
 
         this.base(this.$form);
 
@@ -75,6 +75,11 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
             });
 
         $(this.$form).on('click', '[data-code]', $.proxy(this.removeCode, this));
+    },
+
+    onFadeOut() {
+        this.$form.remove();
+        this.$shade.remove();
     },
 
     getOrderId() {
