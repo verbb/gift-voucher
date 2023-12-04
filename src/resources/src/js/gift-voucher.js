@@ -102,7 +102,9 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
         Craft.sendActionRequest('POST', 'gift-voucher/cart/remove-code', { data })
             .then((response) => {
                 if (response.data.success) {
-                    location.reload();
+                    Craft.cp.displayNotice(Craft.t('gift-voucher', 'Voucher code removed.'));
+
+                    this.onFadeOut();
                 } else {
                     Craft.cp.displayError(response.data.error);
                     
@@ -124,7 +126,9 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
                 this.$footerSpinner.addClass('hidden');
 
                 if (response.data.success) {
-                    location.reload();
+                    Craft.cp.displayNotice(Craft.t('gift-voucher', 'Voucher code applied.'));
+
+                    this.onFadeOut();
                 } else {
                     Craft.cp.displayError(response.data.error);
                     
