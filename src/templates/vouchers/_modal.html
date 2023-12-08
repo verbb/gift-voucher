@@ -1,0 +1,25 @@
+{% import '_includes/forms' as forms %}
+
+{% if codes %}
+    <h3>{{ 'Voucher Codes' }}</h3>
+
+    <table>
+        {% for code in codes %}
+            <tr>
+                <td><code>{{ code }}</code></td>
+                <td><button type="button" class="btn small" data-icon="remove" data-code="{{ code }}"></button></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <hr>
+{% endif %}
+
+{{ forms.textField({
+    label: 'Voucher Code' | t('gift-voucher'),
+    instructions: 'Enter the gift voucher code to be applied on the order.' | t('gift-voucher'),
+    id: 'voucherCode',
+    name: 'voucherCode',
+}) }}
+
+<input type="hidden" name="orderId" value="{{ order.id }}">
