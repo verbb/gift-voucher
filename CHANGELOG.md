@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.0.10 - 2023-12-08
+
+### Added
+- Add currently-applied voucher codes to manage for modal when editing an order in the control panel.
+- Add `codeKey` as an available variable for the `voucherCodesPdfFilenameFormat` setting.
+
+### Changed
+- Voucher modal now shows message instead of refreshing, ensuring unsaved changes to the order aren’t discarded.
+
+### Fixed
+- Fix “enter” key not submitting the gift voucher modal when editing an order in the control panel.
+- Fix `codeKey` reference when rendering PDFs.
+
 ## 3.0.9 - 2023-10-25
 
 ### Fixed
