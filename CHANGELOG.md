@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.7.5 - 2023-12-08
+
+### Added
+- Add currently-applied voucher codes to manage for modal when editing an order in the control panel.
+
+### Changed
+- Voucher modal now shows message instead of refreshing, ensuring unsaved changes to the order aren’t discarded.
+
+### Fixed
+- Fix “enter” key not submitting the gift voucher modal when editing an order in the control panel.
+
 ## 2.7.4 - 2023-10-08
 
 ### Fixed
