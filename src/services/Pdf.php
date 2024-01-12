@@ -36,18 +36,24 @@ class Pdf extends Component
 
     public function getPdfUrl(Order $order, LineItem $lineItem = null, $option = null): string
     {
+        $currentSite = Craft::$app->getSites()->getCurrentSite();
+
         return UrlHelper::actionUrl('gift-voucher/downloads/pdf', array_filter([
             'number' => $order->number ?? null,
             'option' => $option ?? null,
             'lineItemId' => $lineItem->id ?? null,
+            'site' => $currentSite->handle,
         ]));
     }
 
     public function getPdfUrlForCode($code, $option = null): string
     {
+        $currentSite = Craft::$app->getSites()->getCurrentSite();
+        
         return UrlHelper::actionUrl('gift-voucher/downloads/pdf', array_filter([
             'codeId' => $code->id ?? null,
             'option' => $option ?? null,
+            'site' => $currentSite->handle,
         ]));
     }
 
