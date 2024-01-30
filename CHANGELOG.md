@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.11 - 2024-01-30
+
+### Added
+- PDFs now support using the current site’s locale language and formatting.
+
 ## 3.0.10 - 2023-12-08
 
 ### Added
