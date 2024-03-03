@@ -25,7 +25,7 @@
         {% set codes = craft.giftVoucher.codes().id(savedCodes).all() %}
 
         {% for code in codes %}
-            <a href="{{ code.cpEditUrl }}">{{ code.codeKey }}</a><br>
+            <a href="{{ code.getCpEditUrl() }}">{{ code.codeKey }}</a><br>
         {% endfor %}
     </div>
 {% endif %}

@@ -23,8 +23,25 @@ class Settings extends Model
     public string $registerAdjuster = 'beforeTax';
     public array $attachPdfToEmails = [];
 
-    // TODO: Remove at next breakpoint
-    private mixed $fieldLayout = null;
-    public mixed $fieldLayoutId = null;
-    public string $fieldsPath = 'fields';
+
+    // Public Methods
+    // =========================================================================
+
+    public function __construct(array $config = [])
+    {
+        // Config normalization
+        if (array_key_exists('fieldLayout', $config)) {
+            unset($config['fieldLayout']);
+        }
+
+        if (array_key_exists('fieldLayoutId', $config)) {
+            unset($config['fieldLayoutId']);
+        }
+
+        if (array_key_exists('fieldsPath', $config)) {
+            unset($config['fieldsPath']);
+        }
+
+        parent::__construct($config);
+    }
 }

@@ -16,6 +16,11 @@ class Codes extends BaseRelationField
         return Craft::t('gift-voucher', 'Gift Voucher Code');
     }
 
+    public static function icon(): string
+    {
+        return '@verbb/giftvoucher/icon-mask.svg';
+    }
+
     public static function elementType(): string
     {
         return Code::class;

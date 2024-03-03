@@ -25,19 +25,18 @@ class DownloadsController extends Controller
     public function actionPdf(): Response|string
     {
         $code = [];
-        $request = Craft::$app->getRequest();
 
         $codes = [];
         $order = [];
         $lineItem = null;
 
-        $number = $request->getParam('number');
-        $option = $request->getParam('option', '');
-        $lineItemId = $request->getParam('lineItemId', '');
-        $codeId = $request->getParam('codeId', '');
+        $number = $this->request->getParam('number');
+        $option = $this->request->getParam('option', '');
+        $lineItemId = $this->request->getParam('lineItemId', '');
+        $codeId = $this->request->getParam('codeId', '');
 
-        $format = $request->getParam('format');
-        $attach = $request->getParam('attach');
+        $format = $this->request->getParam('format');
+        $attach = $this->request->getParam('attach');
 
         if ($number) {
             $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);

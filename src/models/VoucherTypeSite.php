@@ -60,9 +60,13 @@ class VoucherTypeSite extends Model
         return $this->_site;
     }
 
-    public function rules(): array
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
+        $rules = parent::defineRules();
 
         if ($this->uriFormatIsRequired) {
             $rules[] = ['uriFormat', 'required'];

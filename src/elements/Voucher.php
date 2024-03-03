@@ -11,9 +11,10 @@ use verbb\giftvoucher\records\Voucher as VoucherRecord;
 use Craft;
 use craft\base\ElementInterface;
 use craft\db\Query;
-use craft\elements\User;
 use craft\elements\actions\Delete;
+use craft\elements\db\EagerLoadPlan;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
@@ -50,11 +51,6 @@ class Voucher extends Purchasable
     public static function displayName(): string
     {
         return Craft::t('gift-voucher', 'Gift Voucher');
-    }
-
-    public static function hasContent(): bool
-    {
-        return true;
     }
 
     public static function hasTitles(): bool
@@ -323,7 +319,7 @@ class Voucher extends Purchasable
         ];
     }
 
-    public function setEagerLoadedElements(string $handle, array $elements): void
+    public function setEagerLoadedElements(string $handle, array $elements, EagerLoadPlan $plan): void
     {
         if ($handle === 'existingCodes') {
             $this->_existingCodes = $elements;
@@ -331,7 +327,7 @@ class Voucher extends Purchasable
             return;
         }
 
-        parent::setEagerLoadedElements($handle, $elements);
+        parent::setEagerLoadedElements($handle, $elements, $plan);
     }
 
     public function getIsAvailable(): bool
@@ -366,17 +362,6 @@ class Voucher extends Purchasable
         return $status;
     }
 
-    public function rules(): array
-    {
-        $rules = parent::rules();
-
-        $rules[] = [['typeId', 'sku', 'price'], 'required'];
-        $rules[] = [['sku'], 'string'];
-        $rules[] = [['postDate', 'expiryDate'], DateTimeValidator::class];
-
-        return $rules;
-    }
-
     public function getIsEditable(): bool
     {
         if ($this->getType()) {
@@ -386,17 +371,6 @@ class Voucher extends Purchasable
         }
 
         return false;
-    }
-
-    public function getCpEditUrl(): ?string
-    {
-        $voucherType = $this->getType();
-
-        if ($voucherType) {
-            return UrlHelper::cpUrl('gift-voucher/vouchers/' . $voucherType->handle . '/' . $this->id);
-        }
-
-        return null;
     }
 
     public function getPdfUrl(LineItem $lineItem, $option = null): string
@@ -444,7 +418,7 @@ class Voucher extends Purchasable
         return $this->typeId ? $this->_voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId) : null;
     }
 
-    public function getTaxCategory(): ?TaxCategory
+    public function getTaxCategory(): TaxCategory
     {
         if ($this->taxCategoryId) {
             return Commerce::getInstance()->getTaxCategories()->getTaxCategoryById($this->taxCategoryId);
@@ -457,7 +431,7 @@ class Voucher extends Purchasable
     // Implement Purchasable
     // =========================================================================
 
-    public function getShippingCategory(): ?ShippingCategory
+    public function getShippingCategory(): ShippingCategory
     {
         if ($this->shippingCategoryId) {
             return Commerce::getInstance()->getShippingCategories()->getShippingCategoryById($this->shippingCategoryId);
@@ -603,8 +577,19 @@ class Voucher extends Purchasable
     }
 
 
-    // Protected methods
+    // Protected Methods
     // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['typeId', 'sku', 'price'], 'required'];
+        $rules[] = [['sku'], 'string'];
+        $rules[] = [['postDate', 'expiryDate'], DateTimeValidator::class];
+
+        return $rules;
+    }
 
     public function getShippingCategoryId(): int
     {
@@ -654,7 +639,7 @@ class Voucher extends Purchasable
         ];
     }
 
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         $voucherType = $this->getType();
 
@@ -688,8 +673,19 @@ class Voucher extends Purchasable
             }
             default:
             {
-                return parent::tableAttributeHtml($attribute);
+                return parent::attributeHtml($attribute);
             }
         }
+    }
+
+    protected function cpEditUrl(): ?string
+    {
+        $voucherType = $this->getType();
+
+        if ($voucherType) {
+            return UrlHelper::cpUrl('gift-voucher/vouchers/' . $voucherType->handle . '/' . $this->id);
+        }
+
+        return null;
     }
 }

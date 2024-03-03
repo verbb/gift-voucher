@@ -78,16 +78,13 @@ class GiftVoucher extends Plugin
 
         self::$plugin = $this;
 
-        $this->_registerComponents();
-        $this->_registerLogTarget();
         $this->_registerElementTypes();
         $this->_registerFieldTypes();
         $this->_registerPurchasableTypes();
         $this->_registerVariable();
         $this->_registerEventHandlers();
         $this->_registerAdjusters();
-        $this->_registerCraftEventListeners();
-        $this->_registerProjectConfigEventListeners();
+        $this->_registerProjectConfigEventHandlers();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->_registerCpRoutes();
@@ -101,6 +98,11 @@ class GiftVoucher extends Plugin
         if (Craft::$app->getEdition() === Craft::Pro) {
             $this->_registerPermissions();
         }
+
+        // Setup dynamics component for code storage, because it can't be done in `static::config()`
+        $components = $this->getComponents();
+        $components['codeStorage'] = $this->getSettings()->codeStorage;
+        $this->setComponents($components);
     }
 
     public function afterInstall(): void
@@ -124,44 +126,44 @@ class GiftVoucher extends Plugin
 
     public function getCpNavItem(): ?array
     {
-        $navItems = parent::getCpNavItem();
+        $nav = parent::getCpNavItem();
 
         if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVouchers')) {
-            $navItems['subnav']['vouchers'] = [
+            $nav['subnav']['vouchers'] = [
                 'label' => Craft::t('gift-voucher', 'Vouchers'),
                 'url' => 'gift-voucher/vouchers',
             ];
         }
 
         if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherTypes')) {
-            $navItems['subnav']['voucherTypes'] = [
+            $nav['subnav']['voucherTypes'] = [
                 'label' => Craft::t('gift-voucher', 'Voucher Types'),
                 'url' => 'gift-voucher/voucher-types',
             ];
         }
 
         if (Craft::$app->getUser()->checkPermission('giftVoucher-manageCodes')) {
-            $navItems['subnav']['codes'] = [
+            $nav['subnav']['codes'] = [
                 'label' => Craft::t('gift-voucher', 'Voucher Codes'),
                 'url' => 'gift-voucher/codes',
             ];
         }
 
         if (Craft::$app->getUser()->checkPermission('giftVoucher-bulkGenerateCodes')) {
-            $navItems['subnav']['bulk-generate'] = [
+            $nav['subnav']['bulk-generate'] = [
                 'label' => Craft::t('gift-voucher', 'Bulk Generate Codes'),
                 'url' => 'gift-voucher/codes/bulk-generate',
             ];
         }
 
         if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
-            $navItems['subnav']['settings'] = [
+            $nav['subnav']['settings'] = [
                 'label' => Craft::t('gift-voucher', 'Settings'),
                 'url' => 'gift-voucher/settings',
             ];
         }
 
-        return $navItems;
+        return $nav;
     }
 
 
@@ -217,6 +219,14 @@ class GiftVoucher extends Plugin
         // Klaviyo Connect Plugin
         if (Craft::$app->plugins->getPlugin('klaviyoconnect') && class_exists(Track::class)) {
             Event::on(Track::class, Track::ADD_LINE_ITEM_CUSTOM_PROPERTIES, [$this->getKlaviyoConnect(), 'addLineItemCustomProperties']);
+        }
+
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
+            Event::on(Plugins::class, Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS, function(PluginEvent $event): void {
+                if ($event->plugin === $this) {
+                    $this->getCodes()->saveFieldLayout();
+                }
+            });
         }
     }
 
@@ -295,23 +305,11 @@ class GiftVoucher extends Plugin
     private function _registerVariable(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event): void {
-            $variable = $event->sender;
-            $variable->set('giftVoucher', GiftVoucherVariable::class);
+            $event->sender->set('giftVoucher', GiftVoucherVariable::class);
         });
     }
 
-    private function _registerCraftEventListeners(): void
-    {
-        if (Craft::$app->getRequest()->getIsCpRequest()) {
-            Event::on(Plugins::class, Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS, function(PluginEvent $event): void {
-                if ($event->plugin === $this) {
-                    $this->getCodes()->saveFieldLayout();
-                }
-            });
-        }
-    }
-
-    private function _registerProjectConfigEventListeners(): void
+    private function _registerProjectConfigEventHandlers(): void
     {
         $projectConfigService = Craft::$app->getProjectConfig();
         $voucherTypeService = $this->getVoucherTypes();

@@ -1,6 +1,7 @@
 <?php
 namespace verbb\giftvoucher\services;
 
+use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\events\RedemptionEvent;
 use verbb\giftvoucher\models\Redemption;
 use verbb\giftvoucher\records\Redemption as RedemptionRecord;
@@ -56,7 +57,7 @@ class Redemptions extends Component
         }
 
         if ($runValidation && !$redemption->validate()) {
-            Craft::info('Redemption not saved due to validation error.', __METHOD__);
+            GiftVoucher::info('Redemption not saved due to validation error.');
             return false;
         }
 

@@ -61,18 +61,16 @@ class VoucherTypesController extends Controller
 
         $voucherType = new VoucherType();
 
-        $request = Craft::$app->getRequest();
-
-        $voucherType->id = $request->getBodyParam('voucherTypeId');
-        $voucherType->name = $request->getBodyParam('name');
-        $voucherType->handle = $request->getBodyParam('handle');
-        $voucherType->skuFormat = $request->getBodyParam('skuFormat');
+        $voucherType->id = $this->request->getBodyParam('voucherTypeId');
+        $voucherType->name = $this->request->getBodyParam('name');
+        $voucherType->handle = $this->request->getBodyParam('handle');
+        $voucherType->skuFormat = $this->request->getBodyParam('skuFormat');
 
         // Site-specific settings
         $allSiteSettings = [];
 
         foreach (Craft::$app->getSites()->getAllSites() as $site) {
-            $postedSettings = $request->getBodyParam('sites.' . $site->handle);
+            $postedSettings = $this->request->getBodyParam('sites.' . $site->handle);
 
             $siteSettings = new VoucherTypeSite();
             $siteSettings->siteId = $site->id;

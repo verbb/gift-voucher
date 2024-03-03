@@ -10,9 +10,10 @@ use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\db\Query;
-use craft\elements\User;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Delete;
+use craft\elements\db\EagerLoadPlan;
+use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
@@ -37,11 +38,6 @@ class Code extends Element
 
     // Static Methods
     // =========================================================================
-
-    public static function hasContent(): bool
-    {
-        return true;
-    }
 
     public static function hasStatuses(): bool
     {
@@ -271,7 +267,7 @@ class Code extends Element
         return null;
     }
 
-    public function setEagerLoadedElements(string $handle, array $elements): void
+    public function setEagerLoadedElements(string $handle, array $elements, EagerLoadPlan $plan): void
     {
         if ($handle === 'voucher') {
             $this->_voucher = $elements[0] ?? null;
@@ -285,22 +281,7 @@ class Code extends Element
             return;
         }
 
-        parent::setEagerLoadedElements($handle, $elements);
-    }
-
-    public function rules(): array
-    {
-        $rules = parent::rules();
-
-        $rules[] = [['voucherId'], 'required'];
-        $rules[] = [['expiryDate'], DateTimeValidator::class];
-
-        return $rules;
-    }
-
-    public function getCpEditUrl(): ?string
-    {
-        return UrlHelper::cpUrl('gift-voucher/codes/' . $this->id);
+        parent::setEagerLoadedElements($handle, $elements, $plan);
     }
 
     public function getVoucher(): ?Voucher
@@ -439,6 +420,16 @@ class Code extends Element
     // Protected Methods
     // =========================================================================
 
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = [['voucherId'], 'required'];
+        $rules[] = [['expiryDate'], DateTimeValidator::class];
+
+        return $rules;
+    }
+
     protected function generateCodeKey(): string
     {
         $generateCodeKeyEvent = new GenerateCodeEvent(['code' => $this]);
@@ -460,7 +451,7 @@ class Code extends Element
         return $codeKey;
     }
 
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         switch ($attribute) {
             case 'voucher':
@@ -497,12 +488,17 @@ class Code extends Element
             }
             case 'expiryDate':
             {
-                return (!$this->expiryDate) ? '∞' : parent::tableAttributeHtml($attribute);
+                return (!$this->expiryDate) ? '∞' : parent::attributeHtml($attribute);
             }
             default:
             {
-                return parent::tableAttributeHtml($attribute);
+                return parent::attributeHtml($attribute);
             }
         }
+    }
+
+    protected function cpEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl('gift-voucher/codes/' . $this->id);
     }
 }

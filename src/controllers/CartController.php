@@ -28,10 +28,8 @@ class CartController extends BaseFrontEndController
         $this->_cart = Commerce::getInstance()->getCarts()->getCart();
         $this->_cartVariable = Commerce::getInstance()->getSettings()->cartVariable;
 
-        $request = Craft::$app->getRequest();
-
         // Allow passing in a specific Order
-        if ($orderId = $request->getParam('orderId')) {
+        if ($orderId = $this->request->getParam('orderId')) {
             $this->_cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
         }
 
@@ -42,9 +40,7 @@ class CartController extends BaseFrontEndController
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $voucherCode = $request->getParam('voucherCode');
+        $voucherCode = $this->request->getParam('voucherCode');
 
         if (!$voucherCode || trim($voucherCode) == '') {
             $this->_cart->addErrors(['voucherCode' => Craft::t('gift-voucher', 'No voucher code provided.')]);
@@ -92,9 +88,8 @@ class CartController extends BaseFrontEndController
     public function actionRemoveCode(): ?Response
     {
         $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
 
-        $voucherCode = $request->getParam('voucherCode');
+        $voucherCode = $this->request->getParam('voucherCode');
         GiftVoucher::$plugin->getCodeStorage()->remove($voucherCode, $this->_cart);
 
         return $this->_returnCart();
@@ -106,13 +101,11 @@ class CartController extends BaseFrontEndController
 
     private function _returnCart(): ?Response
     {
-        $request = Craft::$app->getRequest();
-
         // Test if we've already set errors on the cart - below we're saving the order again, wiping out current errors
         if ($this->_cart->hasErrors()) {
             $error = Craft::t('commerce', 'Unable to update cart.');
 
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'error' => $error,
                     'errors' => $this->_cart->getErrors(),
@@ -136,7 +129,7 @@ class CartController extends BaseFrontEndController
         if (!$this->_cart->validate() || !Craft::$app->getElements()->saveElement($this->_cart, false)) {
             $error = Craft::t('commerce', 'Unable to update cart.');
 
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'error' => $error,
                     'errors' => $this->_cart->getErrors(),
@@ -154,7 +147,7 @@ class CartController extends BaseFrontEndController
             return null;
         }
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => !$this->_cart->hasErrors(),
                 $this->_cartVariable => $this->cartArray($this->_cart),

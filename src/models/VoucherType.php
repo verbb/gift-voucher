@@ -42,18 +42,7 @@ class VoucherType extends Model
         return (string)$this->handle;
     }
 
-    public function rules(): array
-    {
-        return [
-            [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true],
-            [['name', 'handle'], 'required'],
-            [['name', 'handle'], 'string', 'max' => 255],
-            [['handle'], UniqueValidator::class, 'targetClass' => VoucherTypeRecord::class, 'targetAttribute' => ['handle'], 'message' => 'Not Unique'],
-            [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
-        ];
-    }
-
-    public function getCpEditUrl(): string
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('gift-voucher/voucher-types/' . $this->id);
     }
@@ -85,17 +74,6 @@ class VoucherType extends Model
     public function getVoucherFieldLayout(): FieldLayout
     {
         return $this->getBehavior('voucherFieldLayout')->getFieldLayout();
-    }
-
-    public function behaviors(): array
-    {
-        return [
-            'voucherFieldLayout' => [
-                'class' => FieldLayoutBehavior::class,
-                'elementType' => Voucher::class,
-                'idAttribute' => 'fieldLayoutId',
-            ],
-        ];
     }
 
     public function getConfig(): array
@@ -146,5 +124,33 @@ class VoucherType extends Model
         }
 
         return $config;
+    }
+
+
+    // Public Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        return [
+            [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true],
+            [['name', 'handle'], 'required'],
+            [['name', 'handle'], 'string', 'max' => 255],
+            [['handle'], UniqueValidator::class, 'targetClass' => VoucherTypeRecord::class, 'targetAttribute' => ['handle'], 'message' => 'Not Unique'],
+            [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
+        ];
+    }
+
+    protected function defineBehaviors(): array
+    {
+        $behaviors = parent::defineBehaviors();
+
+        $behaviors['voucherFieldLayout'] = [
+            'class' => FieldLayoutBehavior::class,
+            'elementType' => Voucher::class,
+            'idAttribute' => 'fieldLayoutId',
+        ];
+
+        return $behaviors;
     }
 }

@@ -78,8 +78,6 @@ class VouchersPreviewController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
         $voucher = VoucherHelper::populateVoucherFromPost();
 
         $this->enforceVoucherPermissions($voucher);
@@ -90,7 +88,7 @@ class VouchersPreviewController extends Controller
         }
 
         if (!Craft::$app->getElements()->saveElement($voucher)) {
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'success' => false,
                     'errors' => $voucher->getErrors(),
@@ -107,7 +105,7 @@ class VouchersPreviewController extends Controller
             return null;
         }
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => true,
                 'id' => $voucher->id,

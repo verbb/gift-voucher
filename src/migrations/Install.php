@@ -21,8 +21,8 @@ class Install extends Migration
         $this->addForeignKeys();
 
         // Don't make the same config changes twice
-        $installed = (Craft::$app->projectConfig->get('plugins.gift-voucher', true) !== null);
-        $configExists = (Craft::$app->projectConfig->get('gift-voucher', true) !== null);
+        $installed = (Craft::$app->getProjectConfig()->get('plugins.gift-voucher', true) !== null);
+        $configExists = (Craft::$app->getProjectConfig()->get('gift-voucher', true) !== null);
 
         if (!$installed && !$configExists) {
             $this->insert(FieldLayout::tableName(), ['type' => Code::class]);
@@ -189,6 +189,6 @@ class Install extends Migration
 
     public function dropProjectConfig(): void
     {
-        Craft::$app->projectConfig->remove('gift-voucher');
+        Craft::$app->getProjectConfig()->remove('gift-voucher');
     }
 }
