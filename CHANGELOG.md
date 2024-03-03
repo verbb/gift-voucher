@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.12 - 2024-03-04
+
+### Added
+- Add support for programatically setting a code’s `codeKey`.
+
+### Fixed
+- Fix order of operations when uninstalling the plugin.
+
 ## 3.0.11 - 2024-01-30
 
 ### Added
