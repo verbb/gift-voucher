@@ -13,6 +13,7 @@ use verbb\giftvoucher\records\VoucherTypeSite as VoucherTypeSiteRecord;
 use Craft;
 use craft\base\MemoizableArray;
 use craft\db\Query;
+use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
@@ -427,27 +428,18 @@ class VoucherTypes extends Component
 
     public function afterSaveSiteHandler(SiteEvent $event): void
     {
+        $projectConfig = Craft::$app->getProjectConfig();
+
         if ($event->isNew) {
-            $primarySiteSettings = (new Query())
-                ->select([
-                    'voucherTypes.uid voucherTypeUid',
-                    'vouchertypes_sites.uriFormat',
-                    'vouchertypes_sites.template',
-                    'vouchertypes_sites.hasUrls',
-                ])
-                ->from(['{{%giftvoucher_vouchertypes_sites}} vouchertypes_sites'])
-                ->innerJoin(['{{%giftvoucher_vouchertypes}} voucherTypes'], '[[vouchertypes_sites.voucherTypeId]] = [[voucherTypes.id]]')
-                ->where(['siteId' => $event->oldPrimarySiteId])
-                ->one();
+            $oldPrimarySiteUid = Db::uidById(Table::SITES, $event->oldPrimarySiteId);
+            $existingVoucherTypeSettings = $projectConfig->get(self::CONFIG_VOUCHERTYPES_KEY);
 
-            if ($primarySiteSettings) {
-                $newSiteSettings = [
-                    'uriFormat' => $primarySiteSettings['uriFormat'],
-                    'template' => $primarySiteSettings['template'],
-                    'hasUrls' => $primarySiteSettings['hasUrls'],
-                ];
-
-                Craft::$app->getProjectConfig()->set(self::CONFIG_VOUCHERTYPES_KEY . '.' . $primarySiteSettings['voucherTypeUid'] . '.siteSettings.' . $event->site->uid, $newSiteSettings);
+            if (!$projectConfig->getIsApplyingYamlChanges() && is_array($existingVoucherTypeSettings)) {
+                foreach ($existingVoucherTypeSettings as $voucherTypeUid => $settings) {
+                    $primarySiteSettings = $settings['siteSettings'][$oldPrimarySiteUid];
+                    $configPath = self::CONFIG_VOUCHERTYPES_KEY . '.' . $voucherTypeUid . '.siteSettings.' . $event->site->uid;
+                    $projectConfig->set($configPath, $primarySiteSettings);
+                }
             }
         }
     }

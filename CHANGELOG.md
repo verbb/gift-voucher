@@ -1,5 +1,41 @@
 # Changelog
 
+## 3.0.12 - 2024-03-04
+
+### Added
+- Add support for programatically setting a code’s `codeKey`.
+
+### Fixed
+- Fix order of operations when uninstalling the plugin.
+
+## 3.0.11 - 2024-01-30
+
+### Added
+- PDFs now support using the current site’s locale language and formatting.
+
+## 3.0.10 - 2023-12-08
+
+### Added
+- Add currently-applied voucher codes to manage for modal when editing an order in the control panel.
+- Add `codeKey` as an available variable for the `voucherCodesPdfFilenameFormat` setting.
+
+### Changed
+- Voucher modal now shows message instead of refreshing, ensuring unsaved changes to the order aren’t discarded.
+
+### Fixed
+- Fix “enter” key not submitting the gift voucher modal when editing an order in the control panel.
+- Fix `codeKey` reference when rendering PDFs.
+
+## 3.0.9 - 2023-10-25
+
+### Fixed
+- Implement `Element::trackChanges()` for Blitz compatibility.
+
+## 3.0.8 - 2023-10-08
+
+### Fixed
+- Fix an issue when creating new sites and not propagating voucher types correctly.
+
 ## 3.0.7 - 2023-03-09
 
 ### Changed
@@ -65,6 +101,22 @@
 - Fix an error when viewing a redemption without and order in the control panel.
 - Fix an error fetching new redemption records.
 - Fix a type error with redemption codes.
+
+## 2.7.5 - 2023-12-08
+
+### Added
+- Add currently-applied voucher codes to manage for modal when editing an order in the control panel.
+
+### Changed
+- Voucher modal now shows message instead of refreshing, ensuring unsaved changes to the order aren’t discarded.
+
+### Fixed
+- Fix “enter” key not submitting the gift voucher modal when editing an order in the control panel.
+
+## 2.7.4 - 2023-10-08
+
+### Fixed
+- Fix an issue when creating new sites and not propagating voucher types correctly.
 
 ## 2.7.3 - 2022-10-23
 

@@ -2,6 +2,7 @@
 namespace verbb\giftvoucher\controllers;
 
 use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\helpers\Locale;
 
 use Craft;
 use craft\web\Controller;
@@ -38,6 +39,15 @@ class DownloadsController extends Controller
         $format = $this->request->getParam('format');
         $attach = $this->request->getParam('attach');
 
+        $siteHandle = $this->request->getParam('site');
+        $site = Craft::$app->getSites()->getPrimarySite();
+
+        if ($siteHandle) {
+            if ($requestedSite = Craft::$app->getSites()->getSiteByHandle($siteHandle)) {
+                $site = $requestedSite;
+            }
+        }
+
         if ($number) {
             $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
@@ -55,16 +65,28 @@ class DownloadsController extends Controller
             $order = $codes[0]->order;
         }
 
+        // Switch to use the correct site/language
+        $originalLanguage = Craft::$app->language;
+        $originalFormattingLocale = Craft::$app->formattingLocale;
+
+        Locale::switchAppLanguage($site->language);
+
         $pdf = GiftVoucher::$plugin->getPdf()->renderPdf($codes, $order, $lineItem, $option);
+
+        // Set previous language back
+        Locale::switchAppLanguage($originalLanguage, $originalFormattingLocale);
+
         $filenameFormat = GiftVoucher::$plugin->getSettings()->voucherCodesPdfFilenameFormat;
 
-        $fileName = $this->getView()->renderObjectTemplate($filenameFormat, $order);
+        $fileName = $this->getView()->renderObjectTemplate($filenameFormat, $order, [
+            'codeKey' => $codes[0]->codeKey ?? null,
+        ]);
 
         if (!$fileName) {
             if ($order) {
                 $fileName = 'Voucher-' . $order->number;
             } else if ($codes) {
-                $fileName = 'Voucher-' . $code[0]->codeKey;
+                $fileName = 'Voucher-' . $codes[0]->codeKey;
             }
         }
 

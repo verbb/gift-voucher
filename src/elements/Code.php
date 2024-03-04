@@ -39,6 +39,16 @@ class Code extends Element
     // Static Methods
     // =========================================================================
 
+    public static function trackChanges(): bool
+    {
+        return true;
+    }
+
+    public static function hasContent(): bool
+    {
+        return true;
+    }
+
     public static function hasStatuses(): bool
     {
         return true;
@@ -391,7 +401,10 @@ class Code extends Element
             $codeRecord->lineItemId = $this->lineItemId;
             $codeRecord->orderId = $this->orderId;
             $codeRecord->voucherId = $this->voucherId;
-            $codeRecord->codeKey = $this->generateCodeKey();
+
+            // Generate a code key if not already set
+            $codeRecord->codeKey = $this->codeKey ?? $this->generateCodeKey();
+            
             // set the codeKey to the Code as well to use it directly
             $this->codeKey = $codeRecord->codeKey;
         }
