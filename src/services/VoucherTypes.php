@@ -434,7 +434,7 @@ class VoucherTypes extends Component
             $oldPrimarySiteUid = Db::uidById(Table::SITES, $event->oldPrimarySiteId);
             $existingVoucherTypeSettings = $projectConfig->get(self::CONFIG_VOUCHERTYPES_KEY);
 
-            if (!$projectConfig->getIsApplyingYamlChanges() && is_array($existingVoucherTypeSettings)) {
+            if (!$projectConfig->getIsApplyingExternalChanges() && is_array($existingVoucherTypeSettings)) {
                 foreach ($existingVoucherTypeSettings as $voucherTypeUid => $settings) {
                     $primarySiteSettings = $settings['siteSettings'][$oldPrimarySiteUid];
                     $configPath = self::CONFIG_VOUCHERTYPES_KEY . '.' . $voucherTypeUid . '.siteSettings.' . $event->site->uid;
