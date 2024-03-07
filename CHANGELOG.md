@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.6 - 2024-03-08
+
+### Added
+- Add support for programatically setting a code’s `codeKey`.
+
+### Fixed
+- Fix order of operations when uninstalling the plugin.
+
 ## 2.7.5 - 2023-12-08
 
 ### Added
