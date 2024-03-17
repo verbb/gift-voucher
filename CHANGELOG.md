@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-beta.2 - 2024-03-18
+
+### Fixed
+- Fix `getIsApplyingYamlChanges()`.
+
 ## 4.0.0-beta.1 - 2024-03-04
 
 ### Changed
