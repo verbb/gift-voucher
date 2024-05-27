@@ -1,15 +1,11 @@
 # Changelog
 
-## 4.0.0-beta.2 - 2024-03-18
-
-### Fixed
-- Fix `getIsApplyingYamlChanges()`.
-
-## 4.0.0-beta.1 - 2024-03-04
+## 4.0.0 - 2024-05-27
 
 ### Changed
 - Now requires PHP `8.2.0+`.
-- Now requires Craft `5.0.0-beta.1+`.
+- Now requires Craft `5.0.0+`.
+- Now requires Craft Commerce `5.0.0+`.
 
 ## 3.0.12 - 2024-03-04
 
