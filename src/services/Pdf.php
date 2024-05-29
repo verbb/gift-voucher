@@ -34,7 +34,7 @@ class Pdf extends Component
     // Public Methods
     // =========================================================================
 
-    public function getPdfUrl(Order $order, LineItem $lineItem = null, $option = null): string
+    public function getPdfUrl(Order $order, LineItem $lineItem = null, mixed $option = null): string
     {
         $currentSite = Craft::$app->getSites()->getCurrentSite();
 
@@ -46,7 +46,7 @@ class Pdf extends Component
         ]));
     }
 
-    public function getPdfUrlForCode($code, $option = null): string
+    public function getPdfUrlForCode(Code $code, mixed $option = null): string
     {
         $currentSite = Craft::$app->getSites()->getCurrentSite();
         
@@ -57,7 +57,7 @@ class Pdf extends Component
         ]));
     }
 
-    public function renderPdf($codes, Order $order = null, $lineItem = null, $option = '', $templatePath = null): string
+    public function renderPdf(array $codes, Order $order = null, $lineItem = null, mixed $option = '', mixed $templatePath = null): string
     {
         $settings = GiftVoucher::$plugin->getSettings();
         $format = null;
