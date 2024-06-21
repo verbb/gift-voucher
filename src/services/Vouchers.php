@@ -8,6 +8,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\events\SiteEvent;
 use craft\helpers\Assets;
+use craft\helpers\Queue;
 use craft\queue\jobs\ResaveElements;
 
 use craft\commerce\events\MailEvent;
@@ -35,20 +36,22 @@ class Vouchers extends Component
 
     public function afterSaveSiteHandler(SiteEvent $event): void
     {
-        $queue = Craft::$app->getQueue();
-        $siteId = $event->oldPrimarySiteId;
-        $elementTypes = [
-            Voucher::class,
-        ];
+        if ($event->isNew) {
+            $oldPrimarySiteId = $event->oldPrimarySiteId;
 
-        foreach ($elementTypes as $elementType) {
-            $queue->push(new ResaveElements([
-                'elementType' => $elementType,
-                'criteria' => [
-                    'siteId' => $siteId,
-                    'status' => null,
-                ],
-            ]));
+            $elementTypes = [
+                Voucher::class,
+            ];
+
+            foreach ($elementTypes as $elementType) {
+                Queue::push(new ResaveElements([
+                    'elementType' => $elementType,
+                    'criteria' => [
+                        'siteId' => $oldPrimarySiteId,
+                        'status' => null,
+                    ],
+                ]));
+            }
         }
     }
 
