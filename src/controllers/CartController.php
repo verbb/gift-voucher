@@ -25,6 +25,8 @@ class CartController extends BaseFrontEndController
 
     public function init(): void
     {
+        parent::init();
+
         $this->_cart = Commerce::getInstance()->getCarts()->getCart();
         $this->_cartVariable = Commerce::getInstance()->getSettings()->cartVariable;
 
@@ -32,8 +34,6 @@ class CartController extends BaseFrontEndController
         if ($orderId = $this->request->getParam('orderId')) {
             $this->_cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
         }
-
-        parent::init();
     }
 
     public function actionAddCode(): ?Response
