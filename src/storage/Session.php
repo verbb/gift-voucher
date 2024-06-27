@@ -37,7 +37,7 @@ class Session extends Component implements CodeStorageInterface
     {
         $code = CodeHelper::getCode($code);
 
-        if ($code !== null && SessionHelper::exists()) {
+        if ($code !== null && $this->_hasSession()) {
             $codeKeys = $this->getCodeKeys($order);
             $codeKeys[] = $code->codeKey;
             $codeKeys = array_unique($codeKeys);
@@ -67,7 +67,7 @@ class Session extends Component implements CodeStorageInterface
         $code = CodeHelper::getCode($code);
         $success = false;
 
-        if ($code !== null && SessionHelper::exists()) {
+        if ($code !== null && $this->_hasSession()) {
             $codeKeys = $this->getCodeKeys($order);
 
             foreach ($codeKeys as $key => $codeKey) {
@@ -94,7 +94,7 @@ class Session extends Component implements CodeStorageInterface
      */
     public function getCodeKeys(Order $order): array
     {
-        if (SessionHelper::exists()) {
+        if ($this->_hasSession()) {
             return SessionHelper::get($this->_getCacheKey($order), []) ?? [];
         }
 
@@ -113,7 +113,7 @@ class Session extends Component implements CodeStorageInterface
      */
     public function getCodes(Order $order): array
     {
-        if (SessionHelper::exists() && empty(($codes = $this->getCodeKeys($order))) === false) {
+        if ($this->_hasSession() && empty(($codes = $this->getCodeKeys($order))) === false) {
             return Code::find()->codeKey($codes)->all();
         }
 
@@ -133,7 +133,7 @@ class Session extends Component implements CodeStorageInterface
     {
         $success = false;
 
-        if (SessionHelper::exists()) {
+        if ($this->_hasSession()) {
             $codeKeys = [];
             $success = true;
 
@@ -160,6 +160,15 @@ class Session extends Component implements CodeStorageInterface
     private function _getCacheKey($order): string
     {
         return self::CODE_KEY . ':' . $order->id;
+    }
+
+    private function _hasSession(): bool
+    {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return false;
+        }
+
+        return SessionHelper::exists();
     }
 
 }
