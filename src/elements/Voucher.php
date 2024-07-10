@@ -373,7 +373,7 @@ class Voucher extends Purchasable
         return false;
     }
 
-    public function getPdfUrl(LineItem $lineItem, $option = null): string
+    public function getPdfUrl(LineItem $lineItem, mixed $option = null): string
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrl($lineItem->order, $lineItem);
     }

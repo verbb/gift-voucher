@@ -7,7 +7,7 @@ use verbb\giftvoucher\helpers\CodeHelper;
 use Craft;
 use craft\base\Component;
 use craft\errors\MissingComponentException;
-use craft\web\Request;
+use craft\helpers\Session as SessionHelper;
 
 use craft\commerce\elements\Order;
 
@@ -19,21 +19,8 @@ class Session extends Component implements CodeStorageInterface
     public const CODE_KEY = 'giftVoucher.giftVoucherCodes';
 
 
-    // Properties
-    // =========================================================================
-
-    public ?Request $request = null;
-
-
     // Public Methods
     // =========================================================================
-
-    public function init(): void
-    {
-        $this->request = Craft::$app->getRequest();
-
-        parent::init();
-    }
 
     /**
      * Add a code
@@ -50,12 +37,12 @@ class Session extends Component implements CodeStorageInterface
     {
         $code = CodeHelper::getCode($code);
 
-        if ($code !== null && $this->_isActive() === true) {
+        if ($code !== null && $this->_hasSession()) {
             $codeKeys = $this->getCodeKeys($order);
             $codeKeys[] = $code->codeKey;
             $codeKeys = array_unique($codeKeys);
 
-            Craft::$app->getSession()->set($this->_getCacheKey($order), $codeKeys);
+            SessionHelper::set($this->_getCacheKey($order), $codeKeys);
 
             return true;
         }
@@ -80,7 +67,7 @@ class Session extends Component implements CodeStorageInterface
         $code = CodeHelper::getCode($code);
         $success = false;
 
-        if ($code !== null && $this->_isActive() === true) {
+        if ($code !== null && $this->_hasSession()) {
             $codeKeys = $this->getCodeKeys($order);
 
             foreach ($codeKeys as $key => $codeKey) {
@@ -90,7 +77,7 @@ class Session extends Component implements CodeStorageInterface
                 }
             }
 
-            Craft::$app->getSession()->set($this->_getCacheKey($order), $codeKeys);
+            SessionHelper::set($this->_getCacheKey($order), $codeKeys);
         }
 
         return $success;
@@ -107,8 +94,8 @@ class Session extends Component implements CodeStorageInterface
      */
     public function getCodeKeys(Order $order): array
     {
-        if ($this->_isActive() === true) {
-            return Craft::$app->getSession()->get($this->_getCacheKey($order), []);
+        if ($this->_hasSession()) {
+            return SessionHelper::get($this->_getCacheKey($order), []) ?? [];
         }
 
         return [];
@@ -126,7 +113,7 @@ class Session extends Component implements CodeStorageInterface
      */
     public function getCodes(Order $order): array
     {
-        if ($this->_isActive() === true && empty(($codes = $this->getCodeKeys($order))) === false) {
+        if ($this->_hasSession() && empty(($codes = $this->getCodeKeys($order))) === false) {
             return Code::find()->codeKey($codes)->all();
         }
 
@@ -146,7 +133,7 @@ class Session extends Component implements CodeStorageInterface
     {
         $success = false;
 
-        if ($this->_isActive() === true) {
+        if ($this->_hasSession()) {
             $codeKeys = [];
             $success = true;
 
@@ -160,7 +147,7 @@ class Session extends Component implements CodeStorageInterface
                 }
             }
 
-            Craft::$app->getSession()->set($this->_getCacheKey($order), $codeKeys);
+            SessionHelper::set($this->_getCacheKey($order), $codeKeys);
         }
 
         return $success;
@@ -169,22 +156,19 @@ class Session extends Component implements CodeStorageInterface
 
     // Private Methods
     // =========================================================================
-    /**
-     * Check if the session is even active
-     *
-     *
-     * @throws MissingComponentException
-     * @since  18.12.2019
-     * @author Robin Schambach
-     */
-    private function _isActive(): bool
-    {
-        return $this->request->getIsConsoleRequest() === false && Craft::$app->getSession()->getIsActive();
-    }
 
     private function _getCacheKey($order): string
     {
         return self::CODE_KEY . ':' . $order->id;
+    }
+
+    private function _hasSession(): bool
+    {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return false;
+        }
+
+        return SessionHelper::exists();
     }
 
 }

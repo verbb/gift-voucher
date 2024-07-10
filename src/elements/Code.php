@@ -379,7 +379,7 @@ class Code extends Element
         return [];
     }
 
-    public function getPdfUrl($option = null): string
+    public function getPdfUrl(mixed $option = null): string
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option = null);
     }

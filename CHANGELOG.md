@@ -7,6 +7,20 @@
 - Now requires Craft `5.0.0+`.
 - Now requires Craft Commerce `5.0.0+`.
 
+## 3.0.13 - 2024-07-10
+
+### Added
+- Add support for `orderSite` for PDF URLs.
+
+### Changed
+- Update English translations.
+- Switch session handler to use Craft’s Session helper.
+
+### Fixed
+- Fix an error when saving a new site.
+- Fix session-handling to check for console requests.
+- Fix vouchers always being re-saved when updating a site or force-applying project config.
+
 ## 3.0.12 - 2024-03-04
 
 ### Added
@@ -108,6 +122,14 @@
 - Fix an error when viewing a redemption without and order in the control panel.
 - Fix an error fetching new redemption records.
 - Fix a type error with redemption codes.
+
+## 2.7.6 - 2024-03-08
+
+### Added
+- Add support for programatically setting a code’s `codeKey`.
+
+### Fixed
+- Fix order of operations when uninstalling the plugin.
 
 ## 2.7.5 - 2023-12-08
 
