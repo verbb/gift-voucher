@@ -36,7 +36,7 @@ class Vouchers extends Component
 
     public function afterSaveSiteHandler(SiteEvent $event): void
     {
-        if ($event->isNew) {
+        if ($event->isNew && isset($event->oldPrimarySiteId)) {
             $oldPrimarySiteId = $event->oldPrimarySiteId;
 
             $elementTypes = [
