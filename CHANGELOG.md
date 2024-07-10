@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.0.1 - 2024-07-10
+
+### Added
+- Add support for `orderSite` for PDF URLs.
+
+### Changed
+- Update English translations.
+- Switch session handler to use Craft’s Session helper.
+
+### Fixed
+- Fix an error when saving a new site.
+- Fix session-handling to check for console requests.
+- Fix vouchers always being re-saved when updating a site or force-applying project config.
+
 ## 4.0.0 - 2024-05-27
 
 ### Changed
