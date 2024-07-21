@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.2 - 2024-07-21
+
+### Fixed
+- Fix an error when adding a custom-priced voucher to the cart.
+
 ## 4.0.1 - 2024-07-10
 
 ### Added
