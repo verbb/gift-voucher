@@ -112,8 +112,8 @@ class CodesController extends Controller
 
         $code->id = (int)$request->getBodyParam('codeId');
         $code->enabled = (bool)$request->getBodyParam('enabled');
-        $code->originalAmount = $request->getBodyParam('originalAmount');
-        $code->currentAmount = (int)$request->getBodyParam('currentAmount');
+        $code->originalAmount = (float)$request->getBodyParam('originalAmount');
+        $code->currentAmount = (float)$request->getBodyParam('currentAmount');
         $code->expiryDate = (($date = $request->getParam('expiryDate')) !== false ? (DateTimeHelper::toDateTime($date) ?: null) : $code->expiryDate);
 
         if (!$code->originalAmount) {
