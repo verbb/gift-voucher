@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Fixed saving a code with a decimal value being cast to an int ([#131](https://github.com/verbb/gift-voucher/issues/131))
+
 ## 4.0.2 - 2024-07-21
 
 ### Fixed
