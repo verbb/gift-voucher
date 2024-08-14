@@ -122,7 +122,7 @@ class Install extends Migration
         $this->createIndex(null, '{{%giftvoucher_redemptions}}', 'codeId', false);
         $this->createIndex(null, '{{%giftvoucher_redemptions}}', 'orderId', false);
 
-        $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'sku', true);
+        $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'sku', false);
         $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'typeId', false);
         $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'taxCategoryId', false);
         $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'shippingCategoryId', false);
