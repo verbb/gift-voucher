@@ -159,6 +159,7 @@ class VouchersPreviewController extends Controller
 
         return $this->renderTemplate($siteSettings[$voucher->siteId]->template, [
             'voucher' => $voucher,
+            'product' => $voucher,
         ]);
     }
 
