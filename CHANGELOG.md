@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.14 - 2024-09-07
+
+### Changed
+- Change “Share” button to “View” for vouchers, for consistency with Craft/Commerce.
+
+### Fixed
+- Fix missing `product` variable when previewing a voucher.
+- Fix an error when duplicating a voucher.
+- Fix saving a code with a decimal value being cast to an int.
+
 ## 3.0.13 - 2024-07-10
 
 ### Added
