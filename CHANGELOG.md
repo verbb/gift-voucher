@@ -1,10 +1,14 @@
 # Changelog
 
-## Unreleased
+## 4.0.3 - 2024-09-07
+
+### Changed
+- Change “Share” button to “View” for vouchers, for consistency with Craft/Commerce.
 
 ### Fixed
-
-- Fixed saving a code with a decimal value being cast to an int ([#131](https://github.com/verbb/gift-voucher/issues/131))
+- Fix missing `product` variable when previewing a voucher.
+- Fix an error when duplicating a voucher.
+- Fix saving a code with a decimal value being cast to an int.
 
 ## 4.0.2 - 2024-07-21
 
@@ -31,6 +35,16 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 - Now requires Craft Commerce `5.0.0+`.
+
+## 3.0.14 - 2024-09-07
+
+### Changed
+- Change “Share” button to “View” for vouchers, for consistency with Craft/Commerce.
+
+### Fixed
+- Fix missing `product` variable when previewing a voucher.
+- Fix an error when duplicating a voucher.
+- Fix saving a code with a decimal value being cast to an int.
 
 ## 3.0.13 - 2024-07-10
 
