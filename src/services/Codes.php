@@ -18,6 +18,7 @@ use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 
 use craft\commerce\elements\Order;
+use craft\commerce\enums\LineItemType;
 use craft\commerce\models\LineItem;
 
 use yii\base\Component;
@@ -242,6 +243,11 @@ class Codes extends Component
     {
         /** @var LineItem $lineItem */
         $lineItem = $event->sender;
+
+        if ($lineItem->type === LineItemType::Custom) {
+            return;
+        }
+
         $purchasable = $lineItem->getPurchasable();
 
         // make sure it's a Voucher
