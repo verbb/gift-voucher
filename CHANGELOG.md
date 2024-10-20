@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.4 - 2024-10-20
+
+### Fixed
+- Fix an error when creating custom line items.
+
 ## 4.0.3 - 2024-09-07
 
 ### Changed
