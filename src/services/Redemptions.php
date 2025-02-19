@@ -109,7 +109,7 @@ class Redemptions extends Component
             ]));
         }
 
-        Db::delete('{{%giftvoucher_redemptions}}', [
+        $affectedRows = Db::delete('{{%giftvoucher_redemptions}}', [
             'id' => $redemption->id,
         ]);
 
@@ -119,7 +119,7 @@ class Redemptions extends Component
             ]));
         }
 
-        return true;
+        return (bool)$affectedRows;
     }
 
 
