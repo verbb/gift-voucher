@@ -8,7 +8,6 @@ use verbb\giftvoucher\records\Redemption as RedemptionRecord;
 
 use Craft;
 use craft\base\Component;
-use craft\base\MemoizableArray;
 use craft\db\Query;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Db;
@@ -26,23 +25,31 @@ class Redemptions extends Component
     public const EVENT_AFTER_DELETE_REDEMPTION = 'afterDeleteRedemption';
 
 
-    // Properties
-    // =========================================================================
-
-    private ?MemoizableArray $_redemptions = null;
-
-
     // Public Methods
     // =========================================================================
 
     public function getRedemptionById(int $id): ?Redemption
     {
-        return $this->_redemptions()->firstWhere('id', $id);
+        $result = $this->_createRedemptionsQuery()
+            ->where(['id' => $id])
+            ->one();
+
+        return $result ? new Redemption($result) : null;
     }
 
     public function getRedemptionsByCodeId(int $codeId): array
     {
-        return $this->_redemptions()->where('codeId', $codeId)->all();
+        $redemptions = [];
+
+        $results = $this->_createRedemptionsQuery()
+            ->where(['codeId' => $codeId])
+            ->all();
+
+        foreach ($results as $result) {
+            $redemptions[] = new Redemption($result);
+        }
+
+        return $redemptions;
     }
 
     public function saveRedemption(Redemption $redemption, bool $runValidation = true): bool
@@ -74,8 +81,6 @@ class Redemptions extends Component
             $redemption->id = $redemptionRecord->id;
         }
 
-        $this->_redemptions = null;
-
         if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_REDEMPTION)) {
             $this->trigger(self::EVENT_AFTER_SAVE_REDEMPTION, new RedemptionEvent([
                 'redemption' => $redemption,
@@ -105,7 +110,7 @@ class Redemptions extends Component
             ]));
         }
 
-        Db::delete('{{%giftvoucher_redemptions}}', [
+        $affectedRows = Db::delete('{{%giftvoucher_redemptions}}', [
             'id' => $redemption->id,
         ]);
 
@@ -115,27 +120,12 @@ class Redemptions extends Component
             ]));
         }
 
-        return true;
+        return (bool)$affectedRows;
     }
 
 
     // Private Methods
     // =========================================================================
-
-    private function _redemptions(): MemoizableArray
-    {
-        if (!isset($this->_redemptions)) {
-            $redemptions = [];
-
-            foreach ($this->_createRedemptionsQuery()->all() as $result) {
-                $redemptions[] = new Redemption($result);
-            }
-
-            $this->_redemptions = new MemoizableArray($redemptions);
-        }
-
-        return $this->_redemptions;
-    }
 
     private function _createRedemptionsQuery(): Query
     {
