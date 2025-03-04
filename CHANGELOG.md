@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.15 - 2025-03-05
+
+### Changed
+- Improve redemption querying performance.
+
+### Fixed
+- Fix `deleteRedemption` return value.
+
 ## 3.0.14 - 2024-09-07
 
 ### Changed
