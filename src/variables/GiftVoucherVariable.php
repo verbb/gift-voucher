@@ -87,6 +87,11 @@ class GiftVoucherVariable
         return null;
     }
 
+    public function getPdfUrlForCode(Code $code, mixed $option = null): string
+    {
+        return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($code, $option);
+    }
+
     public function getOrderPdfUrl(Order $order): string
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrl($order);

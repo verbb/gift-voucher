@@ -42,7 +42,7 @@ class Pdf extends Component
         return UrlHelper::actionUrl('gift-voucher/downloads/pdf', array_filter([
             'number' => $order->number ?? null,
             'option' => $option ?? null,
-            'lineItemId' => $lineItem->id ?? null,
+            'lineItemUid' => $lineItem->uid ?? null,
             'site' => $currentSite->handle,
         ]));
     }
@@ -59,7 +59,7 @@ class Pdf extends Component
         }
         
         return UrlHelper::actionUrl('gift-voucher/downloads/pdf', array_filter([
-            'codeId' => $code->id ?? null,
+            'codeUid' => $code->uid ?? null,
             'option' => $option ?? null,
             'site' => $currentSite->handle,
         ]));
