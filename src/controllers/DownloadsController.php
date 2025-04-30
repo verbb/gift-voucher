@@ -75,6 +75,10 @@ class DownloadsController extends Controller
 
         Locale::switchAppLanguage($site->language);
 
+        if (!$order) {
+            throw new HttpException('No Order Found');
+        }
+
         $pdf = GiftVoucher::$plugin->getPdf()->renderPdf($codes, $order, $lineItem, $option);
 
         // Set previous language back
