@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.7 - 2025-05-02
+
+### Fixed
+- Fix an error when generating PDFs for vouchers with no orders.
+
 ## 4.0.6 - 2025-05-01
 
 ### Changed
