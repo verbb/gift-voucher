@@ -65,7 +65,7 @@ class Pdf extends Component
         ]));
     }
 
-    public function renderPdf(array $codes, Order $order = null, $lineItem = null, mixed $option = '', mixed $templatePath = null): string
+    public function renderPdf(array $codes, ?Order $order = null, ?LineItem $lineItem = null, mixed $option = '', mixed $templatePath = null): string
     {
         $settings = GiftVoucher::$plugin->getSettings();
         $format = null;

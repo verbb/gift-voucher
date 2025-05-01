@@ -32,7 +32,7 @@ class DownloadsController extends Controller
         $code = [];
 
         $codes = [];
-        $order = [];
+        $order = null;
         $lineItem = null;
 
         $number = $this->request->getParam('number');
@@ -74,10 +74,6 @@ class DownloadsController extends Controller
         $originalFormattingLocale = Craft::$app->formattingLocale;
 
         Locale::switchAppLanguage($site->language);
-
-        if (!$order) {
-            throw new HttpException('No Order Found');
-        }
 
         $pdf = GiftVoucher::$plugin->getPdf()->renderPdf($codes, $order, $lineItem, $option);
 
