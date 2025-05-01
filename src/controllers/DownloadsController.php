@@ -5,9 +5,13 @@ use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\helpers\Locale;
 
 use Craft;
+use craft\db\Query;
+use craft\helpers\Json;
 use craft\web\Controller;
 
 use craft\commerce\Plugin as Commerce;
+use craft\commerce\db\Table;
+use craft\commerce\models\LineItem;
 
 use yii\web\HttpException;
 use yii\web\Response;
@@ -33,8 +37,8 @@ class DownloadsController extends Controller
 
         $number = $this->request->getParam('number');
         $option = $this->request->getParam('option', '');
-        $lineItemId = $this->request->getParam('lineItemId', '');
-        $codeId = $this->request->getParam('codeId', '');
+        $lineItemUid = $this->request->getParam('lineItemUid', '');
+        $codeUid = $this->request->getParam('codeUid', '');
 
         $format = $this->request->getParam('format');
         $attach = $this->request->getParam('attach');
@@ -56,13 +60,13 @@ class DownloadsController extends Controller
             }
         }
 
-        if ($lineItemId) {
-            $lineItem = Commerce::getInstance()->getLineItems()->getLineItemById($lineItemId);
+        if ($lineItemUid) {
+            $lineItem = $this->_getLineItemByUid($lineItemUid);
         }
 
-        if ($codeId) {
-            $codes = [Craft::$app->getElements()->getElementById($codeId)];
-            $order = $codes[0]->order;
+        if ($codeUid) {
+            $codes = [Craft::$app->getElements()->getElementByUid($codeUid)];
+            $order = $codes[0]->order ?? null;
         }
 
         // Switch to use the correct site/language
@@ -70,6 +74,10 @@ class DownloadsController extends Controller
         $originalFormattingLocale = Craft::$app->formattingLocale;
 
         Locale::switchAppLanguage($site->language);
+
+        if (!$order) {
+            throw new HttpException('No Order Found');
+        }
 
         $pdf = GiftVoucher::$plugin->getPdf()->renderPdf($codes, $order, $lineItem, $option);
 
@@ -103,5 +111,54 @@ class DownloadsController extends Controller
         }
 
         return Craft::$app->getResponse()->sendContentAsFile($pdf, $fileName . '.pdf', $options);
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    private function _getLineItemByUid(string $uid): ?LineItem
+    {
+        $result = $this->_createLineItemQuery()
+            ->where(['uid' => $uid])
+            ->one();
+
+        if ($result) {
+            // Unpack the snapshot
+            $result['snapshot'] = Json::decodeIfJson($result['snapshot']);
+        }
+
+        return $result ? new LineItem($result) : null;
+    }
+
+    private function _createLineItemQuery(): Query
+    {
+        return (new Query())
+            ->select([
+                'dateCreated',
+                'dateUpdated',
+                'description',
+                'height',
+                'id',
+                'length',
+                'lineItemStatusId',
+                'note',
+                'options',
+                'orderId',
+                'price',
+                'privateNote',
+                'purchasableId',
+                'qty',
+                'salePrice',
+                'shippingCategoryId',
+                'sku',
+                'snapshot',
+                'taxCategoryId',
+                'uid',
+                'weight',
+                'width',
+            ])
+            ->from([Table::LINEITEMS . ' lineItems'])
+            ->orderBy('dateCreated DESC');
     }
 }

@@ -49,6 +49,14 @@
 - Now requires Craft `5.0.0+`.
 - Now requires Craft Commerce `5.0.0+`.
 
+## 3.0.16 - 2025-05-01
+
+### Changed
+- Update PDF URLs to use UIDs instead of IDs.
+
+### Fixed
+- Fix PDF handling for Craft Cloud.
+
 ## 3.0.15 - 2025-03-05
 
 ### Changed
