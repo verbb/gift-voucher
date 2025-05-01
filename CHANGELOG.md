@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.6 - 2025-05-01
+
+### Changed
+- Update PDF URLs to use UIDs instead of IDs.
+
+### Fixed
+- Fix PDF handling for Craft Cloud.
+
 ## 4.0.5 - 2025-03-05
 
 ### Changed
