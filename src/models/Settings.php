@@ -21,6 +21,7 @@ class Settings extends Model
     public string $pdfPaperOrientation = 'portrait';
     public mixed $codeStorage = Session::class;
     public string $registerAdjuster = 'beforeTax';
+    public bool $includeShipping = true;
     public array $attachPdfToEmails = [];
 
 
