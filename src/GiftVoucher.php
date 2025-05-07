@@ -279,7 +279,7 @@ class GiftVoucher extends Plugin
                 // Find the Tax adjuster, it should go before that, but if it's not found (Commerce Lite), append
                 $taxKey = array_search(Tax::class, $event->types);
 
-                if ($taxKey) {
+                if ($taxKey !== false) {
                     array_splice($types, $taxKey, 0, GiftVoucherAdjuster::class);
                 } else {
                     $types[] = GiftVoucherAdjuster::class;
