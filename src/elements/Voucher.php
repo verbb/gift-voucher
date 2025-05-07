@@ -418,26 +418,30 @@ class Voucher extends Purchasable
         return $this->typeId ? $this->_voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId) : null;
     }
 
-    public function getTaxCategory(): TaxCategory
-    {
-        if ($this->taxCategoryId) {
-            return Commerce::getInstance()->getTaxCategories()->getTaxCategoryById($this->taxCategoryId);
-        }
-
-        return null;
-    }
-
 
     // Implement Purchasable
     // =========================================================================
 
+    public function getTaxCategory(): TaxCategory
+    {
+        if ($this->taxCategoryId) {
+            if ($category = Commerce::getInstance()->getTaxCategories()->getTaxCategoryById($this->taxCategoryId)) {
+                return $category;
+            }
+        }
+
+        return Commerce::getInstance()->getTaxCategories()->getDefaultTaxCategory();
+    }
+
     public function getShippingCategory(): ShippingCategory
     {
         if ($this->shippingCategoryId) {
-            return Commerce::getInstance()->getShippingCategories()->getShippingCategoryById($this->shippingCategoryId);
+            if ($category = Commerce::getInstance()->getShippingCategories()->getShippingCategoryById($this->shippingCategoryId)) {
+                return $category;
+            }
         }
 
-        return null;
+        return Commerce::getInstance()->getShippingCategories()->getDefaultShippingCategory($this->getStoreId());
     }
 
     public function getExistingCodes(): array
