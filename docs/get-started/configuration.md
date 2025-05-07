@@ -17,6 +17,7 @@ return [
         'pdfPaperSize' => 'letter',
         'pdfPaperOrientation' => 'portrait',
         'registerAdjuster' => 'beforeTax',
+        'includeShipping' => true,
         'attachPdfToEmails' => [],
     ]
 ];
@@ -32,6 +33,7 @@ return [
 - `pdfPaperSize` - Sets the paper size for the PDF.
 - `pdfPaperOrientation` - Sets the paper orientation for the PDF.
 - `registerAdjuster` - Controls when the adjuster should be applied. Valid options are `beforeTax` (default) and `afterTax`.
+- `includeShipping` - Whether shipping costs should be included in voucher redemption.
 - `attachPdfToEmails` - A collection of Commerce Email UIDs that Gift Voucher should automatically attach the voucher PDF to.
 
 #### `attachPdfToEmails`
