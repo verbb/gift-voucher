@@ -146,8 +146,13 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
     private function _getItemTotalWithoutShipping(Order $order): float
     {
         $itemTotal = $order->getItemTotal();
-        $shippingTotal = $order->getTotalShippingCost();
+        
+        foreach ($order->getAdjustments() as $adjustment) {
+            if ($adjustment->type === 'shipping' && $adjustment->lineItem) {
+                $itemTotal -= $adjustment->amount;
+            }
+        }
 
-        return $itemTotal - $shippingTotal;
+        return $itemTotal;
     }
 }
