@@ -153,6 +153,6 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
             }
         }
 
-        return $itemTotal - $shippingTotal;
+        return $itemTotal;
     }
 }
