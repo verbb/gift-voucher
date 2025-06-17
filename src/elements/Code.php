@@ -34,6 +34,7 @@ class Code extends Element
     // =========================================================================
 
     public const EVENT_GENERATE_CODE_KEY = 'beforeGenerateCodeKey';
+    public const EVENT_AFTER_BULK_GENERATE_CODES = 'afterBulkGenerateCodesEvent';
 
 
     // Static Methods
