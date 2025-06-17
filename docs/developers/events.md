@@ -161,12 +161,12 @@ Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent
 Plugins can get a list of all codes that were generated in a bulk operation.
 
 ```php
-use verbb\giftvoucher\elements\Code;
+use verbb\giftvoucher\controllers\CodesController;
 use verbb\giftvoucher\events\BulkGenerateCodesEvent;
 use verbb\giftvoucher\GiftVoucher;
 use yii\base\Event;
 
-Event::on(Code::class, Code::EVENT_AFTER_BULK_GENERATE_CODES, function(BulkGenerateCodesEvent $event) {
+Event::on(CodesController::class, CodesController::EVENT_AFTER_BULK_GENERATE_CODES, function(BulkGenerateCodesEvent $event) {
     $codes = $event->codes;
 });
 ```

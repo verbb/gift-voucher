@@ -17,6 +17,12 @@ use yii\web\Response;
 
 class CodesController extends Controller
 {
+    // Constants
+    // =========================================================================
+
+    public const EVENT_AFTER_BULK_GENERATE_CODES = 'afterBulkGenerateCodesEvent';
+
+    
     // Public Methods
     // =========================================================================
 
@@ -252,8 +258,8 @@ class CodesController extends Controller
         $bulkGenerateCodesEvent = new BulkGenerateCodesEvent(['codes' => $savedCodes]);
 
         // Raising the 'afterBulkGenerateCodesEvent' event
-        if ($this->hasEventHandlers(Code::EVENT_AFTER_BULK_GENERATE_CODES)) {
-            $this->trigger(Code::EVENT_AFTER_BULK_GENERATE_CODES, $bulkGenerateCodesEvent);
+        if ($this->hasEventHandlers(self::EVENT_AFTER_BULK_GENERATE_CODES)) {
+            $this->trigger(self::EVENT_AFTER_BULK_GENERATE_CODES, $bulkGenerateCodesEvent);
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Voucher codes generated.'));
