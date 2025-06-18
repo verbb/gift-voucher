@@ -157,6 +157,20 @@ Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent
 });
 ```
 
+### The `afterBulkGenerateCodesEvent` event
+Plugins can get a list of all codes that were generated in a bulk operation.
+
+```php
+use verbb\giftvoucher\controllers\CodesController;
+use verbb\giftvoucher\events\BulkGenerateCodesEvent;
+use verbb\giftvoucher\GiftVoucher;
+use yii\base\Event;
+
+Event::on(CodesController::class, CodesController::EVENT_AFTER_BULK_GENERATE_CODES, function(BulkGenerateCodesEvent $event) {
+    $codes = $event->codes;
+});
+```
+
 ### The `beforeSaveCode` event
 Plugins can get notified before a code is saved. Event handlers can prevent the code from getting sent by setting `$event->isValid` to false.
 

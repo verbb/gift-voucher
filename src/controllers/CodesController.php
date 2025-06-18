@@ -4,6 +4,7 @@ namespace verbb\giftvoucher\controllers;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
+use verbb\giftvoucher\events\BulkGenerateCodesEvent;
 
 use Craft;
 use craft\base\Element;
@@ -16,6 +17,12 @@ use yii\web\Response;
 
 class CodesController extends Controller
 {
+    // Constants
+    // =========================================================================
+
+    public const EVENT_AFTER_BULK_GENERATE_CODES = 'afterBulkGenerateCodesEvent';
+
+    
     // Public Methods
     // =========================================================================
 
@@ -245,13 +252,20 @@ class CodesController extends Controller
                 return null;
             }
 
-            $savedCodes[] = $code->id;
+            $savedCodes[] = $code;
+        }
+        
+        $bulkGenerateCodesEvent = new BulkGenerateCodesEvent(['codes' => $savedCodes]);
+
+        // Raising the 'afterBulkGenerateCodesEvent' event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_BULK_GENERATE_CODES)) {
+            $this->trigger(self::EVENT_AFTER_BULK_GENERATE_CODES, $bulkGenerateCodesEvent);
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Voucher codes generated.'));
 
         return $this->redirect(UrlHelper::url('gift-voucher/codes/bulk-generate-success', [
-            'savedCodes' => implode('_', $savedCodes),
+            'savedCodes' => implode('_', array_map(fn($code): int => $code->id, $savedCodes)),
         ]));
     }
 }
