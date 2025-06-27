@@ -2,6 +2,7 @@
 namespace verbb\giftvoucher\elements;
 
 use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\elements\conditions\CodeConditions;
 use verbb\giftvoucher\elements\db\CodeQuery;
 use verbb\giftvoucher\events\GenerateCodeEvent;
 use verbb\giftvoucher\records\Code as CodeRecord;
@@ -23,7 +24,7 @@ use craft\validators\DateTimeValidator;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
-
+use craft\elements\conditions\ElementConditionInterface;
 use yii\base\InvalidConfigException;
 
 use DateTime;
@@ -429,6 +430,10 @@ class Code extends Element
         parent::afterSave($isNew);
     }
 
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(CodeConditions::class, [static::class]);
+    }
 
     // Protected Methods
     // =========================================================================
