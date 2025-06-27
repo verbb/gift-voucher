@@ -51,6 +51,7 @@ use yii\base\Event;
 
 use fostercommerce\klaviyoconnect\services\Track;
 use fostercommerce\klaviyoconnect\models\EventProperties;
+use verbb\giftvoucher\twig\CpExtensions;
 
 class GiftVoucher extends Plugin
 {
@@ -88,6 +89,7 @@ class GiftVoucher extends Plugin
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->_registerCpRoutes();
+            $this->_registerCpTwigExtensions();
             $this->_registerFieldLayoutListener();
         }
 
@@ -352,6 +354,11 @@ class GiftVoucher extends Plugin
                 'gift-voucher/settings' => 'gift-voucher/base/settings',
             ]);
         });
+    }
+    
+    private function _registerCpTwigExtensions(): void
+    {
+        Craft::$app->view->registerTwigExtension(new CpExtensions());
     }
 
     private function _registerFieldLayoutListener(): void
