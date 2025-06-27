@@ -95,15 +95,6 @@
             name: 'enabled',
             on: code.enabled,
         }) }}
-
-        {% if craft.app.getIsMultiSite() %}
-            {{ forms.lightswitchField({
-                label: 'Enabled for site' | t('gift-voucher'),
-                id: 'enabledForSite',
-                name: 'enabledForSite',
-                on: code.enabledForSite,
-            }) }}
-        {% endif %}
     </div>
 
     <hr>
