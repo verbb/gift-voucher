@@ -6,4 +6,17 @@
 {% set docTitle = title ~ ' - Gift Voucher' %}
 {% set elementType = 'verbb\\giftvoucher\\elements\\Code' %}
 
+{% js %}
+	{% set voucherTypes = [] %}
+	{% for voucherType in craft.giftVoucher.getEditableVoucherTypes() %}
+		{% set voucherTypes = voucherTypes | merge([{
+			id: voucherType.id,
+			name: voucherType.name,
+			handle: voucherType.handle,
+		}]) %}
+	{% endfor %}
+	
+	Craft.GiftVoucher.editableVoucherTypes = {{ voucherTypes | json_encode | raw }};
+{% endjs %}
+
 {% do view.registerAssetBundle('verbb\\giftvoucher\\assetbundles\\GiftVoucherAsset') -%}
