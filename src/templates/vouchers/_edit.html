@@ -19,20 +19,25 @@
     {% endif %}
 {% endif %}
 
-{% set crumbs = [
-{
-    id: 'site-crumb',
-    icon: 'world',
-    iconAltText: 'Site'|t('app'),
-    label: selectedSite.name|t('site'),
-    menu: {
-        items: giftVoucherSiteMenu(siteMenuItems(selectableSites, selectedSite), enabledSiteIds, url("gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}")),
-        label: 'Select site'|t('app')
-    }
-},
+{% if craft.app.getIsMultiSite() %}
+    {% set crumbs = [{
+        id: 'site-crumb',
+        icon: 'world',
+        iconAltText: 'Site'|t('app'),
+        label: selectedSite.name|t('site'),
+        menu: {
+            items: giftVoucherSiteMenu(siteMenuItems(selectableSites, selectedSite), enabledSiteIds, url("gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}")),
+            label: 'Select site'|t('app')
+        }
+    }] %}
+{% else %}
+    {% set crumbs = [] %}
+{% endif %}
+
+{% set crumbs = crumbs|merge([
 	{ label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
 	{ label: voucherType.name | t('gift-voucher'), url: url('gift-voucher/vouchers/' ~ voucherType.handle) },
-] %}
+]) %}
 
 {% set fullPageForm = true %}
 {% set saveShortcutRedirect = continueEditingUrl %}
