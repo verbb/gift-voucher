@@ -1,11 +1,44 @@
 {% extends 'gift-voucher/_layouts' %}
 {% import '_includes/forms' as forms %}
 
-{% set crumbs = [
+{% if selectableSites is not defined %}
+    {% if siteIds is defined %}
+        {% set selectableSites = craft.app.sites.getEditableSites()|filter(s => s.id in siteIds) %}
+    {% else %}
+        {% set selectableSites = craft.app.sites.getEditableSites() %}
+    {% endif %}
+{% endif %}
+
+{% if selectedSite is not defined %}
+    {% if selectedSiteId is defined %}
+        {% set selectedSite = craft.app.sites.getSiteById(selectedSiteId) %}
+    {% elseif requestedSite and requestedSite in selectableSites %}
+        {% set selectedSite = requestedSite %}
+    {% else %}
+        {% set selectedSite = selectableSites|length ? selectableSites|first : craft.app.sites.getPrimarySite() %}
+    {% endif %}
+{% endif %}
+
+{% if craft.app.getIsMultiSite() %}
+    {% set crumbs = [{
+        id: 'site-crumb',
+        icon: 'world',
+        iconAltText: 'Site'|t('app'),
+        label: selectedSite.name|t('site'),
+        menu: {
+            items: siteMenuItems(selectableSites, selectedSite),
+            label: 'Select site'|t('app')
+        }
+    }] %}
+{% else %}
+    {% set crumbs = [] %}
+{% endif %}
+
+{% set crumbs = crumbs|merge([
 	{ label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
 	{ label: 'Voucher Codes' | t('gift-voucher'), url: url('gift-voucher/codes') },
 	{ label: 'Bulk Generate' | t('gift-voucher'), url: url('gift-voucher/codes/bulk-generate') }
-] %}
+]) %}
 
 {% set selectedSubnavItem = 'bulk-generate' %}
 

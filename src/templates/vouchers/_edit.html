@@ -1,10 +1,43 @@
 {% extends '_layouts/cp' %}
 {% set selectedSubnavItem = 'vouchers' %}
 
-{% set crumbs = [
+{% if selectableSites is not defined %}
+    {% if siteIds is defined %}
+        {% set selectableSites = craft.app.sites.getEditableSites()|filter(s => s.id in siteIds) %}
+    {% else %}
+        {% set selectableSites = craft.app.sites.getEditableSites() %}
+    {% endif %}
+{% endif %}
+
+{% if selectedSite is not defined %}
+    {% if selectedSiteId is defined %}
+        {% set selectedSite = craft.app.sites.getSiteById(selectedSiteId) %}
+    {% elseif requestedSite and requestedSite in selectableSites %}
+        {% set selectedSite = requestedSite %}
+    {% else %}
+        {% set selectedSite = selectableSites|length ? selectableSites|first : craft.app.sites.getPrimarySite() %}
+    {% endif %}
+{% endif %}
+
+{% if craft.app.getIsMultiSite() %}
+    {% set crumbs = [{
+        id: 'site-crumb',
+        icon: 'world',
+        iconAltText: 'Site'|t('app'),
+        label: selectedSite.name|t('site'),
+        menu: {
+            items: giftVoucherSiteMenu(siteMenuItems(selectableSites, selectedSite), enabledSiteIds, url("gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}")),
+            label: 'Select site'|t('app')
+        }
+    }] %}
+{% else %}
+    {% set crumbs = [] %}
+{% endif %}
+
+{% set crumbs = crumbs|merge([
 	{ label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
 	{ label: voucherType.name | t('gift-voucher'), url: url('gift-voucher/vouchers/' ~ voucherType.handle) },
-] %}
+]) %}
 
 {% set fullPageForm = true %}
 {% set saveShortcutRedirect = continueEditingUrl %}
@@ -36,31 +69,6 @@
 {% endblock %}
 
 {% block contextMenu %}
-    {% if craft.app.getIsMultiSite() %}
-        <div class="btn menubtn sitemenubtn" data-icon="world">{{ voucher.site.name | t('site') }}</div>
-        <div class="menu">
-            <ul class="padded">
-                {% for siteId in siteIds %}
-                    {% set site = craft.app.sites.getSiteById(siteId) %}
-                    {% set status = siteId in enabledSiteIds ? 'enabled' : 'disabled' %}
-
-                    <li>
-                        {% if siteId == voucher.siteId %}
-                            <a class="sel" data-site-id="{{ siteId }}">
-                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
-                            </a>
-                        {% else %}
-                            {% set url = url("gift-voucher/vouchers/#{voucherTypeHandle}/#{craft.app.request.getSegment(4)}/#{site.handle}") %}
-
-                            <a href="{{ url }}" data-site-id="{{ siteId }}">
-                                <div class="status {{ status }}"></div>{{ site.name | t('site') }}
-                            </a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
 {% endblock %}
 
 {% block actionButton %}
