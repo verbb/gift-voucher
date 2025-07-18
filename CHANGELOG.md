@@ -62,6 +62,15 @@
 - Now requires Craft `5.0.0+`.
 - Now requires Craft Commerce `5.0.0+`.
 
+## 3.0.18 - 2025-07-18
+
+### Added
+- Add `includeShipping` plugin setting to include or exclude shipping costs for voucher redemption.
+
+### Changed
+- Update English translations.
+- Update voucher shipping handling to support line item shipping rates.
+
 ## 3.0.17 - 2025-05-02
 
 ### Fixed
@@ -371,7 +380,7 @@
 - Fix `EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT` event not actually doing much.
 - Prevent code field layout ID from being creating multiple times when saving plugin settings.
 
-## 2.5.1 - 2020-09-18 [CRITICAL]
+## 2.5.1 - 2020-09-18
 
 ### Fixed
 - Fix a potential security vulnerability where the last-created voucher could be redeemed by any user.
@@ -414,6 +423,7 @@
 - Return cart errors for ajax-applying of voucher codes.
 
 ## 2.4.0 - 2020-06-18
+
 > {warning} Please note a breaking change in removing `fieldsPath`. If you use this setting to add custom field content to your voucher codes when adding to the cart, you will need to change this. Please see the docs - https://verbb.io/craft-plugins/gift-voucher/docs/template-guides/single-voucher#line-item-options
 
 ### Changed
