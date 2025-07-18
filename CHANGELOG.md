@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.0.8 - 2025-07-18
+
+### Added
+- Add `includeShipping` plugin setting to include or exclude shipping costs for voucher redemption.
+
+### Changed
+- Update English translations.
+- Update voucher shipping handling to support line item shipping rates.
+
+### Fixed
+- Fix an error when downloading PDF vouchers.
+- Fix an error for shipping/tax categories.
+
 ## 4.0.7 - 2025-05-02
 
 ### Fixed
