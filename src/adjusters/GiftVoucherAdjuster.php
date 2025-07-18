@@ -43,7 +43,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         if ($settings->includeShipping) {
             $this->_orderTotal = $order->getTotalPrice();
         } else {
-            $this->_orderTotal = $order->getItemSubtotal();
+            $this->_orderTotal = $this->_getItemTotalWithoutShipping($order);
         }
 
         // Get code by session
@@ -141,5 +141,18 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         $this->_orderTotal += $adjustment->amount;
 
         return $adjustment;
+    }
+
+    private function _getItemTotalWithoutShipping(Order $order): float
+    {
+        $itemTotal = $order->getItemTotal();
+        
+        foreach ($order->getAdjustments() as $adjustment) {
+            if ($adjustment->type === 'shipping' && $adjustment->lineItem) {
+                $itemTotal -= $adjustment->amount;
+            }
+        }
+
+        return $itemTotal;
     }
 }
