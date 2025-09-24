@@ -2,7 +2,7 @@
     "name": "verbb/gift-voucher",
     "description": "Sell and redeem digital gift vouchers for Craft Commerce.",
     "type": "craft-plugin",
-    "version": "4.0.9",
+    "version": "5.0.0-alpha.1",
     "keywords": [
         "craft",
         "cms",
@@ -25,10 +25,10 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "craftcms/cms": "^5.0.0",
-        "craftcms/commerce": "^5.0.0",
-        "verbb/base": "^3.0.0"
+        "php": "^8.4",
+        "craftcms/cms": "6.x-dev",
+        "craftcms/commerce": "6.x-dev",
+        "verbb/base": "dev-craft-6"
     },
     "autoload": {
         "psr-4": {
@@ -38,7 +38,9 @@
     "extra": {
         "name": "Gift Voucher",
         "handle": "gift-voucher",
-        "changelogUrl": "https://raw.githubusercontent.com/verbb/gift-voucher/craft-5/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/verbb/gift-voucher/craft-6/CHANGELOG.md",
         "class": "verbb\\giftvoucher\\GiftVoucher"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

@@ -14,7 +14,7 @@ use Craft;
 use craft\base\MemoizableArray;
 use craft\db\Query;
 use craft\db\Table;
-use craft\events\ConfigEvent;
+use CraftCms\Cms\ProjectConfig\Events\ItemAdded;
 use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
 use craft\events\SiteEvent;
@@ -152,7 +152,7 @@ class VoucherTypes extends Component
         return true;
     }
 
-    public function handleChangedVoucherType(ConfigEvent $event): void
+    public function handleChangedVoucherType($event): void
     {
         $voucherTypeUid = $event->tokenMatches[0];
         $data = $event->newValue;
@@ -325,7 +325,7 @@ class VoucherTypes extends Component
         return true;
     }
 
-    public function handleDeletedVoucherType(ConfigEvent $event): void
+    public function handleDeletedVoucherType($event): void
     {
         $uid = $event->tokenMatches[0];
         $voucherTypeRecord = $this->_getVoucherTypeRecord($uid);

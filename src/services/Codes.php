@@ -11,7 +11,7 @@ use verbb\giftvoucher\models\Redemption;
 
 use Craft;
 use craft\base\Element;
-use craft\events\ConfigEvent;
+use CraftCms\Cms\ProjectConfig\Events\ItemAdded;
 use craft\helpers\Json;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
@@ -325,7 +325,7 @@ class Codes extends Component
         return true;
     }
 
-    public function handleChangedFieldLayout(ConfigEvent $event): void
+    public function handleChangedFieldLayout($event): void
     {
         $data = $event->newValue;
 
@@ -366,7 +366,7 @@ class Codes extends Component
         }
     }
 
-    public function handleDeletedFieldLayout(ConfigEvent $event): void
+    public function handleDeletedFieldLayout($event): void
     {
         Craft::$app->getFields()->deleteLayoutsByType(Code::class);
     }
