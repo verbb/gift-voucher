@@ -92,6 +92,11 @@
 - Now requires Craft `5.0.0+`.
 - Now requires Craft Commerce `5.0.0+`.
 
+## 3.0.19 - 2025-11-06
+
+### Fixed
+- Fix PDF handling for Craft Cloud.
+
 ## 3.0.18 - 2025-07-18
 
 ### Added
@@ -410,7 +415,7 @@
 - Fix `EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT` event not actually doing much.
 - Prevent code field layout ID from being creating multiple times when saving plugin settings.
 
-## 2.5.1 - 2020-09-18
+## 2.5.1 - 2020-09-18 [CRITICAL]
 
 ### Fixed
 - Fix a potential security vulnerability where the last-created voucher could be redeemed by any user.
