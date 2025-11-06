@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.10 - 2025-11-06
+
+### Fixed
+- Fix PDF handling for Craft Cloud.
+
 ## 4.0.9 - 2025-07-18
 
 ### Added
