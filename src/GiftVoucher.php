@@ -60,7 +60,7 @@ class GiftVoucher extends Plugin
 
     public bool $hasCpSection = true;
     public bool $hasCpSettings = true;
-    public string $schemaVersion = '3.0.1';
+    public string $schemaVersion = '3.0.2';
     public string $minVersionRequired = '2.4.1';
 
 

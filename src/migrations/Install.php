@@ -93,6 +93,7 @@ class Install extends Migration
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
             'skuFormat' => $this->string(),
+            'descriptionFormat' => $this->string(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),

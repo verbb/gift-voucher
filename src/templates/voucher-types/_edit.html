@@ -26,7 +26,7 @@
 		errors: voucherType.getErrors('name'),
 		autofocus: true,
 		required: true,
-		translatable: true
+		translatable: true,
 	}) }}
 
 	{{ forms.textField({
@@ -37,7 +37,7 @@
 		name: 'handle',
 		value: voucherType.handle,
 		errors: voucherType.getErrors('handle'),
-		required: true
+		required: true,
 	}) }}
 
 	{{ forms.textField({
@@ -47,8 +47,18 @@
 		class: 'ltr',
 		name: 'skuFormat',
 		value: voucherType.skuFormat,
-		errors: voucherType.getErrors('skuFormat')
+		errors: voucherType.getErrors('skuFormat'),
 	}) }}
+
+    {{ forms.textField({
+        label: 'Order Description Format' | t('gift-voucher'),
+        instructions: 'How this voucher will be described on a line item in an order. You can include tags that output properties, such as {ex1} or {ex2}' | t('gift-voucher', { ex1: '<code>{title}</code>', ex2: '<code>{myCustomField}</code>' }),
+        id: 'descriptionFormat',
+        class: 'code ltr',
+        name: 'descriptionFormat',
+        value: voucherType.descriptionFormat,
+        errors: voucherType.getErrors('descriptionFormat'),
+    }) }}
 
 	{% macro hasUrlsField(voucherType) %}
 		{% from '_includes/forms' import checkboxField %}
@@ -58,7 +68,7 @@
 			id: 'hasUrls',
 			name: 'hasUrls',
 			checked: voucherType.hasUrls,
-			toggle: 'url-settings'
+			toggle: 'url-settings',
 		}) }}
 	{% endmacro %}
 
@@ -72,7 +82,7 @@
 			class: 'ltr',
 			name: 'template',
 			value: voucherType.template,
-			errors: voucherType.getErrors('template')
+			errors: voucherType.getErrors('template'),
 		}) }}
 	{% endmacro %}
 
@@ -97,13 +107,13 @@
                 heading: site.name | t('site'),
                 uriFormat: {
                     value: siteSettings.uriFormat ?? null,
-                    hasErrors: siteSettings.hasErrors('uriFormat') ?? false
+                    hasErrors: siteSettings.hasErrors('uriFormat') ?? false,
                 },
                 template: {
                     value: siteSettings.template ?? null,
                     hasErrors: siteSettings.hasErrors('template') ?? false,
-                }
-            }
+                },
+            },
         }) %}
     {% endfor %}
 
@@ -116,20 +126,20 @@
             heading: {
                 type: 'heading',
                 heading: 'Site' | t('app'),
-                class: 'thin'
+                class: 'thin',
             },
             uriFormat: {
                 type: 'singleline',
                 heading: 'Voucher Type URI Format' | t('app'),
                 info: 'What voucher type URIs should look like for the site.' | t('app'),
                 placeholder: 'Leave blank if vouchers don’t have URLs' | t('app'),
-                code: true
+                code: true,
             },
             template: {
                 type: 'singleline',
                 heading: 'Template' | t('app'),
                 info: 'Which template should be loaded when an voucher’s URL is requested.' | t('app'),
-                code: true
+                code: true,
             },
         },
         rows: siteRows,

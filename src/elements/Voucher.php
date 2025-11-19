@@ -572,7 +572,16 @@ class Voucher extends Purchasable
 
     public function getDescription(): string
     {
-        return $this->title;
+        $description = $this->title;
+
+        if ($format = $this->getType()->descriptionFormat) {
+            if ($rendered = Craft::$app->getView()->renderObjectTemplate($format, $this)) {
+                $description = $rendered;
+            }
+        }
+
+        // If title is not set yet default to blank string
+        return (string)$description;
     }
 
     public function getTaxCategoryId(): int
