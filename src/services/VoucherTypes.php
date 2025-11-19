@@ -175,6 +175,7 @@ class VoucherTypes extends Component
             $voucherTypeRecord->name = $data['name'];
             $voucherTypeRecord->handle = $data['handle'];
             $voucherTypeRecord->skuFormat = $data['skuFormat'];
+            $voucherTypeRecord->descriptionFormat = $data['descriptionFormat'];
 
             if (!empty($data['voucherFieldLayouts']) && !empty($config = reset($data['voucherFieldLayouts']))) {
                 // Save the main field layout
@@ -475,6 +476,7 @@ class VoucherTypes extends Component
                 'voucherTypes.name',
                 'voucherTypes.handle',
                 'voucherTypes.skuFormat',
+                'voucherTypes.descriptionFormat',
                 'voucherTypes.uid',
             ])
             ->from(['{{%giftvoucher_vouchertypes}} voucherTypes']);

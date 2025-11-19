@@ -27,6 +27,7 @@ class VoucherType extends Model
     public ?string $name = null;
     public ?string $handle = null;
     public ?string $skuFormat = null;
+    public ?string $descriptionFormat = '{title}';
     public ?string $template = null;
     public ?int $fieldLayoutId = null;
     public ?string $uid = null;
@@ -47,7 +48,7 @@ class VoucherType extends Model
         return [
             [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true],
             [['name', 'handle'], 'required'],
-            [['name', 'handle'], 'string', 'max' => 255],
+            [['name', 'handle', 'descriptionFormat'], 'string', 'max' => 255],
             [['handle'], UniqueValidator::class, 'targetClass' => VoucherTypeRecord::class, 'targetAttribute' => ['handle'], 'message' => 'Not Unique'],
             [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
         ];
@@ -104,6 +105,7 @@ class VoucherType extends Model
             'name' => $this->name,
             'handle' => $this->handle,
             'skuFormat' => $this->skuFormat,
+            'descriptionFormat' => $this->descriptionFormat,
             'siteSettings' => [],
         ];
 
