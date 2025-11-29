@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.20 - 2025-11-29
+
+### Added
+- Add support for sorting Voucher Codes by “Original Amount”, “Current Amount”, “Expiry Date”, and “Date Updated”.
+- Add Description Format to Voucher Types to allow control over the line item description for a Voucher.
+
 ## 3.0.19 - 2025-11-06
 
 ### Fixed
