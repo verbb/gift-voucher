@@ -184,8 +184,12 @@ class Code extends Element
     protected static function defineSortOptions(): array
     {
         return [
-            'slug' => Craft::t('gift-voucher', 'Code'),
+            'codeKey' => Craft::t('gift-voucher', 'Code'),
+            'originalAmount' => Craft::t('gift-voucher', 'Original Amount'),
+            'currentAmount' => Craft::t('gift-voucher', 'Current Amount'),
+            'expiryDate' => Craft::t('gift-voucher', 'Expiry Date'),
             'dateCreated' => Craft::t('gift-voucher', 'Date Created'),
+            'dateUpdated' => Craft::t('gift-voucher', 'Date Updated'),
         ];
     }
 
