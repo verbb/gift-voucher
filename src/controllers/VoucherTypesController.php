@@ -65,7 +65,7 @@ class VoucherTypesController extends Controller
         $voucherType->name = $this->request->getBodyParam('name');
         $voucherType->handle = $this->request->getBodyParam('handle');
         $voucherType->skuFormat = $this->request->getBodyParam('skuFormat');
-        $voucherType->descriptionFormat = $request->getBodyParam('descriptionFormat');
+        $voucherType->descriptionFormat = $this->request->getBodyParam('descriptionFormat');
 
         // Site-specific settings
         $allSiteSettings = [];
