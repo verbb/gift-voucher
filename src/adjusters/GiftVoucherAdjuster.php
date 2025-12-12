@@ -43,7 +43,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         if ($settings->includeShipping) {
             $this->_orderTotal = $order->getTotalPrice();
         } else {
-            $this->_orderTotal = $order->getItemSubtotal();
+            $this->_orderTotal = $order->getItemSubtotal() + $order->getTotalTax();
         }
 
         // Get code by session
