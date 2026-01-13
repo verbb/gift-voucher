@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.12 - 2026-01-13
+
+### Changed
+- Update voucher handling for `includeShipping = false` to include non-inclusive tax.
+
+### Fixed
+- Fix an error when saving voucher types.
+
 ## 4.0.11 - 2025-11-29
 
 ### Added
