@@ -103,6 +103,11 @@
 - Now requires Craft `5.0.0+`.
 - Now requires Craft Commerce `5.0.0+`.
 
+## 3.0.21 - 2026-01-13
+
+### Changed
+- Update voucher handling for `includeShipping = false` to include non-inclusive tax.
+
 ## 3.0.20 - 2025-11-29
 
 ### Added
