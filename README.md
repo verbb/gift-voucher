@@ -1,4 +1,4 @@
-<p align="center"><img src="https://verbb.imgix.net/plugins/gift-voucher/gift-voucher-icon.svg" width="100" height="100" alt="Gift Voucher icon"></p>
+<p align="center"><img src="https://assets.verbb.io/plugins/gift-voucher/gift-voucher-icon.svg" width="100" height="100" alt="Gift Voucher icon"></p>
 <h1 align="center">Gift Voucher for Craft CMS</h1>
 
 Gift Voucher is a Craft CMS plugin allowing your customers to purchase digital gift vouchers from your Craft Commerce store. Vouchers can be redeemed by other customers during checkout for a discount on their order. Supports intelligent redemptions, PDF generation, customer-entered amounts, and lots more!
