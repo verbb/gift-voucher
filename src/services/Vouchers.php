@@ -1,6 +1,7 @@
 <?php
 namespace verbb\giftvoucher\services;
 
+use craft\commerce\enums\LineItemType;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\elements\Voucher;
 
@@ -67,7 +68,7 @@ class Vouchers extends Component
             $hasVoucher = false;
 
             foreach ($order->lineItems as $lineItem) {
-                if (is_a($lineItem->purchasable, Voucher::class)) {
+                if ($lineItem->type === LineItemType::Purchasable && is_a($lineItem->purchasable, Voucher::class)) {
                     $hasVoucher = true;
 
                     break;
