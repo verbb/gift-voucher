@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.13 - 2026-04-29
+
+### Changed
+- Only test line items which are not custom line items when searching for a Voucher purchasable.
+
 ## 4.0.12 - 2026-01-13
 
 ### Changed
