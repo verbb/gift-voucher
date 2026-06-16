@@ -16,6 +16,12 @@ Returns any currently-applied vouchers. This occurs when a customer applies a vo
 ### `craft.giftVoucher.isVoucher(lineItem)`
 Returns whether a provided Line Item object is a gift voucher or not.
 
+### `craft.giftVoucher.isVoucherAdjustment(adjustment)`
+Returns whether a provided Order Adjustment object is a gift voucher discount.
+
+### `craft.giftVoucher.getVoucherCodeKey(adjustment)`
+Returns the voucher code key for a gift voucher adjustment, or `null` if the adjustment is not a gift voucher.
+
 ### `craft.giftVoucher.getPdfUrl(lineItem)`
 Returns a URL to the PDF for this gift voucher, for the provided Line Item object. This will only show vouchers for this line item.
 

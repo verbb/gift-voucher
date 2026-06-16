@@ -2,6 +2,7 @@
 namespace verbb\giftvoucher\variables;
 
 use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\elements\db\VoucherQuery;
@@ -13,6 +14,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
+use craft\commerce\models\OrderAdjustment;
 
 class GiftVoucherVariable
 {
@@ -71,9 +73,18 @@ class GiftVoucherVariable
         return false;
     }
 
-    public function isVoucherAdjustment($adjuster): bool
+    public function isVoucherAdjustment(OrderAdjustment $adjustment): bool
     {
-        return $adjuster->sourceSnapshot['codeKey'] ?? false;
+        return $adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE;
+    }
+
+    public function getVoucherCodeKey(OrderAdjustment $adjustment): ?string
+    {
+        if (!$this->isVoucherAdjustment($adjustment)) {
+            return null;
+        }
+
+        return $adjustment->sourceSnapshot['codeKey'] ?? null;
     }
 
     public function getPdfUrl(LineItem $lineItem): ?string
