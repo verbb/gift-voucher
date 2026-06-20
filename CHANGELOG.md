@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.14 - 2026-06-20
+
+### Fixed
+- Fix isVoucherAdjustment to check adjustment type and add getVoucherCodeKey Twig helper.
+
 ## 4.0.13 - 2026-04-29
 
 ### Changed
