@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.15 - 2026-06-27
+
+### Added
+- Add `dompdf/dompdf:^3.0` support for PHP 8.5 compatibility.
+
 ## 4.0.14 - 2026-06-20
 
 ### Fixed
