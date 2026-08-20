@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.22 - 2026-08-20
 
 ### Added
 - Add support for `dompdf/dompdf` v3.
