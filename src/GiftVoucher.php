@@ -352,6 +352,7 @@ class GiftVoucher extends Plugin
                 'gift-voucher/codes/bulk-generate' => 'gift-voucher/codes/bulk-generate',
 
                 'gift-voucher/settings' => 'gift-voucher/base/settings',
+                'gift-voucher/settings/<settingsNavItem:{handle}>' => 'gift-voucher/base/settings',
             ]);
         });
     }

@@ -1,55 +1,22 @@
-{% extends 'gift-voucher/_layouts' %}
+{% extends 'gift-voucher/_layouts/settings' %}
+
 {% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
 
 {% requireAdmin %}
 
-{% set crumbs = [
-    { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
-    { label: 'Settings' | t('app'), url: url('gift-voucher/settings') }
-] %}
-
-{% set navItems = {
-    'general': { title: 'General Settings' | t('gift-voucher') },
-    'emails': { title: 'Emails' | t('gift-voucher') },
-} %}
-
-{% set selectedTab = 'settings' %}
-{% set selectedItem = 'general' %}
+{% set selectedTab = selectedTab ?? craft.app.request.getSegment(3) %}
+{% set selectedTab = selectedTab ?: 'general' %}
 {% set fullPageForm = true %}
+{% set pageTabs = {
+    general: { title: 'General Settings' | t('gift-voucher'), url: url('gift-voucher/settings') },
+    emails: { title: 'Emails' | t('gift-voucher'), url: url('gift-voucher/settings/emails') },
+} %}
+{% set pageTitle = pageTabs[selectedTab].title ?? pageTabs[selectedTab].heading ?? null %}
+{% if not pageTitle %}{% exit 404 %}{% endif %}
+{% set pageAction = 'plugins/save-plugin-settings' %}
+{% set pageUrl = selectedTab == 'general' ? 'gift-voucher/settings' : 'gift-voucher/settings/' ~ selectedTab %}
 
-{% block sidebar %}
-    <nav class="gift-voucher-settings-tabs" data-vui-tabs>
-        <ul>
-            {% for id, item in navItems %}
-                {% if item.heading is defined %}
-                    <li class="heading"><span>{{ item.heading }}</span></li>
-                {% else %}
-                    <li>
-                        <a id="tab-{{ loop.index }}" href="#tab-{{ id }}" class="tab {% if id == selectedItem %}sel{% endif %}">
-                            {{ item.title }}
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </nav>
-{% endblock %}
-
-{% block blockContent %}
-
-<input type="hidden" name="action" value="plugins/save-plugin-settings">
-<input type="hidden" name="pluginHandle" value="gift-voucher">
-
-{% for id, item in navItems %}
-    {% if item.title is defined %}
-        <div id="tab-{{ id }}" {% if not loop.first %}class="hidden"{% endif %}>
-            <h2>{{ item.title }}</h2>
-
-            {% namespace 'settings' %}
-                {% include 'gift-voucher/settings/_panes/' ~ id ignore missing %}
-            {% endnamespace %}
-        </div>
-    {% endif %}
-{% endfor %}
-
+{% block settingsContent %}
+    {% include 'gift-voucher/settings/_panes/' ~ selectedTab ignore missing %}
 {% endblock %}

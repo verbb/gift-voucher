@@ -45,4 +45,15 @@ class Settings extends Model
 
         parent::__construct($config);
     }
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        $rules[] = [['expiry', 'codeKeyLength'], 'required'];
+        $rules[] = [['expiry', 'codeKeyLength'], 'integer'];
+
+        return $rules;
+    }
+
 }
+
