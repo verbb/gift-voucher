@@ -1,4 +1,4 @@
-# Displaying in your Cart
+# Displaying in Your Cart
 To show vouchers in your cart, you may want to treat them differently to other products.
 
 ```twig

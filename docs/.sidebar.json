@@ -12,10 +12,11 @@
         "title": "Feature Tour",
         "collapsable": false,
         "children": [
-            "feature-tour/vouchers",
             "feature-tour/voucher-types",
+            "feature-tour/vouchers",
             "feature-tour/voucher-codes",
             "feature-tour/redemptions",
+            "feature-tour/multiple-vouchers",
             "feature-tour/custom-amounts",
             "feature-tour/pdf-vouchers",
             "feature-tour/shipping-categories",
@@ -26,7 +27,9 @@
         "title": "Template Guides",
         "collapsable": false,
         "children": [
-            "template-guides/available-variables",
+            "template-guides/finding-vouchers",
+            "template-guides/displaying-voucher-discounts",
+            "template-guides/displaying-voucher-downloads",
             "template-guides/vouchers-index",
             "template-guides/single-voucher",
             "template-guides/displaying-in-your-cart",

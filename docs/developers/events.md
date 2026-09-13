@@ -1,11 +1,18 @@
 # Events
 Events can be used to extend the functionality of Gift Voucher.
 
-## Voucher related events
 
-### The `beforeRenderPdf` event
+## Register a Listener
+
+Register listeners from a custom module or plugin that is bootstrapped for the requests where the event occurs. Put the `use` imports at the top of its PHP file and the `Event::on(...)` call inside its `init()` method, after `parent::init()`. Do not place the listener in a Twig template or modify this plugin's source to register it.
+
+Choose a hook whose timing matches your task. Cancellation depends on the particular event and emitter, as described for each hook below. Test a listener on the operation it affects, including any relevant queue or console path.
+
+## Voucher Related Events
+
+### The `beforeRenderPdf` Event
 Event handlers can override Gift Voucher’s PDF generation by setting the `pdf` property on the event to a custom-rendered PDF.
-Plugins can get notified before the PDF or a voucher is being rendered.
+The event that is triggered before the PDF or a voucher is being rendered.
 
 ```php
 use verbb\giftvoucher\events\PdfEvent;
@@ -17,8 +24,8 @@ Event::on(Pdf::class, Pdf::EVENT_BEFORE_RENDER_PDF, function(PdfEvent $e) {
 });
 ```
 
-### The `afterRenderPdf` event
-Plugins can get notified after the PDF or a voucher has been rendered.
+### The `afterRenderPdf` Event
+The event that is triggered after the PDF or a voucher has been rendered.
 
 ```php
 use verbb\giftvoucher\events\PdfEvent;
@@ -30,7 +37,7 @@ Event::on(Pdf::class, Pdf::EVENT_AFTER_RENDER_PDF, function(PdfEvent $e) {
 });
 ```
 
-### The `modifyRenderOptions` event
+### The `modifyRenderOptions` Event
 Plugins can get modify the DomPDF render options
 
 ```php
@@ -43,8 +50,8 @@ Event::on(Pdf::class, Pdf::EVENT_MODIFY_RENDER_OPTIONS, function(PdfRenderOption
 });
 ```
 
-### The `beforeSaveVoucher` event
-Plugins can get notified before a voucher is saved. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
+### The `beforeSaveVoucher` Event
+The event that is triggered before a voucher is saved. Event handlers can prevent the voucher from being saved by setting `$event->isValid` to false.
 
 ```php
 use craft\events\ModelEvent;
@@ -57,8 +64,8 @@ Event::on(Voucher::class, Voucher::EVENT_BEFORE_SAVE, function(ModelEvent $e) {
 });
 ```
 
-### The `afterSaveVoucher` event
-Plugins can get notified after a voucher has been saved
+### The `afterSaveVoucher` Event
+The event that is triggered after a voucher has been saved
 
 ```php
 use craft\events\ModelEvent;
@@ -70,8 +77,8 @@ Event::on(Voucher::class, Voucher::EVENT_AFTER_SAVE, function(ModelEvent $e) {
 });
 ```
 
-### The `beforeSaveVoucherType` event
-Plugins can get notified before a voucher type is being saved.
+### The `beforeSaveVoucherType` Event
+The event that is triggered before a voucher type is being saved.
 
 ```php
 use verbb\giftvoucher\events\VoucherTypeEvent;
@@ -83,8 +90,8 @@ Event::on(VoucherTypes::class, VoucherTypes::EVENT_BEFORE_SAVE_VOUCHERTYPE, func
 });
 ```
 
-### The `afterSaveVoucherType` event
-Plugins can get notified after a voucher type has been saved.
+### The `afterSaveVoucherType` Event
+The event that is triggered after a voucher type has been saved.
 
 ```php
 use verbb\giftvoucher\events\VoucherTypeEvent;
@@ -96,8 +103,8 @@ Event::on(VoucherTypes::class, VoucherTypes::EVENT_AFTER_SAVE_VOUCHERTYPE, funct
 });
 ```
 
-### The `beforeCaptureVoucherSnapshot` event
-Plugins can get notified before we capture a voucher's field data, and customize which fields are included.
+### The `beforeCaptureVoucherSnapshot` Event
+The event that is triggered before we capture a voucher's field data, and customize which fields are included.
 
 ```php
 use verbb\giftvoucher\elements\Voucher;
@@ -110,8 +117,8 @@ Event::on(Voucher::class, Voucher::EVENT_BEFORE_CAPTURE_VOUCHER_SNAPSHOT, functi
 });
 ```
 
-### The `afterCaptureVoucherSnapshot` event
-Plugins can get notified after we capture a voucher's field data, and customize, extend, or redact the data to be persisted.
+### The `afterCaptureVoucherSnapshot` Event
+The event that is triggered after we capture a voucher's field data, and customize, extend, or redact the data to be persisted.
 
 ```php
 use verbb\giftvoucher\elements\Voucher;
@@ -124,12 +131,13 @@ Event::on(Voucher::class, Voucher::EVENT_AFTER_CAPTURE_VOUCHER_SNAPSHOT, functio
 });
 ```
 
-### The `afterVoucherAdjustmentsCreated` event
-Plugins can get notified after the discount has been made on an order, and before it returns its adjustments. Event handlers can prevent the voucher from getting sent by setting `$event->isValid` to false.
+### The `afterVoucherAdjustmentsCreated` Event
+The event that is triggered after voucher adjustments have been calculated and before they are returned to Commerce. You can modify `$event->adjustments`. Set `$event->isValid` to `false` to return no voucher adjustments for this calculation; this does not cancel voucher delivery.
 
 ```php
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\events\VoucherAdjustmentsEvent;
+use yii\base\Event;
 
 Event::on(GiftVoucherAdjuster::class, GiftVoucherAdjuster::EVENT_AFTER_VOUCHER_ADJUSTMENTS_CREATED, function(VoucherAdjustmentsEvent $event) {
 
@@ -137,9 +145,9 @@ Event::on(GiftVoucherAdjuster::class, GiftVoucherAdjuster::EVENT_AFTER_VOUCHER_A
 ```
 
 
-## Code related events
+## Code Related Events
 
-### The `beforeGenerateCodeKey` event
+### The `beforeGenerateCodeKey` Event
 Plugins get a chance to provide a code key instead of relying on Gift Voucher to generate one.
 
 ```php
@@ -150,14 +158,14 @@ use yii\base\Event;
 
 Event::on(Code::class, Code::EVENT_GENERATE_CODE_KEY, function(GenerateCodeEvent $event) {
     do {
-        $codeKey = // custom key generation logic...
+        $codeKey = strtoupper(bin2hex(random_bytes(8)));
     } while (!GiftVoucher::$plugin->getCodes()->isCodeKeyUnique($codeKey));
 
     $event->codeKey = $codeKey;
 });
 ```
 
-### The `afterBulkGenerateCodesEvent` event
+### The `afterBulkGenerateCodesEvent` Event
 Plugins can get a list of all codes that were generated in a bulk operation.
 
 ```php
@@ -171,8 +179,8 @@ Event::on(CodesController::class, CodesController::EVENT_AFTER_BULK_GENERATE_COD
 });
 ```
 
-### The `beforeSaveCode` event
-Plugins can get notified before a code is saved. Event handlers can prevent the code from getting sent by setting `$event->isValid` to false.
+### The `beforeSaveCode` Event
+The event that is triggered before a code is saved. Event handlers can prevent the code from being saved by setting `$event->isValid` to false.
 
 ```php
 use craft\events\ModelEvent;
@@ -185,8 +193,8 @@ Event::on(Code::class, Code::EVENT_BEFORE_SAVE, function(ModelEvent $event) {
 });
 ```
 
-### The `afterSaveCode` event
-Plugins can get notified after a code has been saved
+### The `afterSaveCode` Event
+The event that is triggered after a code has been saved
 
 ```php
 use craft\events\ModelEvent;
@@ -199,10 +207,10 @@ Event::on(Code::class, Code::EVENT_AFTER_SAVE, function(ModelEvent $event) {
 ```
 
 
-## Redemption related events
+## Redemption Related Events
 
-### The `beforeSaveRedemption` event
-Plugins can get notified before a redemption is saved
+### The `beforeSaveRedemption` Event
+The event that is triggered before a redemption is saved
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
@@ -214,8 +222,8 @@ Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_SAVE_REDEMPTION, functio
 });
 ```
 
-### The `afterSaveRedemption` event
-Plugins can get notified after a redemption has been saved
+### The `afterSaveRedemption` Event
+The event that is triggered after a redemption has been saved
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
@@ -227,8 +235,8 @@ Event::on(Redemptions::class, Redemptions::EVENT_AFTER_SAVE_REDEMPTION, function
 });
 ```
 
-### The `beforeDeleteRedemption` event
-Plugins can get notified before a redemption is deleted
+### The `beforeDeleteRedemption` Event
+The event that is triggered before a redemption is deleted
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;
@@ -240,8 +248,8 @@ Event::on(Redemptions::class, Redemptions::EVENT_BEFORE_DELETE_REDEMPTION, funct
 });
 ```
 
-### The `afterDeleteRedemption` event
-Plugins can get notified after a redemption has been deleted
+### The `afterDeleteRedemption` Event
+The event that is triggered after a redemption has been deleted
 
 ```php
 use verbb\giftvoucher\events\RedemptionEvent;

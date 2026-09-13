@@ -1,4 +1,5 @@
 # Multiple Vouchers
-Gift Voucher supports redeeming multiple vouchers. Simply add as many voucher codes to you cart as you want. It also works great with coupon codes together.
 
-You might want to check out our [Template Guide →](docs:template-guides/redeeming-voucher-codes) to find out how you can implement multiple gift vouchers into your project.
+A customer can apply more than one voucher code to a cart. For example, two codes can contribute towards the same order when one code does not cover its eligible total. Voucher codes can also be used alongside a Commerce coupon code, subject to the coupon's own rules.
+
+Use the [voucher redemption form](docs:template-guides/redeeming-voucher-codes) to add each code. Before completing checkout, inspect the applied codes and the amount still due. After checkout, check the redemption recorded against each code rather than assuming the order used their full balances.
