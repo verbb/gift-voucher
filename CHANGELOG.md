@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.0.19 - 2026-09-23
 
 ### Changed
 - Render voucher SKU and description formats in Twig sandbox.
