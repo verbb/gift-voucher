@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Changed
+- Render voucher SKU and description formats in Twig sandbox.
+
 ### Fixed
 - Fix saving one settings page resetting settings on the other pages.
 

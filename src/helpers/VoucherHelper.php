@@ -85,7 +85,7 @@ class VoucherHelper
             $voucherType = $voucher->getType();
 
             if ($voucherType->skuFormat) {
-                $voucher->sku = Craft::$app->getView()->renderObjectTemplate($voucherType->skuFormat, $voucher);
+                $voucher->sku = GiftVoucher::$plugin->getTemplates()->renderSandboxedObjectTemplate($voucherType->skuFormat, $voucher);
             }
         }
 
