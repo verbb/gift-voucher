@@ -4,21 +4,20 @@ namespace verbb\giftvoucher\controllers;
 use verbb\giftvoucher\GiftVoucher;
 
 use Craft;
-use craft\web\Controller;
 
 use yii\web\Response;
 
-class BaseController extends Controller
+use verbb\base\controllers\SettingsController as BaseSettingsController;
+
+class SettingsController extends BaseSettingsController
 {
     // Public Methods
     // =========================================================================
 
-    public function actionSettings(): Response
+    public function actionIndex(): Response
     {
-        $settings = GiftVoucher::$plugin->getSettings();
-
         return $this->renderTemplate('gift-voucher/settings', [
-            'settings' => $settings,
+            'settings' => GiftVoucher::$plugin->getSettings(),
             'selectedTab' => Craft::$app->getRequest()->getSegment(3) ?: 'general',
         ]);
     }
