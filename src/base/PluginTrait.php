@@ -6,6 +6,7 @@ use verbb\giftvoucher\integrations\klaviyoconnect\KlaviyoConnect;
 use verbb\giftvoucher\services\Codes;
 use verbb\giftvoucher\services\Pdf;
 use verbb\giftvoucher\services\Redemptions;
+use verbb\giftvoucher\services\Templates;
 use verbb\giftvoucher\services\Vouchers;
 use verbb\giftvoucher\services\VoucherTypes;
 use verbb\giftvoucher\storage\CodeStorageInterface;
@@ -79,6 +80,11 @@ trait PluginTrait
         return $this->get('klaviyoConnect');
     }
 
+    public function getTemplates(): Templates
+    {
+        return $this->get('templates');
+    }
+
 
     // Private Methods
     // =========================================================================
@@ -88,6 +94,7 @@ trait PluginTrait
         $settings = $this->getSettings();
 
         $this->setComponents([
+            'templates' => Templates::class,
             'codes' => Codes::class,
             'klaviyoConnect' => KlaviyoConnect::class,
             'pdf' => Pdf::class,

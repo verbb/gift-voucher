@@ -515,12 +515,8 @@ class Voucher extends Purchasable
 
         // Generate SKU if empty
         if (empty($this->sku)) {
-            try {
-                $voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId);
-                $this->sku = Craft::$app->getView()->renderObjectTemplate($voucherType->skuFormat, $this);
-            } catch (\Exception) {
-                $this->sku = '';
-            }
+            $voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId);
+            $this->sku = GiftVoucher::$plugin->getTemplates()->renderSandboxedObjectTemplate((string)$voucherType->skuFormat, $this);
         }
 
         $voucherRecord->sku = $this->sku;
@@ -597,7 +593,7 @@ class Voucher extends Purchasable
         $description = $this->title;
 
         if ($format = $this->getType()->descriptionFormat) {
-            if ($rendered = Craft::$app->getView()->renderObjectTemplate($format, $this)) {
+            if ($rendered = GiftVoucher::$plugin->getTemplates()->renderSandboxedObjectTemplate($format, $this)) {
                 $description = $rendered;
             }
         }
