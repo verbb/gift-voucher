@@ -17,6 +17,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
@@ -478,16 +479,16 @@ class Code extends Element
         switch ($attribute) {
             case 'voucher':
             {
-                if ($this->getVoucher()) {
-                    return '<a href="' . $this->getVoucher()->getCpEditUrl() . '">' . $this->getVoucher() . '</a>';
+                if ($voucher = $this->getVoucher()) {
+                    return Html::a(Html::encode((string)$voucher), $voucher->getCpEditUrl());
                 }
 
                 return '-';
             }
             case 'voucherType':
             {
-                if ($this->getVoucherType()) {
-                    return '<a href="' . $this->getVoucherType()->getCpEditUrl() . '">' . $this->getVoucherType()->name . '</a>';
+                if ($voucherType = $this->getVoucherType()) {
+                    return Html::a(Html::encode($voucherType->name), $voucherType->getCpEditUrl());
                 }
 
                 return '';
@@ -496,7 +497,7 @@ class Code extends Element
             {
 
                 if ($order = $this->getOrder()) {
-                    return '<a href="' . $order->getCpEditUrl() . '">' . $order . '</a>';
+                    return Html::a(Html::encode((string)$order), $order->getCpEditUrl());
                 }
 
                 return '-';

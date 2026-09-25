@@ -17,6 +17,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
@@ -658,19 +659,19 @@ class Voucher extends Purchasable
         switch ($attribute) {
             case 'type':
             {
-                return ($voucherType ? Craft::t('site', $voucherType->name) : '');
+                return ($voucherType ? Html::encode(Craft::t('site', $voucherType->name)) : '');
             }
             case 'taxCategory':
             {
                 $taxCategory = $this->getTaxCategory();
 
-                return ($taxCategory ? Craft::t('site', $taxCategory->name) : '');
+                return ($taxCategory ? Html::encode(Craft::t('site', $taxCategory->name)) : '');
             }
             case 'shippingCategory':
             {
                 $shippingCategory = $this->getShippingCategory();
 
-                return ($shippingCategory ? Craft::t('site', $shippingCategory->name) : '');
+                return ($shippingCategory ? Html::encode(Craft::t('site', $shippingCategory->name)) : '');
             }
             case 'defaultPrice':
             {

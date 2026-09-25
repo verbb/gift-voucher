@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed an XSS vulnerability.
+
 ## 4.0.19 - 2026-09-23
 
 ### Changed
