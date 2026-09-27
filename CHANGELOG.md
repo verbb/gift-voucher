@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Changed
+- Route plugin settings through the plugin’s authorized settings controller.
+
 ### Fixed
 - Fixed an XSS vulnerability.
 
