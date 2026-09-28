@@ -6,6 +6,7 @@
 - Route plugin settings through the plugin’s authorized settings controller.
 
 ### Fixed
+- Fixed an information disclosure vulnerability affecting voucher code access.
 - Fixed an XSS vulnerability.
 
 ## 4.0.19 - 2026-09-23

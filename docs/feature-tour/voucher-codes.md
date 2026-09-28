@@ -3,6 +3,8 @@
 ## Overview
 Voucher codes are unique codes generated automatically after the purchase of a voucher. You can add these manually through the control panel at any time, with the code generating automatically for you.
 
+Control panel users need the **Manage codes** permission to view, list, or export voucher codes.
+
 The overview provides a list of all codes and their details listed below:
 
 - **Code** - The generated voucher code that is used when redeeming the voucher.

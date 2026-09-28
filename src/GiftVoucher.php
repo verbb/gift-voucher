@@ -20,6 +20,7 @@ use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
 use craft\console\Controller as ConsoleController;
 use craft\console\controllers\ResaveController;
+use craft\controllers\ElementIndexesController;
 use craft\events\DefineConsoleActionsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\PluginEvent;
@@ -47,6 +48,7 @@ use craft\commerce\services\Emails;
 use craft\commerce\services\OrderAdjustments;
 use craft\commerce\services\Purchasables;
 
+use yii\base\ActionEvent;
 use yii\base\Event;
 
 use fostercommerce\klaviyoconnect\services\Track;
@@ -91,6 +93,7 @@ class GiftVoucher extends Plugin
             $this->_registerCpRoutes();
             $this->_registerCpTwigExtensions();
             $this->_registerFieldLayoutListener();
+            $this->_registerElementIndexPermissions();
         }
 
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
@@ -237,6 +240,21 @@ class GiftVoucher extends Plugin
         Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES, function(RegisterComponentTypesEvent $event): void {
             $event->types[] = Code::class;
             $event->types[] = Voucher::class;
+        });
+    }
+
+    private function _registerElementIndexPermissions(): void
+    {
+        Event::on(ElementIndexesController::class, ElementIndexesController::EVENT_BEFORE_ACTION, function(ActionEvent $event): void {
+            if (Craft::$app->getUser()->getIsGuest()) {
+                return;
+            }
+
+            $elementType = $event->sender->request->getParam('elementType');
+
+            if (is_string($elementType) && is_a($elementType, Code::class, true)) {
+                $event->sender->requirePermission('giftVoucher-manageCodes');
+            }
         });
     }
 
