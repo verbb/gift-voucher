@@ -69,6 +69,7 @@ class Redemptions extends Component
         }
 
         $redemptionRecord = $this->_getRedemptionRecord($redemption->id);
+        $redemptionRecord->reservationId = $redemption->reservationId;
         $redemptionRecord->codeId = $redemption->codeId;
         $redemptionRecord->orderId = $redemption->orderId;
         $redemptionRecord->amount = $redemption->amount;
@@ -132,6 +133,7 @@ class Redemptions extends Component
         return (new Query())
             ->select([
                 'id',
+                'reservationId',
                 'codeId',
                 'orderId',
                 'amount',

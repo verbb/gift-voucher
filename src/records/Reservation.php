@@ -4,16 +4,17 @@ namespace verbb\giftvoucher\records;
 use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 
-use craft\commerce\records\Order;
+use craft\commerce\Plugin as Commerce;
+use craft\commerce\elements\Order;
 
-class Redemption extends ActiveRecord
+class Reservation extends ActiveRecord
 {
     // Public Methods
     // =========================================================================
 
     public static function tableName(): string
     {
-        return '{{%giftvoucher_redemptions}}';
+        return '{{%giftvoucher_reservations}}';
     }
 
     public function getCode(): ActiveQuery
@@ -21,13 +22,12 @@ class Redemption extends ActiveRecord
         return $this->hasOne(Code::class, ['id' => 'codeId']);
     }
 
-    public function getReservation(): ActiveQuery
+    public function getOrder(): ?Order
     {
-        return $this->hasOne(Reservation::class, ['id' => 'reservationId']);
-    }
+        if (!$this->orderId) {
+            return null;
+        }
 
-    public function getOrder(): ActiveQuery
-    {
-        return $this->hasOne(Order::class, ['id' => 'orderId']);
+        return Commerce::getInstance()->getOrders()->getOrderById($this->orderId);
     }
 }

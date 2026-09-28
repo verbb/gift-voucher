@@ -60,9 +60,26 @@ class Install extends Migration
         $this->archiveTableIfExists('{{%giftvoucher_redemptions}}');
         $this->createTable('{{%giftvoucher_redemptions}}', [
             'id' => $this->primaryKey(),
+            'reservationId' => $this->integer(),
             'codeId' => $this->integer(),
             'orderId' => $this->integer(),
             'amount' => $this->decimal(12, 2)->notNull(),
+            'dateCreated' => $this->dateTime()->notNull(),
+            'dateUpdated' => $this->dateTime()->notNull(),
+            'uid' => $this->uid(),
+        ]);
+
+        $this->archiveTableIfExists('{{%giftvoucher_reservations}}');
+        $this->createTable('{{%giftvoucher_reservations}}', [
+            'id' => $this->primaryKey(),
+            'codeId' => $this->integer()->notNull(),
+            'orderId' => $this->integer(),
+            'orderNumber' => $this->string()->notNull(),
+            'amount' => $this->decimal(12, 2)->notNull(),
+            'status' => $this->string()->notNull(),
+            'transactionHash' => $this->string(),
+            'message' => $this->text(),
+            'dateResolved' => $this->dateTime(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
@@ -122,6 +139,11 @@ class Install extends Migration
 
         $this->createIndex(null, '{{%giftvoucher_redemptions}}', 'codeId', false);
         $this->createIndex(null, '{{%giftvoucher_redemptions}}', 'orderId', false);
+        $this->createIndex(null, '{{%giftvoucher_redemptions}}', 'reservationId', true);
+
+        $this->createIndex(null, '{{%giftvoucher_reservations}}', ['codeId', 'orderNumber'], true);
+        $this->createIndex(null, '{{%giftvoucher_reservations}}', 'orderId', false);
+        $this->createIndex(null, '{{%giftvoucher_reservations}}', 'status', false);
 
         $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'sku', false);
         $this->createIndex(null, '{{%giftvoucher_vouchers}}', 'typeId', false);
@@ -144,6 +166,10 @@ class Install extends Migration
 
         $this->addForeignKey(null, '{{%giftvoucher_redemptions}}', 'codeId', '{{%giftvoucher_codes}}', ['id'], 'SET NULL');
         $this->addForeignKey(null, '{{%giftvoucher_redemptions}}', 'orderId', '{{%commerce_orders}}', ['id'], 'SET NULL');
+        $this->addForeignKey(null, '{{%giftvoucher_redemptions}}', 'reservationId', '{{%giftvoucher_reservations}}', ['id'], 'SET NULL');
+
+        $this->addForeignKey(null, '{{%giftvoucher_reservations}}', 'codeId', '{{%giftvoucher_codes}}', ['id'], 'CASCADE');
+        $this->addForeignKey(null, '{{%giftvoucher_reservations}}', 'orderId', '{{%commerce_orders}}', ['id'], 'SET NULL');
 
         $this->addForeignKey(null, '{{%giftvoucher_vouchers}}', ['id'], '{{%elements}}', ['id'], 'CASCADE');
         $this->addForeignKey(null, '{{%giftvoucher_vouchers}}', ['shippingCategoryId'], '{{%commerce_shippingcategories}}', ['id']);
@@ -160,6 +186,7 @@ class Install extends Migration
     {
         $this->dropTableIfExists('{{%giftvoucher_codes}}');
         $this->dropTableIfExists('{{%giftvoucher_redemptions}}');
+        $this->dropTableIfExists('{{%giftvoucher_reservations}}');
         $this->dropTableIfExists('{{%giftvoucher_vouchers}}');
         $this->dropTableIfExists('{{%giftvoucher_vouchertypes}}');
         $this->dropTableIfExists('{{%giftvoucher_vouchertypes_sites}}');
@@ -173,6 +200,10 @@ class Install extends Migration
 
         if ($this->db->tableExists('{{%giftvoucher_redemptions}}')) {
             MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_redemptions}}', $this);
+        }
+
+        if ($this->db->tableExists('{{%giftvoucher_reservations}}')) {
+            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_reservations}}', $this);
         }
 
         if ($this->db->tableExists('{{%giftvoucher_vouchers}}')) {

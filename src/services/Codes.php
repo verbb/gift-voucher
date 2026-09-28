@@ -2,12 +2,10 @@
 namespace verbb\giftvoucher\services;
 
 use verbb\giftvoucher\GiftVoucher;
-use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 use verbb\giftvoucher\events\MatchCodeEvent;
 use verbb\giftvoucher\events\PopulateCodeFromLineItemEvent;
-use verbb\giftvoucher\models\Redemption;
 
 use Craft;
 use craft\base\Element;
@@ -82,55 +80,9 @@ class Codes extends Component
                 }
             }
 
-            // Handle redemption of vouchers (when someone is using a code)
-            $giftVoucherCodes = GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($order);
-
-            if ($giftVoucherCodes && count($giftVoucherCodes) > 0) {
-                foreach ($order->getAdjustments() as $adjustment) {
-                    if ($adjustment->type === GiftVoucherAdjuster::ADJUSTMENT_TYPE) {
-                        $code = null;
-
-                        if (isset($adjustment->sourceSnapshot['codeKey'])) {
-                            $codeKey = $adjustment->sourceSnapshot['codeKey'];
-                            $code = Code::findOne(['codeKey' => $codeKey]);
-                        }
-
-                        if ($code) {
-                            $code->currentAmount += $adjustment->amount;
-                            Craft::$app->getElements()->saveElement($code, false);
-
-                            // Track code redemption
-                            $redemption = new Redemption();
-                            $redemption->codeId = $code->id;
-                            $redemption->orderId = $order->id;
-                            $redemption->amount = $adjustment->amount * -1;
-
-                            if (!GiftVoucher::$plugin->getRedemptions()->saveRedemption($redemption)) {
-                                $error = Craft::t('app', 'Unable to save redemption: “{errors}”.', [
-                                    'errors' => Json::encode($redemption->getErrors()),
-                                ]);
-
-                                GiftVoucher::error($error);
-                            }
-                        } else {
-                            $error = Craft::t('app', 'Unable to find matching code in adjustment snapshot: “{adjustment}”.', [
-                                'adjustment' => Json::encode($adjustment),
-                            ]);
-
-                            GiftVoucher::error($error);
-                        }
-                    }
-                }
-
-                // Delete the code
-                GiftVoucher::$plugin->getCodeStorage()->setCodes([], $order);
-            } else {
-                $error = Craft::t('app', 'No vouchers in code storage for order {id}', [
-                    'id' => $order->id,
-                ]);
-
-                GiftVoucher::info($error);
-            }
+            // Saved adjustments remain available when an off-site callback has no browser session.
+            GiftVoucher::$plugin->getReservations()->redeemOrder($order);
+            GiftVoucher::$plugin->getCodeStorage()->setCodes([], $order);
         } catch (Throwable $e) {
             $error = Craft::t('app', 'Unable to complete gift voucher order: “{message}” {file}:{line}', [
                 'message' => $e->getMessage(),
@@ -282,7 +234,7 @@ class Codes extends Component
         return $codeKey;
     }
 
-    public function matchCode($codeKey, &$error = ''): bool
+    public function matchCode($codeKey, &$error = '', ?Order $order = null): bool
     {
         $code = Code::findOne(['codeKey' => $codeKey]);
 
@@ -308,7 +260,7 @@ class Codes extends Component
         }
 
         // Check if voucher has an amount left
-        if ($code->currentAmount <= 0) {
+        if (GiftVoucher::$plugin->getReservations()->getAvailableAmount($code, $order) <= 0) {
             $error = Craft::t('gift-voucher', 'Voucher code has no amount left');
 
             return false;

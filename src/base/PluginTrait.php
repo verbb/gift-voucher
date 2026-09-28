@@ -7,6 +7,7 @@ use verbb\giftvoucher\services\Codes;
 use verbb\giftvoucher\services\OrderPermissions;
 use verbb\giftvoucher\services\Pdf;
 use verbb\giftvoucher\services\Redemptions;
+use verbb\giftvoucher\services\Reservations;
 use verbb\giftvoucher\services\Templates;
 use verbb\giftvoucher\services\Vouchers;
 use verbb\giftvoucher\services\VoucherTypes;
@@ -43,6 +44,7 @@ trait PluginTrait
                 'orderPermissions' => OrderPermissions::class,
                 'pdf' => Pdf::class,
                 'redemptions' => Redemptions::class,
+                'reservations' => Reservations::class,
                 'templates' => Templates::class,
                 'vouchers' => Vouchers::class,
                 'voucherTypes' => VoucherTypes::class,
@@ -72,6 +74,11 @@ trait PluginTrait
     public function getRedemptions(): Redemptions
     {
         return $this->get('redemptions');
+    }
+
+    public function getReservations(): Reservations
+    {
+        return $this->get('reservations');
     }
 
     public function getTemplates(): Templates

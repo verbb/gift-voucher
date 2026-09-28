@@ -6,6 +6,7 @@
 - Route plugin settings through the plugin’s authorized settings controller.
 
 ### Fixed
+- Fixed a high-severity stored-value accounting vulnerability.
 - Fixed a high-severity authorization vulnerability affecting Commerce orders.
 - Fixed an information disclosure vulnerability affecting voucher code access.
 - Fixed an XSS vulnerability.

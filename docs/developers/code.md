@@ -88,7 +88,7 @@ When the voucher is purchased initially, the amount is stored under this value. 
 
 **Type:** `float|null`
 
-The current amount of the code. Because vouchers can be redeemed multiple times, this amount can be used all at once, or over a few orders depending on the value. This value will be updated with each redemption.
+The unredeemed amount recorded for the code. Because vouchers can be redeemed multiple times, this amount can be used all at once or across several orders. Active checkout holds reduce the amount currently available without changing this value until the order completes.
 :::
 
 ::: reference
@@ -116,4 +116,28 @@ The url to edit this code in the control panel.
 **Returns:** `array`
 
 Shows a list of all redemptions for that code. This keeps track of what orders and products this code has been used against.
+:::
+
+::: reference
+### `getAvailableAmount()`
+
+**Returns:** `float`
+
+Returns the amount available to a new checkout after active holds are deducted from `currentAmount`.
+:::
+
+::: reference
+### `getHeldAmount()`
+
+**Returns:** `float`
+
+Returns the total value currently held by unresolved checkouts.
+:::
+
+::: reference
+### `getReservations()`
+
+**Returns:** `array`
+
+Returns the active checkout holds for the code. A hold remains active until its order completes, an explicit decline releases it or an administrator releases it after reviewing the payment state.
 :::

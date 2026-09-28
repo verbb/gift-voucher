@@ -371,6 +371,20 @@ class Code extends Element
         return $this->currentAmount;
     }
 
+    public function getAvailableAmount(): float
+    {
+        return GiftVoucher::$plugin->getReservations()->getAvailableAmount($this);
+    }
+
+    public function getHeldAmount(): float
+    {
+        if (!$this->id) {
+            return 0;
+        }
+
+        return GiftVoucher::$plugin->getReservations()->getHeldAmount($this->id);
+    }
+
     public function getFieldLayout(): ?FieldLayout
     {
         return Craft::$app->getFields()->getLayoutByType(self::class);
@@ -385,9 +399,46 @@ class Code extends Element
         return [];
     }
 
+    public function getReservations(): array
+    {
+        if ($this->id) {
+            return GiftVoucher::$plugin->getReservations()->getActiveReservationsByCodeId($this->id);
+        }
+
+        return [];
+    }
+
     public function getPdfUrl(mixed $option = null): string
     {
         return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option = null);
+    }
+
+    public function beforeSave(bool $isNew): bool
+    {
+        if (!parent::beforeSave($isNew)) {
+            return false;
+        }
+
+        if (!$isNew && $this->id && $this->currentAmount < $this->getHeldAmount()) {
+            $this->addError('currentAmount', Craft::t('gift-voucher', 'The current amount cannot be lower than the value held by active checkouts.'));
+            return false;
+        }
+
+        return true;
+    }
+
+    public function beforeDelete(): bool
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        if ($this->id && $this->getHeldAmount() > 0) {
+            $this->addError('currentAmount', Craft::t('gift-voucher', 'Release or complete active checkout holds before deleting this code.'));
+            return false;
+        }
+
+        return true;
     }
 
     public function afterSave(bool $isNew): void

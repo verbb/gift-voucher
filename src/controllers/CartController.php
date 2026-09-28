@@ -48,7 +48,7 @@ class CartController extends BaseFrontEndController
         $error = '';
 
         // Check to see if this is a Gift Voucher code
-        GiftVoucher::$plugin->getCodes()->matchCode($voucherCode, $error);
+        GiftVoucher::$plugin->getCodes()->matchCode($voucherCode, $error, $this->_cart);
 
         if ($error) {
             // Check to see if it's a Coupon code

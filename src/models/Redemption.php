@@ -19,6 +19,7 @@ class Redemption extends Model
     // =========================================================================
 
     public ?int $id = null;
+    public ?int $reservationId = null;
     public ?int $codeId = null;
     public ?int $orderId = null;
     public ?float $amount = null;

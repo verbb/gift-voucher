@@ -29,7 +29,10 @@
     {% set amountInstruction = 'Define an amount for the value of the voucher code.' | t('gift-voucher') %}
 {% else %}
     {% set amountLabel = 'Current Amount' | t %}
-    {% set amountInstruction = 'The current value of the voucher code, adjustable.' | t('gift-voucher') %}
+    {% set amountInstruction = 'The unredeemed value of the voucher code. {held} is held by active checkouts, leaving {available} available.' | t('gift-voucher', {
+        held: code.getHeldAmount() | commerceCurrency(craft.commerce.paymentCurrencies.getPrimaryPaymentCurrencyIso(), convert=true),
+        available: code.getAvailableAmount() | commerceCurrency(craft.commerce.paymentCurrencies.getPrimaryPaymentCurrencyIso(), convert=true),
+    }) %}
 
     {{ forms.textField({
         label: 'Original Amount' | t('gift-voucher'),
@@ -52,6 +55,63 @@
     required: true,
     errors: code.getErrors('currentAmount')
 }) }}
+
+{% set reservations = code.getReservations() %}
+
+{% if reservations %}
+    <hr>
+
+    <h2>{{ 'Checkout Holds' | t('gift-voucher') }}</h2>
+    <p>{{ 'These amounts are unavailable to other orders. Holds do not expire automatically. Retry reconciliation for a completed order, or release a hold only after confirming that its payment cannot still succeed.' | t('gift-voucher') }}</p>
+
+    <table class="data fullwidth collapsible">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Order' | t('gift-voucher') }}</th>
+                <th scope="col">{{ 'Status' | t('gift-voucher') }}</th>
+                <th scope="col">{{ 'Held' | t('gift-voucher') }}</th>
+                <th scope="col">{{ 'Transaction' | t('gift-voucher') }}</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+                {% set order = reservation.order %}
+                <tr>
+                    <td>
+                        {% if order %}
+                            {{ order.getLink() | raw }}
+                        {% else %}
+                            {{ reservation.orderNumber }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if reservation.status == 'review' %}
+                            <span class="status orange"></span>{{ 'Needs review' | t('gift-voucher') }}
+                        {% else %}
+                            <span class="status blue"></span>{{ 'Held' | t('gift-voucher') }}
+                        {% endif %}
+                        {% if reservation.message %}
+                            <div class="light">{{ reservation.message }}</div>
+                        {% endif %}
+                    </td>
+                    <td class="nowrap">
+                        {{ reservation.amount | commerceCurrency(order ? order.currency : craft.commerce.paymentCurrencies.getPrimaryPaymentCurrencyIso(), convert=true) }}
+                    </td>
+                    <td>{{ reservation.transactionHash ?: '—' }}</td>
+                    <td class="thin">
+                        <div class="btngroup">
+                            {% if order and order.isCompleted %}
+                                <a class="btn small formsubmit" data-action="gift-voucher/codes/retry-reservation" data-param="reservationId" data-value="{{ reservation.id }}" data-redirect="{{ code.getCpEditUrl() | hash }}">{{ 'Retry' | t('gift-voucher') }}</a>
+                            {% endif %}
+                            <a class="btn small formsubmit error" data-action="gift-voucher/codes/release-reservation" data-param="reservationId" data-value="{{ reservation.id }}" data-confirm="{{ 'Release this hold only after confirming that its payment cannot still succeed.' | t('gift-voucher') }}" data-redirect="{{ code.getCpEditUrl() | hash }}">{{ 'Release' | t('gift-voucher') }}</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
 
 {% if code.getRedemptions() %}
     <hr>

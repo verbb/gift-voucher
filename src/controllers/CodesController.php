@@ -13,6 +13,7 @@ use craft\helpers\UrlHelper;
 use craft\web\Controller;
 
 use yii\base\Exception;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 class CodesController extends Controller
@@ -183,6 +184,39 @@ class CodesController extends Controller
         Craft::$app->getUrlManager()->setRouteParams(['code' => $code]);
 
         return null;
+    }
+
+    public function actionReleaseReservation(): ?Response
+    {
+        $this->requirePostRequest();
+
+        $reservationId = $this->request->getRequiredBodyParam('reservationId');
+
+        if (!GiftVoucher::$plugin->getReservations()->releaseReservation((int)$reservationId, 'Released manually from the control panel.')) {
+            throw new BadRequestHttpException('This gift voucher hold is no longer active.');
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Gift voucher hold released.'));
+
+        return $this->redirectToPostedUrl();
+    }
+
+    public function actionRetryReservation(): ?Response
+    {
+        $this->requirePostRequest();
+
+        $reservationId = (int)$this->request->getRequiredBodyParam('reservationId');
+        $reservation = GiftVoucher::$plugin->getReservations()->getActiveReservationById($reservationId);
+        $order = $reservation?->order;
+
+        if (!$reservation || !$order || !$order->isCompleted) {
+            throw new BadRequestHttpException('Only a completed order with an active gift voucher hold can be reconciled.');
+        }
+
+        GiftVoucher::$plugin->getReservations()->redeemOrder($order);
+        Craft::$app->getSession()->setNotice(Craft::t('gift-voucher', 'Gift voucher redemption reconciled.'));
+
+        return $this->redirectToPostedUrl();
     }
 
     public function actionBulkGenerate(): Response

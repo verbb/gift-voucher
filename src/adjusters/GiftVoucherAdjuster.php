@@ -46,7 +46,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
             $this->_orderTotal = $this->_getItemTotalWithoutShipping($order);
         }
 
-        // Get code by session
+        // Code storage controls the cart UI; durable reservations protect the value once payment starts.
         $giftVoucherCodes = GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($order);
 
         if (!$giftVoucherCodes || count($giftVoucherCodes) == 0) {
@@ -120,8 +120,10 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
             'code' => $voucherCode->codeKey,
         ]);
 
-        // Check if there is an amount left
-        if ($voucherCode->currentAmount <= 0) {
+        $availableAmount = GiftVoucher::$plugin->getReservations()->getAvailableAmount($voucherCode, $order);
+
+        // Include this order's own hold so a safe payment retry keeps the same discount.
+        if ($availableAmount <= 0) {
             return false;
         }
 
@@ -132,10 +134,10 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         }
 
         // Make sure we don't go negative - also taking into account multiple vouchers on one order
-        if ($this->_orderTotal < $voucherCode->currentAmount) {
+        if ($this->_orderTotal < $availableAmount) {
             $adjustment->amount = $this->_orderTotal * -1;
         } else {
-            $adjustment->amount = (float)$voucherCode->currentAmount * -1;
+            $adjustment->amount = $availableAmount * -1;
         }
 
         $this->_orderTotal += $adjustment->amount;
