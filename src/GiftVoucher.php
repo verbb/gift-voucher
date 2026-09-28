@@ -29,6 +29,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\fieldlayoutelements\TitleField;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\services\Elements;
@@ -210,11 +211,11 @@ class GiftVoucher extends Plugin
 
                 if ($orderId) {
                     $order = Order::find()->id($orderId)->one();
+                    $user = Craft::$app->getUser()->getIdentity();
 
-                    // Only show for incompleted orders
-                    if (!$order->isCompleted) {
+                    if ($order && $user && $this->getOrderPermissions()->canManage($order, $user)) {
                         $event->sender->registerJs("(function() {
-                            new Craft.GiftVoucher.CpAddVoucher('" . $order->number . "');
+                            new Craft.GiftVoucher.CpAddVoucher(" . Json::encode($order->id) . ");
                         })();");
                     }
                 }

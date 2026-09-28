@@ -15,6 +15,7 @@ use craft\web\Controller;
 
 use yii\base\Exception;
 use yii\base\Model;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -260,8 +261,25 @@ class VouchersController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $orderId = $this->request->getParam('orderId');
+        $orderId = filter_var($this->request->getRequiredBodyParam('orderId'), FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+
+        if ($orderId === false) {
+            throw new BadRequestHttpException('Invalid order ID.');
+        }
+
         $order = Order::find()->id($orderId)->one();
+
+        if (!$order) {
+            throw new NotFoundHttpException('Order not found.');
+        }
+
+        $user = Craft::$app->getUser()->getIdentity();
+
+        if (!$user || !GiftVoucher::$plugin->getOrderPermissions()->canManage($order, $user)) {
+            throw new ForbiddenHttpException('You are not authorized to manage vouchers for this order.');
+        }
 
         $codes = GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($order);
 

@@ -15,10 +15,10 @@ if (typeof Craft.GiftVoucher === typeof undefined) {
 (function($) {
 
 Craft.GiftVoucher.CpAddVoucher = Garnish.Base.extend({
-    orderNumber: null,
+    orderId: null,
 
-    init: function(orderNumber) {
-        this.orderNumber = orderNumber;
+    init: function(orderId) {
+        this.orderId = orderId;
 
         // Find the settings menubtn, and add a new option to it
         var $menubtn = $('.menubtn[data-icon="settings"]').data('menubtn');
@@ -42,13 +42,16 @@ Craft.GiftVoucher.CpAddVoucher = Garnish.Base.extend({
 
         // Just action our option
         if ($option.data('action') == 'gift-vouchers') {
-            new Craft.GiftVoucher.GiftVouchersModal();
+            new Craft.GiftVoucher.GiftVouchersModal(this.orderId);
         }
     },
 });
 
 Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
-    init: function() {
+    orderId: null,
+
+    init: function(orderId) {
+        this.orderId = orderId;
         this.$form = $('<form class="modal fitted gift-voucher-modal" method="post" accept-charset="UTF-8"/>').appendTo(Garnish.$bod);
         this.$body = $('<div class="body"><div class="spinner big"></div></div>').appendTo(this.$form);
 
@@ -83,10 +86,7 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
     },
 
     getOrderId() {
-        // Fetch Order ID from URL
-        var pathArray = window.location.pathname.split('/');
-
-        return pathArray[pathArray.length - 1];
+        return this.orderId;
     },
 
     removeCode: function(e) {
@@ -99,7 +99,7 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
 
         this.$footerSpinner.removeClass('hidden');
 
-        Craft.sendActionRequest('POST', 'gift-voucher/cart/remove-code', { data })
+        Craft.sendActionRequest('POST', 'gift-voucher/order-vouchers/remove-code', { data })
             .then((response) => {
                 if (response.data.success) {
                     Craft.cp.displayNotice(Craft.t('gift-voucher', 'Voucher code removed.'));
@@ -121,7 +121,7 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
         var data = this.$form.serialize();
 
         // Save everything through the normal update-cart action, just like we were doing it on the front-end
-        Craft.sendActionRequest('POST', 'gift-voucher/cart/add-code', { data })
+        Craft.sendActionRequest('POST', 'gift-voucher/order-vouchers/add-code', { data })
             .then((response) => {
                 location.reload();
             })
@@ -134,16 +134,6 @@ Craft.GiftVoucher.GiftVouchersModal = Garnish.Modal.extend({
             })
             .finally(() => {
                 this.$footerSpinner.addClass('hidden');
-
-                if (response.data.success) {
-                    Craft.cp.displayNotice(Craft.t('gift-voucher', 'Voucher code applied.'));
-
-                    this.onFadeOut();
-                } else {
-                    Craft.cp.displayError(response.data.error);
-                    
-                    this.$footerSpinner.addClass('hidden');
-                }
             });
 
     },

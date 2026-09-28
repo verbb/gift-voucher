@@ -4,6 +4,7 @@ namespace verbb\giftvoucher\base;
 use verbb\giftvoucher\GiftVoucher;
 use verbb\giftvoucher\integrations\klaviyoconnect\KlaviyoConnect;
 use verbb\giftvoucher\services\Codes;
+use verbb\giftvoucher\services\OrderPermissions;
 use verbb\giftvoucher\services\Pdf;
 use verbb\giftvoucher\services\Redemptions;
 use verbb\giftvoucher\services\Templates;
@@ -39,6 +40,7 @@ trait PluginTrait
             'components' => [
                 'codes' => Codes::class,
                 'klaviyoConnect' => KlaviyoConnect::class,
+                'orderPermissions' => OrderPermissions::class,
                 'pdf' => Pdf::class,
                 'redemptions' => Redemptions::class,
                 'templates' => Templates::class,
@@ -60,6 +62,11 @@ trait PluginTrait
     public function getPdf(): Pdf
     {
         return $this->get('pdf');
+    }
+
+    public function getOrderPermissions(): OrderPermissions
+    {
+        return $this->get('orderPermissions');
     }
 
     public function getRedemptions(): Redemptions

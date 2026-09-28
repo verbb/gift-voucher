@@ -9,6 +9,7 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\controllers\BaseFrontEndController;
 
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class CartController extends BaseFrontEndController
@@ -16,7 +17,8 @@ class CartController extends BaseFrontEndController
     // Properties
     // =========================================================================
 
-    private Order $_cart;
+    protected Order $_cart;
+
     private string $_cartVariable;
 
 
@@ -27,18 +29,13 @@ class CartController extends BaseFrontEndController
     {
         parent::init();
 
-        $this->_cart = Commerce::getInstance()->getCarts()->getCart();
         $this->_cartVariable = Commerce::getInstance()->getSettings()->cartVariable;
-
-        // Allow passing in a specific Order
-        if ($orderId = $this->request->getParam('orderId')) {
-            $this->_cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
-        }
     }
 
     public function actionAddCode(): ?Response
     {
         $this->requirePostRequest();
+        $this->_cart = $this->resolveOrder();
 
         $voucherCode = $this->request->getParam('voucherCode');
 
@@ -88,11 +85,25 @@ class CartController extends BaseFrontEndController
     public function actionRemoveCode(): ?Response
     {
         $this->requirePostRequest();
+        $this->_cart = $this->resolveOrder();
 
         $voucherCode = $this->request->getParam('voucherCode');
         GiftVoucher::$plugin->getCodeStorage()->remove($voucherCode, $this->_cart);
 
         return $this->_returnCart();
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function resolveOrder(): Order
+    {
+        if ($this->request->getParam('orderId') !== null) {
+            throw new ForbiddenHttpException('An order cannot be selected for this request.');
+        }
+
+        return Commerce::getInstance()->getCarts()->getCart();
     }
 
 
