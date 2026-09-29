@@ -1,20 +1,24 @@
 <p align="center"><img src="https://assets.verbb.io/plugins/gift-voucher/gift-voucher-icon.svg" width="100" height="100" alt="Gift Voucher icon"></p>
 <h1 align="center">Gift Voucher for Craft CMS</h1>
 
-Gift Voucher is a Craft CMS plugin allowing your customers to purchase digital gift vouchers from your Craft Commerce store. Vouchers can be redeemed by other customers during checkout for a discount on their order. Supports intelligent redemptions, PDF generation, customer-entered amounts, and lots more!
+Gift Voucher is a Craft CMS plugin that adds flexible, trackable digital vouchers to Craft Commerce. Sell fixed or customer-selected values, deliver branded PDFs, and let recipients use every remaining part of their balance.
+
+Each voucher is a native Craft Commerce purchasable, fitting the store's existing cart, checkout, order, tax and shipping workflows.
 
 ## Features
-- Sell and redeem digital gift vouchers for your customers.
-- Create multiple voucher types with custom fields for ultimate flexibility.
-- Intelligent redemptions - only spend the required amount off your voucher code, or pay any remainder.
-- Optional expiration dates.
-- Set fixed or custom amounts for gift vouchers. Useful if you'd like your customers to set their own price.
-- Track redemptions to see how customers are spending voucher balances.
-- Manually create coupon codes. You can also override prices in case you need to give customers a little extra something.
-- Bulk-generate voucher codes for a selected voucher type and site.
-- Generate PDF gift vouchers - 100% control over your templates.
+
+- Group vouchers into reusable product types with their own fields and presentation.
+- Offer fixed values or let customers choose how much to give.
+- Apply only what an eligible order needs and retain the remaining balance.
+- See the related order, amount and date every time a code is used.
+- Let more than one voucher contribute to an order, alongside Commerce coupons where applicable.
+- Set expiry rules globally or adjust them for an individual code.
+- Create voucher codes in the control panel for customer service or special occasions.
+- Create a batch of codes for a selected voucher type and site.
+- Update balances, expiry dates and redemption state when support work calls for it.
+- Generate downloadable vouchers from project-owned Twig templates.
 - Automatically attach voucher PDFs to nominated Craft Commerce emails.
-- Template example to get you started.
+- Treat digital vouchers appropriately when a cart also contains physical products.
 
 ## Documentation
 Visit the [Gift Voucher Plugin page](https://verbb.io/craft-plugins/gift-voucher) for all documentation, guides, pricing and developer resources.
