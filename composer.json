@@ -1,6 +1,6 @@
 {
     "name": "verbb/gift-voucher",
-    "description": "Sell and redeem digital gift vouchers for Craft Commerce.",
+    "description": "A Craft CMS plugin for selling and redeeming digital gift vouchers through Craft Commerce.",
     "type": "craft-plugin",
     "version": "4.0.19",
     "keywords": [
