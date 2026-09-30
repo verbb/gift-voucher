@@ -3,6 +3,6 @@ Gift Voucher supports creating your vouchers as PDFs to be downloaded by the use
 
 Behind the scenes, we use [Dompdf](https://github.com/dompdf/dompdf/), the same PDF library that Craft Commerce uses.
 
-![Voucher Demo](/docs/screenshots/voucher-demo.png)
+![An example generated gift voucher PDF](../../screenshots/voucher-template.png)
 
-The above shows an example of a PDF voucher you can generate. Of course, the design is 100% up to you, but you might like to get started with our [PDF Template →](docs:template-guides/pdf-template).
+The screenshot above shows an example of a PDF voucher you can generate. Of course, the design is 100% up to you, but you might like to get started with our [PDF Template →](docs:template-guides/pdf-template).

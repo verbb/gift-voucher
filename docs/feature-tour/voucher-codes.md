@@ -7,6 +7,8 @@ Control panel users need the **Manage codes** permission to view, list, or expor
 
 The overview provides a list of all codes and their details listed below:
 
+![Gift Voucher codes in the control panel](../../screenshots/code-index.png)
+
 - **Code** - The generated voucher code that is used when redeeming the voucher.
 - **Voucher** - A link to the associated voucher product the code is generated for.
 - **Voucher Type** - A link to the associated voucher type the code is generated for.
@@ -18,6 +20,8 @@ The overview provides a list of all codes and their details listed below:
 
 ## Edit
 In the case that a voucher code has expired and was not used, you can change the **Expiry Date** to make it valid again. You can also adjust the **Amount** or set **Redeemed** back to no.
+
+![Editing a gift voucher code](../../screenshots/code-editor.png)
 
 If the code was added manually, you have to select an associated **Voucher** for it. This option is not available if the code was generated through a customer purchase.
 

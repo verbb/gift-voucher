@@ -20,7 +20,7 @@ Group vouchers into types — much like Commerce product types — with their ow
 
 A voucher contributes only what the order needs. If its balance is larger than the order, the remainder stays available for next time; if it falls short, the customer simply pays the difference.
 
-![A voucher code showing its original value, remaining balance and expiry date in Craft.](../screenshots/output/feature-tour/code-editor.png)
+![A voucher code showing its original value, remaining balance and expiry date in Craft.](../screenshots/code-editor.png)
 
 <!-- feature-section-end -->
 
@@ -36,7 +36,7 @@ A voucher contributes only what the order needs. If its balance is larger than t
 
 See active codes, their voucher type, current balance and expiry date from one searchable index. Open any code to make a support adjustment without losing sight of the value it started with.
 
-![A populated Gift Voucher code index with balances and expiry dates.](../screenshots/output/feature-tour/code-index.png)
+![A populated Gift Voucher code index with balances and expiry dates.](../screenshots/code-index.png)
 
 <!-- feature-section-end -->
 
@@ -45,6 +45,6 @@ See active codes, their voucher type, current balance and expiry date from one s
 
 Generate downloadable voucher PDFs from project-owned Twig templates and include the code, value and presentation your customers need. Attach them automatically to nominated Craft Commerce emails, or make them available for download after purchase. Starter templates and practical template guides provide a useful baseline without locking the finished design to the plugin.
 
-![An illustrative gift voucher template with a value and redemption code.](../screenshots/output/feature-tour/voucher-template.png)
+![An illustrative gift voucher template with a value and redemption code.](../screenshots/voucher-template.png)
 
 <!-- feature-section-end -->
