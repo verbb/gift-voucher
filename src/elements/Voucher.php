@@ -633,6 +633,10 @@ class Voucher extends Purchasable
 
     protected function route(): array|string|null
     {
+        if (!$this->previewing && $this->getStatus() !== self::STATUS_LIVE) {
+            return null;
+        }
+
         // Make sure the voucher type is set to have URLs for this site
         $siteId = Craft::$app->getSites()->currentSite->id;
         $voucherTypeSiteSettings = $this->getType()->getSiteSettings();
