@@ -19,5 +19,5 @@ class PopulateCodeFromLineItemEvent extends Event
     public Code $code;
     public array $customFields = [];
     public Voucher $voucher;
-    
+
 }

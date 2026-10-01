@@ -658,36 +658,36 @@ class Voucher extends Purchasable
 
         switch ($attribute) {
             case 'type':
-            {
-                return ($voucherType ? Html::encode(Craft::t('site', $voucherType->name)) : '');
-            }
+                {
+                    return ($voucherType ? Html::encode(Craft::t('site', $voucherType->name)) : '');
+                }
             case 'taxCategory':
-            {
-                $taxCategory = $this->getTaxCategory();
+                {
+                    $taxCategory = $this->getTaxCategory();
 
-                return ($taxCategory ? Html::encode(Craft::t('site', $taxCategory->name)) : '');
-            }
+                    return ($taxCategory ? Html::encode(Craft::t('site', $taxCategory->name)) : '');
+                }
             case 'shippingCategory':
-            {
-                $shippingCategory = $this->getShippingCategory();
+                {
+                    $shippingCategory = $this->getShippingCategory();
 
-                return ($shippingCategory ? Html::encode(Craft::t('site', $shippingCategory->name)) : '');
-            }
+                    return ($shippingCategory ? Html::encode(Craft::t('site', $shippingCategory->name)) : '');
+                }
             case 'defaultPrice':
-            {
-                $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+                {
+                    $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
-                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
-            }
+                    return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
+                }
             case 'availableForPurchase':
             case 'promotable':
-            {
-                return ($this->$attribute ? '<span data-icon="check" title="' . Craft::t('gift-voucher', 'Yes') . '"></span>' : '');
-            }
+                {
+                    return ($this->$attribute ? '<span data-icon="check" title="' . Craft::t('gift-voucher', 'Yes') . '"></span>' : '');
+                }
             default:
-            {
-                return parent::attributeHtml($attribute);
-            }
+                {
+                    return parent::attributeHtml($attribute);
+                }
         }
     }
 

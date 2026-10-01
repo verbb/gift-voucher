@@ -111,7 +111,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
         }
 
         //preparing model
-        $adjustment = new OrderAdjustment;
+        $adjustment = new OrderAdjustment();
         $adjustment->type = self::ADJUSTMENT_TYPE;
         $adjustment->name = $voucherCode->getVoucher()->title;
         $adjustment->orderId = $order->id;
@@ -129,6 +129,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
 
         // Check for expiry date
         $today = new DateTime();
+
         if ($voucherCode->expiryDate && $voucherCode->expiryDate->format('Ymd') < $today->format('Ymd')) {
             return false;
         }
@@ -148,7 +149,7 @@ class GiftVoucherAdjuster extends Component implements AdjusterInterface
     private function _getItemTotalWithoutShipping(Order $order): float
     {
         $itemTotal = $order->getItemTotal();
-        
+
         foreach ($order->getAdjustments() as $adjustment) {
             if ($adjustment->type === 'shipping' && $adjustment->lineItem) {
                 $itemTotal -= $adjustment->amount;

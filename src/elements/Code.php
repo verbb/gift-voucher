@@ -461,7 +461,7 @@ class Code extends Element
 
             // Generate a code key if not already set
             $codeRecord->codeKey = $this->codeKey ?? $this->generateCodeKey();
-            
+
             // set the codeKey to the Code as well to use it directly
             $this->codeKey = $codeRecord->codeKey;
         }
@@ -474,7 +474,7 @@ class Code extends Element
 
         // If not specifying an expiry, and we have a default expiry
         if ($isNew && !$codeRecord->expiryDate && $defaultExpiry) {
-            $newExpiry = DateTimeHelper::toDateTime(new DateTime);
+            $newExpiry = DateTimeHelper::toDateTime(new DateTime());
             $newExpiry->modify('+' . $defaultExpiry . ' month');
             $newExpiry->setTime(0, 0, 0);
 
@@ -529,45 +529,45 @@ class Code extends Element
     {
         switch ($attribute) {
             case 'voucher':
-            {
-                if ($voucher = $this->getVoucher()) {
-                    return Html::a(Html::encode((string)$voucher), $voucher->getCpEditUrl());
-                }
+                {
+                    if ($voucher = $this->getVoucher()) {
+                        return Html::a(Html::encode((string)$voucher), $voucher->getCpEditUrl());
+                    }
 
-                return '-';
-            }
+                    return '-';
+                }
             case 'voucherType':
-            {
-                if ($voucherType = $this->getVoucherType()) {
-                    return Html::a(Html::encode($voucherType->name), $voucherType->getCpEditUrl());
-                }
+                {
+                    if ($voucherType = $this->getVoucherType()) {
+                        return Html::a(Html::encode($voucherType->name), $voucherType->getCpEditUrl());
+                    }
 
-                return '';
-            }
+                    return '';
+                }
             case 'orderLink':
-            {
+                {
 
-                if ($order = $this->getOrder()) {
-                    return Html::a(Html::encode((string)$order), $order->getCpEditUrl());
+                    if ($order = $this->getOrder()) {
+                        return Html::a(Html::encode((string)$order), $order->getCpEditUrl());
+                    }
+
+                    return '-';
                 }
-
-                return '-';
-            }
             case 'currentAmount':
             case 'originalAmount':
-            {
-                $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+                {
+                    $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
-                return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
-            }
+                    return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
+                }
             case 'expiryDate':
-            {
-                return (!$this->expiryDate) ? '∞' : parent::attributeHtml($attribute);
-            }
+                {
+                    return (!$this->expiryDate) ? '∞' : parent::attributeHtml($attribute);
+                }
             default:
-            {
-                return parent::attributeHtml($attribute);
-            }
+                {
+                    return parent::attributeHtml($attribute);
+                }
         }
     }
 

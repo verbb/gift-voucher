@@ -63,7 +63,7 @@ class VoucherQuery extends ElementQuery
     {
         if ($value instanceof VoucherType) {
             $this->typeId = $value->id;
-        } else if ($value !== null) {
+        } elseif ($value !== null) {
             $this->typeId = (new Query())
                 ->select(['id'])
                 ->from(['{{%giftvoucher_vouchertypes}}'])

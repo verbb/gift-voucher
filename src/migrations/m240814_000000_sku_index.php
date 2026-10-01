@@ -20,4 +20,3 @@ class m240814_000000_sku_index extends Migration
         return false;
     }
 }
-

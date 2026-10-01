@@ -77,7 +77,7 @@ class VoucherTypes extends Component
     public function getEditableVoucherTypes(): array
     {
         $userSession = Craft::$app->getUser();
-        
+
         return ArrayHelper::where($this->getAllVoucherTypes(), function(VoucherType $voucherType) use ($userSession) {
             return $userSession->checkPermission("giftVoucher-manageVoucherType:$voucherType->uid");
         }, true, true, false);
@@ -188,7 +188,7 @@ class VoucherTypes extends Component
                 $fieldsService->saveLayout($layout);
 
                 $voucherTypeRecord->fieldLayoutId = $layout->id;
-            } else if ($voucherTypeRecord->fieldLayoutId) {
+            } elseif ($voucherTypeRecord->fieldLayoutId) {
                 // Delete the main field layout
                 $fieldsService->deleteLayoutById($voucherTypeRecord->fieldLayoutId);
                 $voucherTypeRecord->fieldLayoutId = null;
@@ -256,6 +256,7 @@ class VoucherTypes extends Component
 
                 foreach ($allOldSiteSettingsRecords as $siteId => $siteSettingsRecord) {
                     $siteUid = array_search($siteId, $siteIdMap, false);
+
                     if (!in_array($siteUid, $affectedSiteUids, false)) {
                         $siteSettingsRecord->delete();
                     }
@@ -281,7 +282,7 @@ class VoucherTypes extends Component
                             'elementId' => $voucherIds,
                             'siteId' => $sitesNowWithoutUrls,
                         ]);
-                    } else if (!empty($sitesWithNewUriFormats)) {
+                    } elseif (!empty($sitesWithNewUriFormats)) {
                         foreach ($voucherIds as $voucherId) {
                             App::maxPowerCaptain();
 

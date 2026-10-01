@@ -23,7 +23,7 @@ class CodesController extends Controller
 
     public const EVENT_AFTER_BULK_GENERATE_CODES = 'afterBulkGenerateCodesEvent';
 
-    
+
     // Public Methods
     // =========================================================================
 
@@ -288,7 +288,7 @@ class CodesController extends Controller
 
             $savedCodes[] = $code;
         }
-        
+
         $bulkGenerateCodesEvent = new BulkGenerateCodesEvent(['codes' => $savedCodes]);
 
         // Raising the 'afterBulkGenerateCodesEvent' event

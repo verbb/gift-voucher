@@ -268,6 +268,7 @@ class Codes extends Component
 
         // Check for expiry date
         $today = new DateTime();
+
         if ($code->expiryDate && $code->expiryDate->format('Ymd') < $today->format('Ymd')) {
             $error = Craft::t('gift-voucher', 'Voucher code is out of date');
 

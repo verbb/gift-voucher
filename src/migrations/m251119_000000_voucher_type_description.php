@@ -24,4 +24,3 @@ class m251119_000000_voucher_type_description extends Migration
         return false;
     }
 }
-

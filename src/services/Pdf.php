@@ -57,7 +57,7 @@ class Pdf extends Component
                 $currentSite = $order->getOrderSite();
             }
         }
-        
+
         return UrlHelper::actionUrl('gift-voucher/downloads/pdf', array_filter([
             'codeUid' => $code->uid ?? null,
             'option' => $option ?? null,

@@ -67,7 +67,7 @@ class CodeQuery extends ElementQuery
     {
         if ($value instanceof Voucher) {
             $this->voucherId = $value->id;
-        } else if ($value !== null) {
+        } elseif ($value !== null) {
             $this->voucherId = (new Query())
                 ->select(['id'])
                 ->from(['{{%giftvoucher_vouchers}}'])
@@ -84,7 +84,7 @@ class CodeQuery extends ElementQuery
     {
         if ($value instanceof VoucherType) {
             $this->typeId = $value->id;
-        } else if ($value !== null) {
+        } elseif ($value !== null) {
             $this->typeId = (new Query())
                 ->select(['id'])
                 ->from(['{{%giftvoucher_vouchertypes}}'])

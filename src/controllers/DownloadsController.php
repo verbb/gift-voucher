@@ -89,7 +89,7 @@ class DownloadsController extends Controller
         if (!$fileName) {
             if ($order) {
                 $fileName = 'Voucher-' . $order->number;
-            } else if ($codes) {
+            } elseif ($codes) {
                 $fileName = 'Voucher-' . $codes[0]->codeKey;
             }
         }

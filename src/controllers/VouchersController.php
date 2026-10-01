@@ -153,6 +153,7 @@ class VouchersController extends Controller
         $elementsService = Craft::$app->getElements();
 
         $transaction = Craft::$app->getDb()->beginTransaction();
+
         try {
             // If we're duplicating the voucher, swap $voucher with the duplicate
             if ($duplicate) {
@@ -325,7 +326,7 @@ class VouchersController extends Controller
     {
         if (!empty($variables['voucherTypeHandle'])) {
             $variables['voucherType'] = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeByHandle($variables['voucherTypeHandle']);
-        } else if (!empty($variables['voucherTypeId'])) {
+        } elseif (!empty($variables['voucherTypeId'])) {
             $variables['voucherType'] = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($variables['voucherTypeId']);
         }
 
@@ -359,6 +360,7 @@ class VouchersController extends Controller
             // Make sure they were requesting a valid site
             /** @var Site $site */
             $site = $variables['site'];
+
             if (!in_array($site->id, $variables['siteIds'], false)) {
                 throw new ForbiddenHttpException('User not permitted to edit content in this site');
             }
