@@ -9,6 +9,8 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Localization;
 use craft\web\Request;
 
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 class VoucherHelper
@@ -25,6 +27,16 @@ class VoucherHelper
         $voucherId = $request->getBodyParam('voucherId');
         $siteId = $request->getBodyParam('siteId');
 
+        if ($siteId !== null) {
+            $siteId = filter_var($siteId, FILTER_VALIDATE_INT, [
+                'options' => ['min_range' => 1],
+            ]);
+
+            if ($siteId === false) {
+                throw new BadRequestHttpException('Invalid site ID.');
+            }
+        }
+
         if ($voucherId) {
             $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId, $siteId);
 
@@ -35,6 +47,10 @@ class VoucherHelper
             $voucher = new Voucher();
             $voucher->typeId = $request->getBodyParam('typeId');
             $voucher->siteId = $siteId ?? $voucher->siteId;
+        }
+
+        if (!in_array($voucher->siteId, Craft::$app->getSites()->getEditableSiteIds(), true)) {
+            throw new ForbiddenHttpException('User not permitted to edit content in this site.');
         }
 
         return $voucher;

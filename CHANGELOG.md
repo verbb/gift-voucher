@@ -6,6 +6,7 @@
 - Fixed a high-severity server-side template injection vulnerability.
 - Fixed a high-severity information disclosure vulnerability.
 - Fixed a high-severity stored-value authorization vulnerability affecting order-based code storage.
+- Fixed a low-severity authorization vulnerability affecting site-specific voucher content.
 
 ## 4.0.20 - 2026-09-30
 
