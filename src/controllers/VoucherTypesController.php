@@ -19,9 +19,10 @@ class VoucherTypesController extends Controller
 
     public function init(): void
     {
-        $this->requirePermission('giftVoucher-manageVoucherTypes');
-
         parent::init();
+
+        $this->requireCpRequest();
+        $this->requireAdmin();
     }
 
     public function actionEdit(int $voucherTypeId = null, VoucherType $voucherType = null): Response

@@ -1,5 +1,7 @@
 {% extends 'gift-voucher/_layouts' %}
 
+{% requireAdmin false %}
+
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
 
 {% set title = 'Voucher Types' | t('gift-voucher') %}

@@ -147,7 +147,7 @@ class GiftVoucher extends Plugin
             ];
         }
 
-        if (Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherTypes')) {
+        if (Craft::$app->getUser()->getIsAdmin()) {
             $nav['subnav']['voucherTypes'] = [
                 'label' => Craft::t('gift-voucher', 'Voucher Types'),
                 'url' => 'gift-voucher/voucher-types',
@@ -327,7 +327,6 @@ class GiftVoucher extends Plugin
             $event->permissions[] = [
                 'heading' => Craft::t('gift-voucher', 'Gift Vouchers'),
                 'permissions' => [
-                    'giftVoucher-manageVoucherTypes' => ['label' => Craft::t('gift-voucher', 'Manage voucher types')],
                     'giftVoucher-manageVouchers' => ['label' => Craft::t('gift-voucher', 'Manage vouchers'), 'nested' => $voucherTypePermissions],
                     'giftVoucher-manageCodes' => ['label' => Craft::t('gift-voucher', 'Manage codes')],
                     'giftVoucher-bulkGenerateCodes' => ['label' => Craft::t('gift-voucher', 'Bulk generate codes')],
