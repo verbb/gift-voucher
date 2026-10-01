@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed a high-severity information disclosure vulnerability.
+- Fixed a high-severity stored-value authorization vulnerability affecting order-based code storage.
 
 ## 4.0.20 - 2026-09-30
 
