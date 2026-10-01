@@ -20,7 +20,11 @@ use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
 use craft\console\Controller as ConsoleController;
 use craft\console\controllers\ResaveController;
+use craft\controllers\AppController;
 use craft\controllers\ElementIndexesController;
+use craft\controllers\ElementSearchController;
+use craft\controllers\ElementSelectorModalsController;
+use craft\controllers\RelationalFieldsController;
 use craft\events\DefineConsoleActionsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\PluginEvent;
@@ -96,7 +100,7 @@ class GiftVoucher extends Plugin
             $this->_registerCpRoutes();
             $this->_registerCpTwigExtensions();
             $this->_registerFieldLayoutListener();
-            $this->_registerElementIndexPermissions();
+            $this->_registerCodePermissions();
         }
 
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
@@ -250,17 +254,45 @@ class GiftVoucher extends Plugin
         });
     }
 
-    private function _registerElementIndexPermissions(): void
+    private function _registerCodePermissions(): void
     {
-        Event::on(ElementIndexesController::class, ElementIndexesController::EVENT_BEFORE_ACTION, function(ActionEvent $event): void {
-            if (Craft::$app->getUser()->getIsGuest()) {
-                return;
-            }
-
+        $requireCodePermission = function(ActionEvent $event): void {
             $elementType = $event->sender->request->getParam('elementType');
 
             if (is_string($elementType) && is_a($elementType, Code::class, true)) {
+                $event->sender->requireCpRequest();
                 $event->sender->requirePermission('giftVoucher-manageCodes');
+            }
+        };
+
+        $controllerClasses = [
+            ElementIndexesController::class,
+            ElementSelectorModalsController::class,
+            RelationalFieldsController::class,
+        ];
+
+        // Element search was added after Craft 5.0, so keep the plugin's existing minimum intact.
+        if (class_exists(ElementSearchController::class)) {
+            $controllerClasses[] = ElementSearchController::class;
+        }
+
+        foreach ($controllerClasses as $controllerClass) {
+            Event::on($controllerClass, ElementIndexesController::EVENT_BEFORE_ACTION, $requireCodePermission);
+        }
+
+        Event::on(AppController::class, AppController::EVENT_BEFORE_ACTION, function(ActionEvent $event): void {
+            if ($event->action->id !== 'render-elements') {
+                return;
+            }
+
+            foreach ($event->sender->request->getBodyParam('elements', []) as $element) {
+                $elementType = $element['type'] ?? null;
+
+                if (is_string($elementType) && is_a($elementType, Code::class, true)) {
+                    $event->sender->requireCpRequest();
+                    $event->sender->requirePermission('giftVoucher-manageCodes');
+                    return;
+                }
             }
         });
     }

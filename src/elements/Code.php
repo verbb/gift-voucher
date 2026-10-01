@@ -237,6 +237,15 @@ class Code extends Element
         return Craft::t('gift-voucher', 'Code');
     }
 
+    public function getUiLabel(): string
+    {
+        if (Craft::$app->getRequest()->getIsCpRequest() && !Craft::$app->getUser()->checkPermission('giftVoucher-manageCodes')) {
+            return Craft::t('gift-voucher', 'Voucher code');
+        }
+
+        return parent::getUiLabel();
+    }
+
     public function canView(User $user): bool
     {
         if (parent::canView($user)) {

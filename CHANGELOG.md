@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed a high-severity information disclosure vulnerability.
+
 ## 4.0.20 - 2026-09-30
 
 ### Changed
