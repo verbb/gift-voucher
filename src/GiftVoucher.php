@@ -161,7 +161,10 @@ class GiftVoucher extends Plugin
             ];
         }
 
-        if (Craft::$app->getUser()->checkPermission('giftVoucher-bulkGenerateCodes')) {
+        if (
+            Craft::$app->getUser()->checkPermission('giftVoucher-manageCodes') &&
+            Craft::$app->getUser()->checkPermission('giftVoucher-bulkGenerateCodes')
+        ) {
             $nav['subnav']['bulk-generate'] = [
                 'label' => Craft::t('gift-voucher', 'Bulk Generate Codes'),
                 'url' => 'gift-voucher/codes/bulk-generate',

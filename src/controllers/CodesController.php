@@ -221,6 +221,8 @@ class CodesController extends Controller
 
     public function actionBulkGenerate(): Response
     {
+        $this->requirePermission('giftVoucher-bulkGenerateCodes');
+
         $variables = Craft::$app->getUrlManager()->getRouteParams();
         $variables['voucherElementType'] = Voucher::class;
 
@@ -229,6 +231,7 @@ class CodesController extends Controller
 
     public function actionBulkGenerateSubmit(): ?Response
     {
+        $this->requirePermission('giftVoucher-bulkGenerateCodes');
         $this->requirePostRequest();
 
         $voucherId = null;

@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed a medium-severity denial-of-service vulnerability.
+- Fixed a low-severity authorization vulnerability.
 
 ## 4.0.21 - 2026-10-02
 
