@@ -1,6 +1,6 @@
 {% extends parentLayout ?? '_layouts/cp' %}
 
-{% do view.registerAssetBundle('verbb\\giftvoucher\\assetbundles\\GiftVoucherAsset') %}
+{% do view.registerAssetBundle('verbb\\giftvoucher\\web\\assets\\cp\\GiftVoucherAsset') %}
 
 {% if title is not defined %}
     {% set title = 'Gift Voucher' | t('gift-voucher') %}

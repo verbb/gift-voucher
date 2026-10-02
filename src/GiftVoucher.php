@@ -2,7 +2,7 @@
 namespace verbb\giftvoucher;
 
 use verbb\giftvoucher\adjusters\GiftVoucherAdjuster;
-use verbb\giftvoucher\assetbundles\GiftVoucherAsset;
+use verbb\giftvoucher\web\assets\cp\GiftVoucherAsset;
 use verbb\giftvoucher\base\PluginTrait;
 use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
@@ -60,7 +60,7 @@ use yii\base\Event;
 
 use fostercommerce\klaviyoconnect\services\Track;
 use fostercommerce\klaviyoconnect\models\EventProperties;
-use verbb\giftvoucher\twig\CpExtensions;
+use verbb\giftvoucher\web\twig\CpExtensions;
 
 class GiftVoucher extends Plugin
 {

@@ -1,10 +1,10 @@
 <?php
-namespace verbb\giftvoucher\assetbundles;
+namespace verbb\giftvoucher\web\assets\cp;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-use verbb\base\assetbundles\CpAsset as VerbbCpAsset;
+use verbb\base\web\assets\cp\CpAsset as VerbbCpAsset;
 
 class GiftVoucherAsset extends AssetBundle
 {
@@ -13,7 +13,7 @@ class GiftVoucherAsset extends AssetBundle
 
     public function init(): void
     {
-        $this->sourcePath = "@verbb/giftvoucher/resources/dist";
+        $this->sourcePath = '@verbb/giftvoucher/web/assets/cp/dist';
 
         $this->depends = [
             VerbbCpAsset::class,
@@ -21,11 +21,11 @@ class GiftVoucherAsset extends AssetBundle
         ];
 
         $this->css = [
-            'css/gift-voucher.css',
+            'gift-voucher.css',
         ];
 
         $this->js = [
-            'js/gift-voucher.js',
+            'gift-voucher.js',
         ];
 
         parent::init();

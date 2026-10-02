@@ -5,8 +5,8 @@
 
 // ==========================================================================
 
-// @codekit-prepend '_voucher-index.js'    
-// @codekit-prepend '_code-index.js'    
+import './_voucher-index.js';
+import './_code-index.js';
 
 if (typeof Craft.GiftVoucher === typeof undefined) {
     Craft.GiftVoucher = {};
