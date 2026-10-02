@@ -2,6 +2,7 @@
 namespace verbb\giftvoucher\controllers;
 
 use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\helpers\Locale;
 
 use Craft;
@@ -13,7 +14,8 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\db\Table;
 use craft\commerce\models\LineItem;
 
-use yii\web\HttpException;
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class DownloadsController extends Controller
@@ -29,19 +31,37 @@ class DownloadsController extends Controller
 
     public function actionPdf(): Response|string
     {
-        $code = [];
-
         $codes = [];
         $order = null;
         $lineItem = null;
 
         $number = $this->request->getParam('number');
         $option = $this->request->getParam('option', '');
-        $lineItemUid = $this->request->getParam('lineItemUid', '');
-        $codeUid = $this->request->getParam('codeUid', '');
+        $lineItemUid = $this->request->getParam('lineItemUid');
+        $codeUid = $this->request->getParam('codeUid');
 
         $format = $this->request->getParam('format');
         $attach = $this->request->getParam('attach');
+
+        if (
+            ($number !== null && !is_string($number)) ||
+            ($lineItemUid !== null && !is_string($lineItemUid)) ||
+            ($codeUid !== null && !is_string($codeUid))
+        ) {
+            throw new BadRequestHttpException('Voucher PDF identifiers must be strings.');
+        }
+
+        $hasNumber = $number !== null && $number !== '';
+        $hasLineItemUid = $lineItemUid !== null && $lineItemUid !== '';
+        $hasCodeUid = $codeUid !== null && $codeUid !== '';
+
+        if ($hasNumber === $hasCodeUid) {
+            throw new BadRequestHttpException('Supply either an order number or a voucher code UID.');
+        }
+
+        if ($hasLineItemUid && !$hasNumber) {
+            throw new BadRequestHttpException('A line item UID must be accompanied by an order number.');
+        }
 
         $siteHandle = $this->request->getParam('site');
         $site = Craft::$app->getSites()->getPrimarySite();
@@ -52,21 +72,31 @@ class DownloadsController extends Controller
             }
         }
 
-        if ($number) {
+        if ($hasNumber) {
             $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
             if (!$order) {
-                throw new HttpException('No Order Found');
+                throw new NotFoundHttpException('Order not found.');
             }
         }
 
-        if ($lineItemUid) {
+        if ($hasLineItemUid) {
             $lineItem = $this->_getLineItemByUid($lineItemUid);
+
+            if (!$lineItem || $lineItem->orderId !== $order->id) {
+                throw new NotFoundHttpException('Line item not found.');
+            }
         }
 
-        if ($codeUid) {
-            $codes = [Craft::$app->getElements()->getElementByUid($codeUid)];
-            $order = $codes[0]->order ?? null;
+        if ($hasCodeUid) {
+            $code = Craft::$app->getElements()->getElementByUid($codeUid, Code::class);
+
+            if (!$code || $code->uid !== $codeUid) {
+                throw new NotFoundHttpException('Voucher code not found.');
+            }
+
+            $codes = [$code];
+            $order = $code->getOrder();
         }
 
         // Switch to use the correct site/language

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed a medium-severity denial-of-service vulnerability.
+
 ## 4.0.21 - 2026-10-02
 
 ### Changed
