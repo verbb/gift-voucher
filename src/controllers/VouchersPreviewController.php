@@ -10,6 +10,7 @@ use craft\base\Element;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -46,6 +47,10 @@ class VouchersPreviewController extends Controller
 
         $this->enforceVoucherPermissions($voucher);
 
+        if (!in_array($voucher->siteId, Craft::$app->getSites()->getEditableSiteIds(), true)) {
+            throw new ForbiddenHttpException('User not permitted to edit content in this site.');
+        }
+
         // Make sure the voucher actually can be viewed
         if (!GiftVoucher::$plugin->getVoucherTypes()->isVoucherTypeTemplateValid($voucher->getType(), $voucher->siteId)) {
             throw new HttpException(404);
@@ -53,7 +58,7 @@ class VouchersPreviewController extends Controller
 
         // Create the token and redirect to the voucher URL with the token in place
         $token = Craft::$app->getTokens()->createToken([
-            'gift-voucher/vouchers-preview/view-shared-voucher', ['voucherId' => $voucher->id, 'siteId' => $siteId],
+            'gift-voucher/vouchers-preview/view-shared-voucher', ['voucherId' => $voucher->id, 'siteId' => $voucher->siteId],
         ]);
 
         $url = UrlHelper::urlWithToken($voucher->getUrl(), $token);
@@ -61,11 +66,11 @@ class VouchersPreviewController extends Controller
         return $this->redirect($url);
     }
 
-    public function actionViewSharedVoucher($voucherId, $site = null): void
+    public function actionViewSharedVoucher($voucherId, $siteId = null): void
     {
         $this->requireToken();
 
-        $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId, $site);
+        $voucher = GiftVoucher::$plugin->getVouchers()->getVoucherById($voucherId, $siteId);
 
         if (!$voucher) {
             throw new HttpException(404);
