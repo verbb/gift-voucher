@@ -132,7 +132,7 @@ class Pdf extends Component
             }
 
             if ($codes) {
-                GiftVoucher::error('Voucher PDF render error. Code key: ' . $codes[0]->codeKey . '. ' . $e->getMessage());
+                GiftVoucher::error('Voucher PDF render error. Code ID: ' . ($codes[0]->id ?? 'unknown') . '. ' . $e->getMessage());
             }
 
             // Set the pdf html to the render error.

@@ -7,6 +7,7 @@
 - Fixed a low-severity authorization vulnerability.
 - Fixed a low-severity denial-of-service vulnerability affecting bulk code generation.
 - Fixed a low-severity authorization vulnerability affecting multisite voucher previews.
+- Fixed a low-severity information disclosure vulnerability affecting PDF error logging.
 
 ## 4.0.21 - 2026-10-02
 
