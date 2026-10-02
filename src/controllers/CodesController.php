@@ -22,6 +22,7 @@ class CodesController extends Controller
     // =========================================================================
 
     public const EVENT_AFTER_BULK_GENERATE_CODES = 'afterBulkGenerateCodesEvent';
+    public const MAX_BULK_GENERATE_CODES = 500;
 
 
     // Public Methods
@@ -225,6 +226,7 @@ class CodesController extends Controller
 
         $variables = Craft::$app->getUrlManager()->getRouteParams();
         $variables['voucherElementType'] = Voucher::class;
+        $variables['maxBulkGenerateCodes'] = self::MAX_BULK_GENERATE_CODES;
 
         return $this->renderTemplate('gift-voucher/codes/_bulk-generate', $variables);
     }
@@ -236,9 +238,27 @@ class CodesController extends Controller
 
         $voucherId = null;
         $errors = [];
-        $amount = (int)$this->request->getBodyParam('amount');
+        $amount = $this->request->getBodyParam('amount');
         $voucherAmount = (float)$this->request->getBodyParam('voucherAmount');
         $voucher = null;
+
+        if (is_string($amount)) {
+            $amount = filter_var($amount, FILTER_VALIDATE_FLOAT);
+        } elseif (!is_int($amount)) {
+            $amount = false;
+        }
+
+        if (
+            $amount === false ||
+            !is_finite((float)$amount) ||
+            floor((float)$amount) !== (float)$amount ||
+            $amount < 1 ||
+            $amount > self::MAX_BULK_GENERATE_CODES
+        ) {
+            $amount = false;
+        } else {
+            $amount = (int)$amount;
+        }
 
         $voucherIds = $this->request->getBodyParam('voucher');
 
@@ -249,8 +269,10 @@ class CodesController extends Controller
 
         $expiryDate = $this->request->getBodyParam('expiryDate') ? (DateTimeHelper::toDateTime($this->request->getBodyParam('expiryDate')) ?: null) : null;
 
-        if (!($amount > 0)) {
-            $errors['amount'][] = Craft::t('gift-voucher', 'You should at least generate one voucher code.');
+        if ($amount === false) {
+            $errors['amount'][] = Craft::t('gift-voucher', 'Generate between 1 and {max} voucher codes at a time.', [
+                'max' => self::MAX_BULK_GENERATE_CODES,
+            ]);
         }
 
         if (!($voucherAmount > 0)) {

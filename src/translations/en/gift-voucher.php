@@ -67,6 +67,7 @@ return [
   'Failed generating voucher codes.' => 'Failed generating voucher codes.',
   'General Settings' => 'General Settings',
   'Generate Codes' => 'Generate Codes',
+  'Generate between 1 and {max} voucher codes at a time.' => 'Generate between 1 and {max} voucher codes at a time.',
   'Get Started' => 'Get Started',
   'Gift Voucher' => 'Gift Voucher',
   'Gift Voucher Code' => 'Gift Voucher Code',

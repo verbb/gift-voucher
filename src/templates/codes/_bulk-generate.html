@@ -60,6 +60,10 @@
 			name: 'amount',
 			value: null,
 			errors: errors.amount is defined ? errors.amount : [],
+			type: 'number',
+			min: 1,
+			max: maxBulkGenerateCodes,
+			step: 1,
 			autofocus: true,
 			required: true,
 		}) }}
