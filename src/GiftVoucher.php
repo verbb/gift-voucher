@@ -260,11 +260,17 @@ class GiftVoucher extends Plugin
     private function _registerCodePermissions(): void
     {
         $requireCodePermission = function(ActionEvent $event): void {
-            $elementType = $event->sender->request->getParam('elementType');
+            $request = $event->sender->request;
 
-            if (is_string($elementType) && is_a($elementType, Code::class, true)) {
+            // Core controllers differ in parameter precedence, so neither source may hide a Code request.
+            foreach ([$request->getQueryParam('elementType'), $request->getBodyParam('elementType')] as $elementType) {
+                if (!is_string($elementType) || !is_a($elementType, Code::class, true)) {
+                    continue;
+                }
+
                 $event->sender->requireCpRequest();
                 $event->sender->requirePermission('giftVoucher-manageCodes');
+                return;
             }
         };
 

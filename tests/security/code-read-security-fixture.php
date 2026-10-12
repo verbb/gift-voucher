@@ -53,6 +53,7 @@ namespace craft\web {
     {
         public array $guardCalls = [];
         public mixed $request = null;
+        public bool $manageCodes = true;
 
         public function requireCpRequest(): void
         {
@@ -62,6 +63,10 @@ namespace craft\web {
         public function requirePermission(string $permission): void
         {
             $this->guardCalls[] = 'permission:' . $permission;
+
+            if (!$this->manageCodes) {
+                throw new \RuntimeException('Code access denied.');
+            }
         }
     }
 }
@@ -77,9 +82,11 @@ namespace craft\controllers {
         public const EVENT_BEFORE_ACTION = 'beforeAction';
     }
 
-    class ElementSearchController extends \craft\web\Controller
-    {
-        public const EVENT_BEFORE_ACTION = 'beforeAction';
+    if (!getenv('GIFT_VOUCHER_FIXTURE_WITHOUT_ELEMENT_SEARCH')) {
+        class ElementSearchController extends \craft\web\Controller
+        {
+            public const EVENT_BEFORE_ACTION = 'beforeAction';
+        }
     }
 
     class ElementSelectorModalsController extends \craft\web\Controller
@@ -143,13 +150,18 @@ namespace {
 
     class FixtureRequest
     {
-        public function __construct(private array $params = [], private bool $cpRequest = true)
+        public function __construct(private array $params = [], private bool $cpRequest = true, private array $queryParams = [])
         {
         }
 
         public function getParam(string $name): mixed
         {
-            return $this->params[$name] ?? null;
+            return $this->getQueryParam($name) ?? $this->getBodyParam($name);
+        }
+
+        public function getQueryParam(string $name, mixed $defaultValue = null): mixed
+        {
+            return $this->queryParams[$name] ?? $defaultValue;
         }
 
         public function getBodyParam(string $name, mixed $defaultValue = null): mixed
@@ -211,10 +223,17 @@ namespace {
 
     $genericElementControllers = [
         ElementIndexesController::class,
-        ElementSearchController::class,
         ElementSelectorModalsController::class,
         RelationalFieldsController::class,
     ];
+
+    if (class_exists(ElementSearchController::class)) {
+        array_unshift($genericElementControllers, ElementSearchController::class);
+    } else {
+        check('Older Craft versions do not register the missing search controller',
+            !isset(Event::$handlers[ElementSearchController::class])
+        );
+    }
 
     foreach ($genericElementControllers as $controllerClass) {
         $handler = Event::$handlers[$controllerClass][ElementIndexesController::EVENT_BEFORE_ACTION][0] ?? null;
@@ -239,6 +258,56 @@ namespace {
             'sender' => $controller,
         ]));
         check("{$controllerClass} leaves unrelated element types unchanged", $controller->guardCalls === []);
+
+        foreach ([Code::class, FixtureCode::class, '\\' . Code::class, strtolower(Code::class)] as $elementType) {
+            $requests = [
+                'body only' => [[], ['elementType' => $elementType]],
+                'query only' => [['elementType' => $elementType], []],
+                'query decoy' => [['elementType' => stdClass::class], ['elementType' => $elementType]],
+                'body decoy' => [['elementType' => $elementType], ['elementType' => stdClass::class]],
+                'empty query decoy' => [['elementType' => ''], ['elementType' => $elementType]],
+                'array query decoy' => [['elementType' => []], ['elementType' => $elementType]],
+            ];
+
+            foreach ($requests as $label => [$query, $body]) {
+                foreach ([false, true] as $manageCodes) {
+                    $controller = new $controllerClass();
+                    $controller->request = new FixtureRequest($body, queryParams: $query);
+                    $controller->manageCodes = $manageCodes;
+                    $denied = false;
+
+                    try {
+                        $handler(new ActionEvent([
+                            'action' => new FixtureAction('fixture'),
+                            'sender' => $controller,
+                        ]));
+                    } catch (RuntimeException $e) {
+                        if ($e->getMessage() !== 'Code access denied.') {
+                            throw $e;
+                        }
+
+                        $denied = true;
+                    }
+
+                    check("{$controllerClass}: {$label}, {$elementType}, permission=" . (int)$manageCodes,
+                        $denied === !$manageCodes &&
+                        $controller->guardCalls === ['cp', 'permission:giftVoucher-manageCodes']
+                    );
+                }
+            }
+        }
+
+        $controller = new $controllerClass();
+        $controller->manageCodes = false;
+        $controller->request = new FixtureRequest(
+            ['elementType' => stdClass::class],
+            queryParams: ['elementType' => stdClass::class],
+        );
+        $handler(new ActionEvent([
+            'action' => new FixtureAction('fixture'),
+            'sender' => $controller,
+        ]));
+        check("{$controllerClass} permits unrelated searches without code permission", $controller->guardCalls === []);
     }
 
     $appHandler = Event::$handlers[AppController::class][AppController::EVENT_BEFORE_ACTION][0] ?? null;

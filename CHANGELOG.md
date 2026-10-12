@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed a medium-severity authorization vulnerability.
+
 ## 4.0.23 - 2026-10-07
 
 ### Changed
