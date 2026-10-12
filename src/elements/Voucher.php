@@ -252,7 +252,7 @@ class Voucher extends Purchasable
             return false;
         }
 
-        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+        return $voucherType !== null && $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
     }
 
     public function canSave(User $user): bool
@@ -267,7 +267,7 @@ class Voucher extends Purchasable
             return false;
         }
 
-        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+        return $voucherType !== null && $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
     }
 
     public function canDuplicate(User $user): bool
@@ -282,7 +282,7 @@ class Voucher extends Purchasable
             return false;
         }
 
-        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+        return $voucherType !== null && $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
     }
 
     public function canDelete(User $user): bool
@@ -297,7 +297,7 @@ class Voucher extends Purchasable
             return false;
         }
 
-        return $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
+        return $voucherType !== null && $user->can('giftVoucher-manageVoucherType:' . $voucherType->uid);
     }
 
     public function canDeleteForSite(User $user): bool
@@ -412,11 +412,12 @@ class Voucher extends Purchasable
 
     public function getType()
     {
-        if ($this->_voucherType) {
+        // The type can change after Craft performs its initial permission check.
+        if ($this->_voucherType && $this->_voucherType->id === $this->typeId) {
             return $this->_voucherType;
         }
 
-        return $this->typeId ? $this->_voucherType = GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId) : null;
+        return $this->_voucherType = $this->typeId ? GiftVoucher::$plugin->getVoucherTypes()->getVoucherTypeById($this->typeId) : null;
     }
 
 
