@@ -1,4 +1,38 @@
 <?php
+namespace craft\base {
+    class Model
+    {
+        public function __construct(array $config = [])
+        {
+            foreach ($config as $name => $value) {
+                $this->$name = $value;
+            }
+        }
+    }
+}
+
+namespace yii\base {
+    class Component
+    {
+    }
+}
+
+namespace craft\commerce\enums {
+    enum LineItemType
+    {
+        case Purchasable;
+    }
+}
+
+namespace craft\commerce\events {
+    class MailEvent
+    {
+        public mixed $order;
+        public mixed $commerceEmail;
+        public mixed $craftEmail;
+    }
+}
+
 namespace craft\commerce {
     class Plugin
     {
@@ -69,6 +103,14 @@ namespace craft\db {
 }
 
 namespace craft\helpers {
+    class Assets
+    {
+        public static function tempFilePath(string $extension): string
+        {
+            return tempnam(sys_get_temp_dir(), 'gift-voucher-filename-');
+        }
+    }
+
     class Json
     {
         public static function decodeIfJson(mixed $value): mixed
@@ -114,10 +156,19 @@ namespace verbb\giftvoucher {
     class GiftVoucher
     {
         public static mixed $plugin = null;
+
+        public static function error(string $message): void
+        {
+            throw new \RuntimeException($message);
+        }
     }
 }
 
 namespace verbb\giftvoucher\elements {
+    class Voucher
+    {
+    }
+
     class Code
     {
         public function __construct(
@@ -147,15 +198,24 @@ namespace {
     class Craft
     {
         public static mixed $app = null;
+
+        public static function t(string $category, string $message, array $params = []): string
+        {
+            return $message;
+        }
     }
 
     require __DIR__ . '/../../src/controllers/DownloadsController.php';
+    require __DIR__ . '/../../src/models/Settings.php';
+    require __DIR__ . '/../../src/services/Vouchers.php';
 
     use craft\commerce\Plugin as Commerce;
     use craft\db\Query;
     use verbb\giftvoucher\controllers\DownloadsController;
     use verbb\giftvoucher\elements\Code;
     use verbb\giftvoucher\GiftVoucher;
+    use verbb\giftvoucher\models\Settings;
+    use verbb\giftvoucher\services\Vouchers;
     use yii\web\BadRequestHttpException;
     use yii\web\NotFoundHttpException;
     use yii\web\Response;
@@ -210,9 +270,12 @@ namespace {
 
     class FixtureView
     {
-        public function renderObjectTemplate(string $template, mixed $object, array $variables): string
+        public function renderObjectTemplate(string $template, mixed $object, array $variables = []): string
         {
-            return $variables['codeKey'] ?? ('Voucher-' . ($object->number ?? 'download'));
+            return strtr($template, [
+                '{number}' => $object->number ?? '',
+                '{codeKey}' => $variables['codeKey'] ?? '',
+            ]);
         }
     }
 
@@ -291,10 +354,14 @@ namespace {
     class FixturePdf
     {
         public int $renderCount = 0;
+        public array $codes = [];
+        public mixed $order = null;
 
         public function renderPdf(array $codes, mixed $order, mixed $lineItem, mixed $option): string
         {
             $this->renderCount++;
+            $this->codes = $codes;
+            $this->order = $order;
 
             return 'pdf-content';
         }
@@ -303,10 +370,12 @@ namespace {
     class FixtureGiftVoucher
     {
         public FixturePdf $pdf;
+        public Settings $settings;
 
         public function __construct()
         {
             $this->pdf = new FixturePdf();
+            $this->settings = new Settings();
         }
 
         public function getPdf(): FixturePdf
@@ -316,7 +385,7 @@ namespace {
 
         public function getSettings(): object
         {
-            return (object)['voucherCodesPdfFilenameFormat' => 'Voucher-{number}'];
+            return $this->settings;
         }
     }
 
@@ -412,4 +481,78 @@ namespace {
     check('Standalone voucher-code PDFs remain available', $response instanceof Response);
     check('Voucher-code lookups are restricted to Code elements', Craft::$app->elements->requestedType === Code::class);
     check('Standalone voucher-code PDFs render once', GiftVoucher::$plugin->pdf->renderCount === $renderCount + 1);
+
+    $code = new Code('code-uid', 'GIFT-CODE', $order);
+    Craft::$app->elements->element = $code;
+    $response = download(['codeUid' => 'code-uid']);
+    check('An order-backed code uses a credential-free default filename', $response->filename === 'Gift-Voucher.pdf');
+    check('Code downloads preserve the exact code and parent order for PDF templates',
+        GiftVoucher::$plugin->pdf->codes === [$code] && GiftVoucher::$plugin->pdf->order === $order
+    );
+
+    Query::$row['orderId'] = $order->id;
+
+    foreach ([
+        'default' => [(new Settings())->voucherCodesPdfFilenameFormat, 'Gift-Voucher.pdf'],
+        'empty' => ['', 'Gift-Voucher.pdf'],
+        'custom' => ['Custom-{number}', 'Custom-order-number.pdf'],
+        'explicit previous default' => ['Voucher-{number}', 'Voucher-order-number.pdf'],
+    ] as $label => [$format, $expectedFilename]) {
+        GiftVoucher::$plugin->settings->voucherCodesPdfFilenameFormat = $format;
+
+        foreach ([
+            'order' => ['number' => 'order-number'],
+            'line item' => ['number' => 'order-number', 'lineItemUid' => 'line-item-uid'],
+            'code' => ['codeUid' => 'code-uid'],
+        ] as $scope => $params) {
+            $response = download($params);
+            check("{$scope} download respects {$label} filename", $response->filename === $expectedFilename);
+        }
+    }
+
+    GiftVoucher::$plugin->settings->voucherCodesPdfFilenameFormat = 'Voucher-{codeKey}';
+    check('Custom formats retain the codeKey variable', download(['codeUid' => 'code-uid'])->filename === 'Voucher-GIFT-CODE.pdf');
+    GiftVoucher::$plugin->settings->voucherCodesPdfFilenameFormat = '';
+    Craft::$app->elements->element = new Code('manual-code-uid', 'MANUAL-CODE');
+    check('A standalone code uses a credential-free fallback', download(['codeUid' => 'manual-code-uid'])->filename === 'Gift-Voucher.pdf');
+    check('Plain output remains available', download(['codeUid' => 'manual-code-uid', 'format' => 'plain']) === 'pdf-content');
+    check('Inline downloads retain their response option', download(['codeUid' => 'manual-code-uid', 'attach' => true])->options['inline'] === true);
+
+    $order->lineItems = [(object)[
+        'type' => \craft\commerce\enums\LineItemType::Purchasable,
+        'purchasable' => new \verbb\giftvoucher\elements\Voucher(),
+    ]];
+    GiftVoucher::$plugin->settings->attachPdfToEmails = ['email-uid' => true];
+
+    foreach ([
+        'default' => [(new Settings())->voucherCodesPdfFilenameFormat, 'Gift-Voucher.pdf'],
+        'empty' => ['', 'Gift-Voucher.pdf'],
+        'custom' => ['Custom-{number}', 'Custom-order-number.pdf'],
+    ] as $label => [$format, $expectedFilename]) {
+        GiftVoucher::$plugin->settings->voucherCodesPdfFilenameFormat = $format;
+        $event = new \craft\commerce\events\MailEvent();
+        $event->order = $order;
+        $event->commerceEmail = (object)['uid' => 'email-uid'];
+        $event->craftEmail = new class {
+            public ?string $path = null;
+            public array $options = [];
+
+            public function attach(string $path, array $options): void
+            {
+                $this->path = $path;
+                $this->options = $options;
+            }
+        };
+        $vouchers = new Vouchers();
+
+        try {
+            $vouchers->onBeforeSendEmail($event);
+            check("Email attachment respects {$label} filename", ($event->craftEmail->options['fileName'] ?? null) === $expectedFilename);
+            check('Email attachment retains PDF content', file_get_contents($event->craftEmail->path) === 'pdf-content');
+        } finally {
+            $vouchers->onAfterSendEmail($event);
+        }
+
+        check('Email attachment temporary file is removed', !file_exists($event->craftEmail->path));
+    }
 }

@@ -103,11 +103,7 @@ class Vouchers extends Component
             $fileName = Craft::$app->getView()->renderObjectTemplate($filenameFormat, $order);
 
             if (!$fileName) {
-                if ($order) {
-                    $fileName = 'Voucher-' . $order->number;
-                } else {
-                    $fileName = 'Voucher';
-                }
+                $fileName = 'Gift-Voucher';
             }
 
             if (!$pdfPath) {

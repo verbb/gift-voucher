@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+### Changed
+- Changed the default and fallback voucher PDF filename to `Gift-Voucher.pdf`. Custom filename formats are unchanged.
+
 ### Fixed
 - Fixed a medium-severity authorization vulnerability.
+- Fixed a medium-severity information disclosure vulnerability.
 
 ## 4.0.23 - 2026-10-07
 

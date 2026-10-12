@@ -117,11 +117,7 @@ class DownloadsController extends Controller
         ]);
 
         if (!$fileName) {
-            if ($order) {
-                $fileName = 'Voucher-' . $order->number;
-            } elseif ($codes) {
-                $fileName = 'Voucher-' . $codes[0]->codeKey;
-            }
+            $fileName = 'Gift-Voucher';
         }
 
         $options = [

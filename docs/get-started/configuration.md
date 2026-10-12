@@ -55,9 +55,11 @@ Set the path to your PDF.
 ::: reference
 ### `voucherCodesPdfFilenameFormat`
 
-**Type:** `string` · **Default:** `'Voucher-{number}'`
+**Type:** `string` · **Default:** `'Gift-Voucher'`
 
-Set the default PDF filename format.
+Set the PDF filename format for downloads and email attachments, without the `.pdf` extension. If the format renders an empty filename, `Gift-Voucher` is used instead.
+
+Custom formats can use order data. Existing saved or configured formats continue to override the default, including `Voucher-{number}`. The full order number grants access to all gift vouchers purchased in that order, so avoid including it in filenames or PDFs intended for an individual recipient.
 :::
 
 
