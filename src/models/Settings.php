@@ -12,6 +12,7 @@ class Settings extends Model
 
     public int $expiry = 0;
     public int $codeKeyLength = 10;
+    public int $maxVoucherCodesPerOrder = 500;
     public string $codeKeyCharacters = 'ACDEFGHJKLMNPQRTUVWXYZ234679';
     public string $voucherCodesPdfPath = 'shop/_pdf/voucher';
     public string $voucherCodesPdfFilenameFormat = 'Gift-Voucher';
@@ -51,6 +52,8 @@ class Settings extends Model
         $rules = parent::defineRules();
         $rules[] = [['expiry', 'codeKeyLength'], 'required'];
         $rules[] = [['expiry', 'codeKeyLength'], 'integer'];
+        $rules[] = [['maxVoucherCodesPerOrder'], 'required'];
+        $rules[] = [['maxVoucherCodesPerOrder'], 'integer', 'min' => 1];
 
         return $rules;
     }

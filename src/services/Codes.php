@@ -17,11 +17,16 @@ use craft\models\FieldLayout;
 
 use craft\commerce\elements\Order;
 use craft\commerce\enums\LineItemType;
+use craft\commerce\events\ProcessPaymentEvent;
 use craft\commerce\models\LineItem;
+use craft\commerce\Plugin as Commerce;
 
+use yii\base\ActionEvent;
 use yii\base\Component;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\base\ModelEvent;
+use yii\web\BadRequestHttpException;
 
 use DateTime;
 use Throwable;
@@ -217,6 +222,82 @@ class Codes extends Component
 
                 $event->isValid = false;
             }
+        }
+    }
+
+    public function validateOrderQuantity(Order $order): bool
+    {
+        // Completed orders may still need outstanding payments or administrative updates.
+        if ($order->isCompleted) {
+            return true;
+        }
+
+        $limit = GiftVoucher::$plugin->getSettings()->maxVoucherCodesPerOrder;
+
+        if ($limit < 1) {
+            throw new InvalidConfigException('maxVoucherCodesPerOrder must be a positive integer.');
+        }
+
+        $remaining = $limit;
+
+        foreach ($order->getLineItems() as $lineItem) {
+            if ($lineItem->type === LineItemType::Custom || !$lineItem->getPurchasable() instanceof Voucher) {
+                continue;
+            }
+
+            // Subtract from the allowance so extreme quantities cannot overflow a running total.
+            $quantity = max(0, $lineItem->qty);
+
+            if ($quantity > $remaining) {
+                $order->addError('giftVoucher', Craft::t('gift-voucher', 'An order can contain at most {limit} gift vouchers.', [
+                    'limit' => $limit,
+                ]));
+
+                return false;
+            }
+
+            $remaining -= $quantity;
+        }
+
+        return true;
+    }
+
+    public function handleValidateOrder(ModelEvent $event): void
+    {
+        if (!$this->validateOrderQuantity($event->sender)) {
+            $event->isValid = false;
+        }
+    }
+
+    public function handleBeforeProcessPayment(ProcessPaymentEvent $event): void
+    {
+        if (!$this->validateOrderQuantity($event->order)) {
+            $event->isValid = false;
+
+            // Stop subsequent handlers from reserving voucher value for a rejected checkout.
+            $event->handled = true;
+        }
+    }
+
+    public function handleBeforeCartAction(ActionEvent $event): void
+    {
+        $request = $event->sender->request;
+
+        if ($event->action->id !== 'complete' || !$request->getIsPost()) {
+            return;
+        }
+
+        // Commerce's checkout-without-payment action completes before validating the cart.
+        $number = $request->getBodyParam('number');
+
+        if ($number !== null && !is_string($number)) {
+            throw new BadRequestHttpException('The order number must be a string.');
+        }
+
+        $order = $number ? Order::find()->number($number)->isCompleted(false)->one() : Commerce::getInstance()->getCarts()->getCart();
+
+        if ($order && !$this->validateOrderQuantity($order)) {
+            throw new BadRequestHttpException($order->getFirstError('giftVoucher'));
         }
     }
 

@@ -2,11 +2,15 @@
 
 ## Unreleased
 
+### Added
+- Added the `maxVoucherCodesPerOrder` setting, defaulting to 500. Orders exceeding this combined voucher quantity must be reduced before starting checkout, or the limit increased in configuration. Payments already in progress retain full fulfilment.
+
 ### Changed
 - Updated Craft API usage to avoid deprecated calls.
 - Changed the default and fallback voucher PDF filename to `Gift-Voucher.pdf`. Custom filename formats are unchanged.
 
 ### Fixed
+- Fixed a medium-severity denial-of-service vulnerability.
 - Fixed a medium-severity authorization vulnerability.
 - Fixed a medium-severity information disclosure vulnerability.
 

@@ -35,6 +35,17 @@ Set the number of characters for generated codes to be.
 
 
 ::: reference
+### `maxVoucherCodesPerOrder`
+
+**Type:** `int` · **Default:** `500`
+
+The maximum number of gift vouchers an order can purchase, counted across all voucher products and line item options. Set a positive integer. Increase the limit if your store needs larger purchases, allowing for the time required to generate every code during checkout.
+
+The limit is checked when validating a cart, before starting payment and before checkout without payment. Existing oversized carts must reduce their quantities before checking out. Completed orders and completion callbacks for payments already in progress remain eligible for full fulfilment; the limit never truncates the number of codes issued. This setting does not change the separate control-panel bulk-generation limit.
+:::
+
+
+::: reference
 ### `codeKeyCharacters`
 
 **Type:** `string` · **Default:** `'ACDEFGHJKLMNPQRTUVWXYZ234679'`

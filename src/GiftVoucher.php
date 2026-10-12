@@ -48,6 +48,7 @@ use craft\web\UrlManager;
 use craft\web\View;
 
 use craft\commerce\adjusters\Tax;
+use craft\commerce\controllers\CartController;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 use craft\commerce\services\Emails;
@@ -199,8 +200,11 @@ class GiftVoucher extends Plugin
     {
         Event::on(Sites::class, Sites::EVENT_AFTER_SAVE_SITE, [$this->getVoucherTypes(), 'afterSaveSiteHandler']);
         Event::on(Sites::class, Sites::EVENT_AFTER_SAVE_SITE, [$this->getVouchers(), 'afterSaveSiteHandler']);
+        Event::on(Order::class, Order::EVENT_BEFORE_VALIDATE, [$this->getCodes(), 'handleValidateOrder']);
+        Event::on(CartController::class, CartController::EVENT_BEFORE_ACTION, [$this->getCodes(), 'handleBeforeCartAction']);
         Event::on(Order::class, Order::EVENT_BEFORE_COMPLETE_ORDER, [$this->getReservations(), 'handleBeforeCompleteOrder']);
         Event::on(Order::class, Order::EVENT_AFTER_COMPLETE_ORDER, [$this->getCodes(), 'handleCompletedOrder']);
+        Event::on(Payments::class, Payments::EVENT_BEFORE_PROCESS_PAYMENT, [$this->getCodes(), 'handleBeforeProcessPayment']);
         Event::on(Payments::class, Payments::EVENT_BEFORE_PROCESS_PAYMENT, [$this->getReservations(), 'handleBeforeProcessPayment']);
         Event::on(Payments::class, Payments::EVENT_AFTER_PROCESS_PAYMENT, [$this->getReservations(), 'handleAfterProcessPayment']);
         Event::on(Payments::class, Payments::EVENT_AFTER_COMPLETE_PAYMENT, [$this->getReservations(), 'handleAfterCompletePayment']);
