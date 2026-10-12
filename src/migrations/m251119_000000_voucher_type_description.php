@@ -2,7 +2,6 @@
 namespace verbb\giftvoucher\migrations;
 
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 
 class m251119_000000_voucher_type_description extends Migration
 {

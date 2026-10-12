@@ -6,7 +6,6 @@ use verbb\giftvoucher\elements\Code;
 use Craft;
 use craft\db\Migration;
 use craft\helpers\Db;
-use craft\helpers\MigrationHelper;
 use craft\records\FieldLayout;
 
 class Install extends Migration
@@ -195,27 +194,37 @@ class Install extends Migration
     public function dropForeignKeys(): void
     {
         if ($this->db->tableExists('{{%giftvoucher_codes}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_codes}}', $this);
+            $this->dropForeignKeyIfExists('{{%giftvoucher_codes}}', 'id');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_codes}}', 'lineItemId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_codes}}', 'orderId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_codes}}', 'voucherId');
         }
 
         if ($this->db->tableExists('{{%giftvoucher_redemptions}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_redemptions}}', $this);
+            $this->dropForeignKeyIfExists('{{%giftvoucher_redemptions}}', 'codeId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_redemptions}}', 'orderId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_redemptions}}', 'reservationId');
         }
 
         if ($this->db->tableExists('{{%giftvoucher_reservations}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_reservations}}', $this);
+            $this->dropForeignKeyIfExists('{{%giftvoucher_reservations}}', 'codeId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_reservations}}', 'orderId');
         }
 
         if ($this->db->tableExists('{{%giftvoucher_vouchers}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchers}}', $this);
+            $this->dropForeignKeyIfExists('{{%giftvoucher_vouchers}}', 'id');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_vouchers}}', 'shippingCategoryId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_vouchers}}', 'taxCategoryId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_vouchers}}', 'typeId');
         }
 
         if ($this->db->tableExists('{{%giftvoucher_vouchertypes}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes}}', $this);
+            $this->dropForeignKeyIfExists('{{%giftvoucher_vouchertypes}}', 'fieldLayoutId');
         }
 
         if ($this->db->tableExists('{{%giftvoucher_vouchertypes_sites}}')) {
-            MigrationHelper::dropAllForeignKeysOnTable('{{%giftvoucher_vouchertypes_sites}}', $this);
+            $this->dropForeignKeyIfExists('{{%giftvoucher_vouchertypes_sites}}', 'siteId');
+            $this->dropForeignKeyIfExists('{{%giftvoucher_vouchertypes_sites}}', 'voucherTypeId');
         }
     }
 

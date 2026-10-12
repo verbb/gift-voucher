@@ -2,7 +2,6 @@
 namespace verbb\giftvoucher\migrations;
 
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 
 class m240814_000000_sku_index extends Migration
 {

@@ -9,6 +9,7 @@ use craft\base\Element;
 use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\ArrayHelper;
+use craft\helpers\StringHelper;
 use craft\helpers\Db;
 
 use DateTime;
@@ -103,7 +104,7 @@ class CodeQuery extends ElementQuery
             $value = $value->format(DateTime::W3C);
         }
 
-        $this->dateCreated = ArrayHelper::toArray($this->dateCreated);
+        $this->dateCreated = is_string($this->dateCreated) ? StringHelper::split($this->dateCreated) : ArrayHelper::toArray($this->dateCreated);
         $this->dateCreated[] = '<' . $value;
 
         return $this;
@@ -115,7 +116,7 @@ class CodeQuery extends ElementQuery
             $value = $value->format(DateTime::W3C);
         }
 
-        $this->dateCreated = ArrayHelper::toArray($this->dateCreated);
+        $this->dateCreated = is_string($this->dateCreated) ? StringHelper::split($this->dateCreated) : ArrayHelper::toArray($this->dateCreated);
         $this->dateCreated[] = '>=' . $value;
 
         return $this;

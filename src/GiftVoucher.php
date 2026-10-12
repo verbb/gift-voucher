@@ -15,6 +15,7 @@ use verbb\giftvoucher\services\VoucherTypes;
 use verbb\giftvoucher\variables\GiftVoucherVariable;
 
 use Craft;
+use craft\enums\CmsEdition;
 use craft\base\Model;
 use craft\base\Plugin;
 use craft\console\Application as ConsoleApplication;
@@ -107,7 +108,7 @@ class GiftVoucher extends Plugin
             $this->_registerResaveCommand();
         }
 
-        if (Craft::$app->getEdition() === Craft::Pro) {
+        if (Craft::$app->edition === CmsEdition::Pro) {
             $this->_registerPermissions();
         }
 

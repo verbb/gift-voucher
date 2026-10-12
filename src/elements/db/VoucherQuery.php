@@ -10,6 +10,7 @@ use craft\db\Query;
 use craft\db\QueryAbortedException;
 use craft\elements\db\ElementQuery;
 use craft\helpers\ArrayHelper;
+use craft\helpers\StringHelper;
 use craft\helpers\Db;
 
 use DateTime;
@@ -101,7 +102,7 @@ class VoucherQuery extends ElementQuery
             $value = $value->format(DateTime::W3C);
         }
 
-        $this->postDate = ArrayHelper::toArray($this->postDate);
+        $this->postDate = is_string($this->postDate) ? StringHelper::split($this->postDate) : ArrayHelper::toArray($this->postDate);
         $this->postDate[] = '<' . $value;
 
         return $this;
@@ -113,7 +114,7 @@ class VoucherQuery extends ElementQuery
             $value = $value->format(DateTime::W3C);
         }
 
-        $this->postDate = ArrayHelper::toArray($this->postDate);
+        $this->postDate = is_string($this->postDate) ? StringHelper::split($this->postDate) : ArrayHelper::toArray($this->postDate);
         $this->postDate[] = '>=' . $value;
 
         return $this;

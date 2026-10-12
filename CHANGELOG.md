@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Changed
+- Updated Craft API usage to avoid deprecated calls.
 - Changed the default and fallback voucher PDF filename to `Gift-Voucher.pdf`. Custom filename formats are unchanged.
 
 ### Fixed
