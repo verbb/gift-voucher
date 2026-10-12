@@ -205,7 +205,7 @@ class CodeQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('giftvoucher_codes.orderId', $this->orderId));
         }
 
-        if ($this->codeKey) {
+        if ($this->codeKey !== null) {
             // Prevent fuzzy-matching. The codeKey must match exactly
             $this->subQuery->andWhere(['giftvoucher_codes.codeKey' => $this->codeKey]);
         }

@@ -13,6 +13,7 @@
 - Fixed a medium-severity denial-of-service vulnerability.
 - Fixed a medium-severity authorization vulnerability.
 - Fixed a medium-severity information disclosure vulnerability.
+- Fixed a low-severity authorization vulnerability.
 
 ## 4.0.23 - 2026-10-07
 

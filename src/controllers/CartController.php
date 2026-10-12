@@ -37,11 +37,9 @@ class CartController extends BaseFrontEndController
         $this->requirePostRequest();
         $this->_cart = $this->resolveOrder();
 
-        $voucherCode = $this->request->getParam('voucherCode');
+        $voucherCode = $this->_getVoucherCode();
 
-        if (!$voucherCode || trim($voucherCode) == '') {
-            $this->_cart->addErrors(['voucherCode' => Craft::t('gift-voucher', 'No voucher code provided.')]);
-
+        if ($voucherCode === null) {
             return $this->_returnCart();
         }
 
@@ -87,7 +85,12 @@ class CartController extends BaseFrontEndController
         $this->requirePostRequest();
         $this->_cart = $this->resolveOrder();
 
-        $voucherCode = $this->request->getParam('voucherCode');
+        $voucherCode = $this->_getVoucherCode();
+
+        if ($voucherCode === null) {
+            return $this->_returnCart();
+        }
+
         GiftVoucher::$plugin->getCodeStorage()->remove($voucherCode, $this->_cart);
 
         return $this->_returnCart();
@@ -109,6 +112,30 @@ class CartController extends BaseFrontEndController
 
     // Private Methods
     // =========================================================================
+
+    private function _getVoucherCode(): ?string
+    {
+        $voucherCode = $this->request->getParam('voucherCode');
+
+        // Request values always identify code keys; storage also accepts internal element IDs.
+        if (is_int($voucherCode)) {
+            $voucherCode = (string)$voucherCode;
+        }
+
+        if ($voucherCode === null || (is_string($voucherCode) && trim($voucherCode) === '')) {
+            $this->_cart->addErrors(['voucherCode' => Craft::t('gift-voucher', 'No voucher code provided.')]);
+
+            return null;
+        }
+
+        if (!is_string($voucherCode)) {
+            $this->_cart->addErrors(['voucherCode' => Craft::t('gift-voucher', 'Voucher code is not valid')]);
+
+            return null;
+        }
+
+        return $voucherCode;
+    }
 
     private function _returnCart(): ?Response
     {
