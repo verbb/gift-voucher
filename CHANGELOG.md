@@ -6,6 +6,7 @@
 - Added the `maxVoucherCodesPerOrder` setting, defaulting to 500. Orders exceeding this combined voucher quantity must be reduced before starting checkout, or the limit increased in configuration. Payments already in progress retain full fulfilment.
 
 ### Changed
+- Limited voucher and coupon submissions through Gift Voucher to approximately one request per second per IP address. Faster submissions return HTTP 429; integrations should wait before retrying.
 - Updated Craft API usage to avoid deprecated calls.
 - Changed the default and fallback voucher PDF filename to `Gift-Voucher.pdf`. Custom filename formats are unchanged.
 
@@ -14,6 +15,7 @@
 - Fixed a medium-severity authorization vulnerability.
 - Fixed a medium-severity information disclosure vulnerability.
 - Fixed two low-severity authorization vulnerabilities.
+- Fixed a low-severity rate-limit bypass vulnerability.
 
 ## 4.0.23 - 2026-10-07
 

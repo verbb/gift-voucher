@@ -23,6 +23,14 @@ Use the following template code and add it to your cart page (ideally near the c
 
 If successful in entering a valid gift voucher code, the users' cart will update, reflecting the discount added to their cart. From this point onwards, its treated as a [discount adjuster](https://docs.craftcms.com/commerce/v2/adjusters.html).
 
+## Submission Rate Limits
+
+Code submissions are limited to approximately one request per second per IP address. The storefront and control-panel add-code actions share this allowance, including when the submitted value is a Commerce coupon. Removing a code does not consume the allowance.
+
+If you submit codes with JavaScript, handle HTTP `429` by keeping the entered value and asking the customer to wait before trying again. The response includes `Retry-After: 1`; wait at least one second before another attempt. Customers sharing an IP address also share the allowance.
+
+The limit uses Craft's resolved client IP, cache and mutex. Configure trusted proxy headers correctly so Craft receives the real client IP. Installations with multiple application servers need shared cache and mutex storage for a site-wide limit. If the allowance cannot be saved, submissions return HTTP `503` until cache storage is available.
+
 ## Removing Vouchers
 Gift Vouchers support for multiple vouchers needs a way to remove already entered voucher codes. In our cart template (`shop/cart.html` for example), we have the following code looping through the adjustment items for the order.
 

@@ -2,6 +2,7 @@
 namespace verbb\giftvoucher\controllers;
 
 use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\filters\CodeRateLimiter;
 
 use Craft;
 
@@ -30,6 +31,16 @@ class CartController extends BaseFrontEndController
         parent::init();
 
         $this->_cartVariable = Commerce::getInstance()->getSettings()->cartVariable;
+    }
+
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            'codeRateLimiter' => [
+                'class' => CodeRateLimiter::class,
+                'only' => ['add-code'],
+            ],
+        ]);
     }
 
     public function actionAddCode(): ?Response
