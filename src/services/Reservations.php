@@ -110,7 +110,7 @@ class Reservations extends Component
             // Re-read after locking so a concurrent checkout cannot pass the same balance check.
             $existingReservations = $this->_getActiveOrderReservations($order);
 
-            if ($claimPayment && $existingReservations) {
+            if ($claimPayment && $this->_hasBlockingPaymentClaim($existingReservations)) {
                 throw new RuntimeException('Another payment attempt is already using this order’s gift voucher hold.');
             }
 
@@ -489,6 +489,18 @@ class Reservations extends Component
     private function _hasEnoughBalance(float $available, float $required): bool
     {
         return round($available - $required, 2) >= 0;
+    }
+
+    private function _hasBlockingPaymentClaim(array $reservations): bool
+    {
+        foreach ($reservations as $reservation) {
+            // An empty hash means another request claimed the hold before Commerce persisted its transaction.
+            if (!$reservation->transactionHash || $reservation->status === self::STATUS_REVIEW) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function _amountsMatch(float $first, float $second): bool

@@ -16,6 +16,7 @@
 - Fixed a medium-severity information disclosure vulnerability.
 - Fixed two low-severity authorization vulnerabilities.
 - Fixed a low-severity rate-limit bypass vulnerability.
+- Fixed payment retries being blocked after a gateway created an incomplete payment attempt. ([#151](https://github.com/verbb/gift-voucher/issues/151))
 
 ## 4.0.23 - 2026-10-07
 
