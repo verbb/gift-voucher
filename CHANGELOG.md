@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.0.24 - 2026-10-15
 
 ### Added
 - Added the `maxVoucherCodesPerOrder` setting, defaulting to 500. Orders exceeding this combined voucher quantity must be reduced before starting checkout, or the limit increased in configuration. Payments already in progress retain full fulfilment.
