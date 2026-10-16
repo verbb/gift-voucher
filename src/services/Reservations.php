@@ -373,7 +373,7 @@ class Reservations extends Component
             $codeKey = $snapshot['codeKey'] ?? null;
             $amount = round((float)$adjustment->amount * -1, 2);
 
-            if (!$codeId || !is_string($codeKey) || $codeKey === '' || $amount <= 0) {
+            if (!$codeId || !is_string($codeKey) || $codeKey === '' || $amount < 0) {
                 throw new RuntimeException('A saved gift voucher adjustment is missing its code identity or amount.');
             }
 
@@ -385,6 +385,12 @@ class Reservations extends Component
 
             if (!is_string($storedCodeKey) || !hash_equals($storedCodeKey, $codeKey)) {
                 throw new RuntimeException('A saved gift voucher adjustment no longer matches its code.');
+            }
+
+            // Additional vouchers can have a zero adjustment once the order is fully covered.
+            // They do not consume value and must not create a reservation or redemption.
+            if ($amount === 0.0) {
+                continue;
             }
 
             $adjustments[$codeId] ??= [
