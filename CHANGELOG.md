@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.0.25 - 2026-10-17
 
 ### Fixed
 - Fixed checkout failing when an applied gift voucher had no remaining order value to cover.
