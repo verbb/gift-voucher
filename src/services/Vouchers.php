@@ -134,6 +134,9 @@ class Vouchers extends Component
         foreach ($this->_pdfPaths as $pdfPath) {
             unlink($pdfPath);
         }
+
+        // Forget the deleted files so later emails in the same request or queue run don't unlink them again.
+        $this->_pdfPaths = [];
     }
 
 }
