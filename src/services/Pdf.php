@@ -123,7 +123,7 @@ class Pdf extends Component
         }
 
         try {
-            $html = $view->renderTemplate($templatePath, $variables);
+            $html = $view->renderTemplate($event->template, $variables);
         } catch (\Exception $e) {
             GiftVoucher::error('An error occurred while generating this PDF: ' . $e->getMessage());
 
