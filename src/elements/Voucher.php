@@ -368,7 +368,7 @@ class Voucher extends Purchasable
         if ($this->getType()) {
             $uid = $this->getType()->uid;
 
-            return Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $id);
+            return Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $uid);
         }
 
         return false;
