@@ -224,7 +224,7 @@ class CodeQuery extends ElementQuery
                 'elements.enabled' => true,
             ],
             Code::STATUS_DISABLED => [
-                'elements.disabled' => true,
+                'elements.enabled' => false,
             ],
             default => parent::statusCondition($status),
         };
