@@ -6,6 +6,7 @@
 - Fixed uninstalling the plugin not removing its project config, and reinstalling not detecting existing project config.
 - Fixed an error when sending a second Commerce email with an attached voucher PDF in the same request or queue run.
 - Fixed a template set by the `beforeRenderPdf` event not being used to render the voucher PDF.
+- Fixed cancelling the `beforeMatchCode` event not rejecting the voucher code.
 
 ## 4.0.26 - 2026-10-22
 

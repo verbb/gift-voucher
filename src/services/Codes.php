@@ -326,8 +326,8 @@ class Codes extends Component
             ]);
             $this->trigger(self::EVENT_BEFORE_MATCH_CODE, $event);
 
-            if (!empty($event->error)) {
-                $error = $event->error;
+            if (!$event->isValid || !empty($event->error)) {
+                $error = $event->error ?: Craft::t('gift-voucher', 'Voucher code is not valid');
 
                 return false;
             }
