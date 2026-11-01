@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.0.27 - 2026-11-01
 
 ### Fixed
 - Fixed uninstalling the plugin not removing its project config, and reinstalling not detecting existing project config.
