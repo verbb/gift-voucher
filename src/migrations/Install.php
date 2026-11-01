@@ -21,7 +21,7 @@ class Install extends Migration
 
         // Don't make the same config changes twice
         $installed = (Craft::$app->getProjectConfig()->get('plugins.gift-voucher', true) !== null);
-        $configExists = (Craft::$app->getProjectConfig()->get('gift-voucher', true) !== null);
+        $configExists = (Craft::$app->getProjectConfig()->get('giftVoucher', true) !== null);
 
         if (!$installed && !$configExists) {
             $this->insert(FieldLayout::tableName(), ['type' => Code::class]);
@@ -230,6 +230,6 @@ class Install extends Migration
 
     public function dropProjectConfig(): void
     {
-        Craft::$app->getProjectConfig()->remove('gift-voucher');
+        Craft::$app->getProjectConfig()->remove('giftVoucher');
     }
 }
