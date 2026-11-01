@@ -10,6 +10,7 @@
 - Fixed `Voucher::getIsEditable()` and voucher type index sources reporting vouchers as not editable for non-admin users with permission to manage that voucher type.
 - Fixed Gift Voucher permissions not being registered on Craft Team and Enterprise editions.
 - Fixed a database error when filtering voucher codes by the Disabled status.
+- Fixed `Code::getPdfUrl()` ignoring its `option` argument.
 
 ## 4.0.26 - 2026-10-22
 

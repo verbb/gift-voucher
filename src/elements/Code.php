@@ -419,7 +419,7 @@ class Code extends Element
 
     public function getPdfUrl(mixed $option = null): string
     {
-        return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option = null);
+        return GiftVoucher::$plugin->getPdf()->getPdfUrlForCode($this, $option);
     }
 
     public function beforeSave(bool $isNew): bool
