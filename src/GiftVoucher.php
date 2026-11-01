@@ -275,6 +275,7 @@ class GiftVoucher extends Plugin
 
                 $event->sender->requireCpRequest();
                 $event->sender->requirePermission('giftVoucher-manageCodes');
+
                 return;
             }
         };
@@ -305,6 +306,7 @@ class GiftVoucher extends Plugin
                 if (is_string($elementType) && is_a($elementType, Code::class, true)) {
                     $event->sender->requireCpRequest();
                     $event->sender->requirePermission('giftVoucher-manageCodes');
+
                     return;
                 }
             }

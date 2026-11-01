@@ -49,15 +49,19 @@ class CodeQuery extends ElementQuery
         switch ($name) {
             case 'voucher':
                 $this->voucher($value);
+
                 break;
             case 'type':
                 $this->type($value);
+
                 break;
             case 'before':
                 $this->before($value);
+
                 break;
             case 'after':
                 $this->after($value);
+
                 break;
             default:
                 parent::__set($name, $value);

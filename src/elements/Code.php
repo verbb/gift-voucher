@@ -200,6 +200,7 @@ class Code extends Element
             $with = $elementQuery->with ?: [];
             $with[] = 'voucher';
             $elementQuery->with = $with;
+
             return;
         }
 
@@ -318,6 +319,7 @@ class Code extends Element
         if ($this->voucherId) {
             // find disabled vouchers as well, this is only for the CP
             $this->_voucher = Voucher::find()->id($this->voucherId)->status(null)->one();
+
             return $this->_voucher;
         }
 
@@ -430,6 +432,7 @@ class Code extends Element
 
         if (!$isNew && $this->id && $this->currentAmount < $this->getHeldAmount()) {
             $this->addError('currentAmount', Craft::t('gift-voucher', 'The current amount cannot be lower than the value held by active checkouts.'));
+
             return false;
         }
 
@@ -444,6 +447,7 @@ class Code extends Element
 
         if ($this->id && $this->getHeldAmount() > 0) {
             $this->addError('currentAmount', Craft::t('gift-voucher', 'Release or complete active checkout holds before deleting this code.'));
+
             return false;
         }
 

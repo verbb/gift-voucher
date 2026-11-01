@@ -369,6 +369,7 @@ class Codes extends Component
         if (empty($data) || empty($config = reset($data))) {
             // Delete the field layout
             $fieldsService->deleteLayoutsByType(Code::class);
+
             return;
         }
 
