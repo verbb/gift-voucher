@@ -111,7 +111,7 @@ class Voucher extends Purchasable
 
         foreach ($voucherTypes as $voucherType) {
             $key = 'voucherType:' . $voucherType->id;
-            $canEditVouchers = Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $voucherType->id);
+            $canEditVouchers = Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $voucherType->uid);
 
             $sources[$key] = [
                 'key' => $key,
@@ -366,7 +366,7 @@ class Voucher extends Purchasable
     public function getIsEditable(): bool
     {
         if ($this->getType()) {
-            $id = $this->getType()->id;
+            $uid = $this->getType()->uid;
 
             return Craft::$app->getUser()->checkPermission('giftVoucher-manageVoucherType:' . $id);
         }

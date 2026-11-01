@@ -7,6 +7,7 @@
 - Fixed an error when sending a second Commerce email with an attached voucher PDF in the same request or queue run.
 - Fixed a template set by the `beforeRenderPdf` event not being used to render the voucher PDF.
 - Fixed cancelling the `beforeMatchCode` event not rejecting the voucher code.
+- Fixed `Voucher::getIsEditable()` and voucher type index sources reporting vouchers as not editable for non-admin users with permission to manage that voucher type.
 
 ## 4.0.26 - 2026-10-22
 
