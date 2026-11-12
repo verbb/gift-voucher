@@ -15,4 +15,4 @@ Each voucher is a native Craft Commerce purchasable, fitting the store's existin
 - Update balances, expiry dates and redemption state when support work calls for it.
 - Generate downloadable vouchers from project-owned Twig templates.
 - Automatically attach voucher PDFs to nominated Craft Commerce emails.
-- Treat digital vouchers appropriately when a cart also contains physical products.
+- Give vouchers their own shipping category, so shipping options suit carts that mix vouchers and physical products.

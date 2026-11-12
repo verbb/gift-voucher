@@ -5,7 +5,7 @@ Let customers purchase digital gift vouchers and redeem them during Craft Commer
 <!-- feature-section -->
 ## Voucher types
 
-Group vouchers into types — much like Commerce product types — with their own custom fields, templates and URL formats. Offer fixed prices or let customers choose an amount, then use the familiar cart, checkout and order workflows already in the store.
+Group vouchers into types with their own custom fields, templates and URL formats, much like Commerce product types. Offer fixed prices or let customers choose an amount, then use the familiar cart, checkout and order workflows already in the store.
 
 <!-- feature-section-end -->
 
@@ -18,7 +18,7 @@ Group vouchers into types — much like Commerce product types — with their ow
 <!-- feature-section media-size="large" -->
 ## Intelligent redemptions
 
-A voucher contributes only what the order needs. If its balance is larger than the order, the remainder stays available for next time; if it falls short, the customer simply pays the difference.
+A voucher contributes only what the order needs. If its balance is larger than the order, the remainder stays available for next time. If it falls short, the customer simply pays the difference.
 
 ![A voucher code showing its original value, remaining balance and expiry date in Craft.](../screenshots/code-editor.png)
 
@@ -28,7 +28,6 @@ A voucher contributes only what the order needs. If its balance is larger than t
 - :icon[history] **Redemption history** See the related order, amount and date every time a code is used.
 - :icon[terminal-2] **Manual codes** Create voucher codes in the control panel for customer service or special occasions.
 - :icon[copy-plus] **Bulk code generation** Create a nominated quantity of codes for a voucher in one control-panel operation.
-- :icon[edit] **Staff adjustments** Update balances, expiry dates and redemption state when support work calls for it.
 <!-- feature-grid-end -->
 
 <!-- feature-section media-size="large" -->

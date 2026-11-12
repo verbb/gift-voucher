@@ -18,13 +18,15 @@ Each voucher is a native Craft Commerce purchasable, fitting the store's existin
 - Update balances, expiry dates and redemption state when support work calls for it.
 - Generate downloadable vouchers from project-owned Twig templates.
 - Automatically attach voucher PDFs to nominated Craft Commerce emails.
-- Treat digital vouchers appropriately when a cart also contains physical products.
+- Give vouchers their own shipping category, so shipping options suit carts that mix vouchers and physical products.
 
 ## Documentation
+
 Visit the [Gift Voucher Plugin page](https://verbb.io/craft-plugins/gift-voucher) for all documentation, guides, pricing and developer resources.
 
 ## Support
-Get in touch with us by [creating a Github issue](https://github.com/verbb/gift-voucher/issues)
+
+Get in touch with us via the [Gift Voucher Support page](https://verbb.io/craft-plugins/gift-voucher/support) or by [creating a GitHub issue](https://github.com/verbb/gift-voucher/issues).
 
 <h2></h2>
 
