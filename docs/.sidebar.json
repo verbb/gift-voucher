@@ -20,7 +20,8 @@
             "feature-tour/custom-amounts",
             "feature-tour/pdf-vouchers",
             "feature-tour/shipping-categories",
-            "feature-tour/code-storage"
+            "feature-tour/code-storage",
+            "feature-tour/permissions"
         ]
     },
     {
