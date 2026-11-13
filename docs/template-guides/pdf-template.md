@@ -41,7 +41,7 @@ In the template itself, you'll have access to the following Twig variables:
 The parent order that this voucher was purchased from
 
 ### Codes
-A collection of [Codes](docs:developers/code). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
+A collection of [Codes](docs:reference/code). Depending on if you are using the functionality to show all vouchers for the order, or just per line item will dictate the amount of models in this collection.
 
 ## Custom Fields
 If you have added any custom fields to your Code field layout (in the Gift Voucher plugin settings), you can also use those custom fields in your templates.

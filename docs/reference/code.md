@@ -1,5 +1,5 @@
 # Code
-Whenever you're dealing with a code in your template, you're actually working with a `Code` object.
+Whenever you’re dealing with a code in your template, you’re working with a `Code` object. A code is what a customer enters at checkout to spend a voucher’s value, and it’s created when a [Voucher](docs:reference/voucher) is bought or generated in the control panel. You can fetch codes with a [code query](docs:getting-elements/code-queries).
 
 <span id="attributes"></span>
 
@@ -10,7 +10,7 @@ Whenever you're dealing with a code in your template, you're actually working wi
 
 **Type:** `int|null`
 
-ID of the code.
+The ID of the code.
 :::
 
 ::: reference
@@ -18,7 +18,7 @@ ID of the code.
 
 **Type:** `int|null`
 
-The [Voucher](docs:developers/voucher) ID the code is generated for.
+The ID of the [Voucher](docs:reference/voucher) the code was created for.
 :::
 
 ::: reference
@@ -26,13 +26,15 @@ The [Voucher](docs:developers/voucher) ID the code is generated for.
 
 **Type:** `verbb\giftvoucher\elements\Voucher|null`
 
-The [Voucher](docs:developers/voucher) the code is generated for.
+The [Voucher](docs:reference/voucher) the code was created for.
 :::
 
 ::: reference
 ### `voucherType`
 
-The voucher's type the code is generated for.
+**Type:** `VoucherType|null`
+
+The voucher type of the code’s voucher.
 :::
 
 ::: reference
@@ -40,7 +42,7 @@ The voucher's type the code is generated for.
 
 **Type:** `int|null`
 
-The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) ID where the parent voucher was originally purchased from.
+The ID of the Commerce order the voucher was bought in. This is `null` for a code generated in the control panel.
 :::
 
 ::: reference
@@ -48,7 +50,7 @@ The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-or
 
 **Type:** `craft\commerce\elements\Order|null`
 
-The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-order.html) where the parent voucher was originally purchased from.
+The Commerce order the voucher was bought in. This is `null` for a code generated in the control panel.
 :::
 
 ::: reference
@@ -56,7 +58,7 @@ The [Order](https://docs.craftcms.com/commerce/api/v2/craft-commerce-elements-or
 
 **Type:** `int|null`
 
-The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html) ID in the order where the parent voucher was originally purchased from.
+The ID of the Commerce line item the voucher was bought in. This is `null` for a code generated in the control panel.
 :::
 
 ::: reference
@@ -64,7 +66,7 @@ The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-
 
 **Type:** `craft\commerce\models\LineItem|null`
 
-The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-lineitem.html) in the order where the parent voucher was originally purchased from.
+The Commerce line item the voucher was bought in. This is `null` for a code generated in the control panel.
 :::
 
 ::: reference
@@ -72,7 +74,7 @@ The [Line Item](https://docs.craftcms.com/commerce/api/v2/craft-commerce-models-
 
 **Type:** `string|null`
 
-The generated, unique code used for redeeming this amount.
+The unique code a customer enters to redeem the voucher’s value.
 :::
 
 ::: reference
@@ -80,7 +82,7 @@ The generated, unique code used for redeeming this amount.
 
 **Type:** `float|null`
 
-When the voucher is purchased initially, the amount is stored under this value. This cannot be updated.
+The amount the code was worth when it was created. It doesn’t change as the code is redeemed.
 :::
 
 ::: reference
@@ -96,7 +98,7 @@ The unredeemed amount recorded for the code. Because vouchers can be redeemed mu
 
 **Type:** `DateTime|null`
 
-The date this code will no longer be available for use.
+The date the code can no longer be redeemed. This is `null` when it doesn’t expire.
 :::
 
 
@@ -107,7 +109,7 @@ The date this code will no longer be available for use.
 
 **Returns:** `string|null`
 
-The url to edit this code in the control panel.
+Returns the URL to edit this code in the control panel.
 :::
 
 ::: reference
@@ -115,7 +117,7 @@ The url to edit this code in the control panel.
 
 **Returns:** `array`
 
-Shows a list of all redemptions for that code. This keeps track of what orders and products this code has been used against.
+Returns the redemptions of this code, each recording an amount of the code used on an order.
 :::
 
 ::: reference

@@ -1,7 +1,8 @@
 # Code Queries
+
 You can fetch codes in your templates or PHP code using **code queries**.
 
-:::code
+::: code
 ```twig Twig
 {# Create a new code query #}
 {% set myQuery = craft.giftVoucher.codes() %}
@@ -13,53 +14,50 @@ $myQuery = \verbb\giftvoucher\elements\Code::find();
 ```
 :::
 
-Once you’ve created a code query, you can set parameters on it to narrow down the results, and then execute it by calling `.all()`. An array of [Code](docs:developers/code) objects will be returned.
+Once you’ve created a code query, you can set parameters on it to narrow down the results, and then execute it by calling `.all()`. An array of [Code](docs:reference/code) objects will be returned.
 
-:::tip
-See Introduction to [Element Queries](https://craftcms.com/docs/4.x/element-queries/) in the Craft docs to learn about how element queries work.
-:::
+See [Element Queries](https://craftcms.com/docs/5.x/development/element-queries.html) in the Craft docs to learn how element queries work.
 
 ## Example
-We can display codes for a given order by doing the following:
+
+You can display the codes bought in an order by doing the following.
 
 1. Create a code query with `craft.giftVoucher.codes()`.
-2. Set the [orderId](#orderId) a [limit](#limit) parameters on it.
-3. Fetch all codes with `.all()` and output.
-4. Loop through the codes using a [for](https://twig.symfony.com/doc/2.x/tags/for.html) tag to output the contents.
+2. Set the [orderId](#orderid) parameter on it.
+3. Fetch the codes with `.all()`.
+4. Loop through the codes using a [for](https://twig.symfony.com/doc/3.x/tags/for.html) tag to output their contents.
+
+This example assumes an `order` variable, such as on an order confirmation template.
 
 ```twig
-{# Create a codes query with the 'orderId' and 'limit' parameters #}
-{% set codesQuery = craft.giftVoucher.codes()
+{# Create a code query with the 'orderId' parameter #}
+{% set codes = craft.giftVoucher.codes()
     .orderId(order.id)
-    .limit(10) %}
-
-{# Fetch the Codes #}
-{% set codes = codesQuery.all() %}
+    .all() %}
 
 {# Display their contents #}
 {% for code in codes %}
-    <p>{{ code.codeKey }}</p>
+    <p>{{ code.codeKey }}, {{ code.currentAmount|commerceCurrency(order.currency) }}</p>
 {% endfor %}
 ```
 
 ## Parameters
-Code queries support the following parameters:
 
-<!-- BEGIN PARAMS -->
+Code queries support the following parameters.
 
+::: reference
 ### `after`
-Narrows the query results to only codes that were posted on or after a certain date.
 
-Possible values include:
+Narrows the query results to codes created on or after a date.
 
-| Value | Fetches codes…
-| - | -
-| `'2018-04-01'` | that were posted after 2018-04-01.
-| a [DateTime](http://php.net/class.datetime) object | that were posted after the date represented by the object.
+| Value | Fetches codes… |
+| --- | --- |
+| `'2026-04-01'` | created on or after 2026-04-01. |
+| a `DateTime` object | created on or after the date represented by the object. |
 
 ::: code
 ```twig Twig
-{# Fetch codes posted this month #}
+{# Fetch codes created this month #}
 {% set firstDayOfMonth = date('first day of this month') %}
 
 {% set codes = craft.giftVoucher.codes()
@@ -68,7 +66,7 @@ Possible values include:
 ```
 
 ```php PHP
-// Fetch codes posted this month
+// Fetch codes created this month
 $firstDayOfMonth = new \DateTime('first day of this month');
 
 $codes = \verbb\giftvoucher\elements\Code::find()
@@ -76,32 +74,12 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
-
-
-
-### `anyStatus`
-Clears out the [status()](https://docs.craftcms.com/api/v4/craft-elements-db-elementquery.html#method-status) and [enabledForSite()](https://docs.craftcms.com/api/v4/craft-elements-db-elementquery.html#method-enabledforsite) parameters.
-
-::: code
-```twig Twig
-{# Fetch all codes, regardless of status #}
-{% set codes = craft.giftVoucher.codes()
-    .anyStatus()
-    .all() %}
-```
-
-```php PHP
-// Fetch all codes, regardless of status
-$codes = \verbb\giftvoucher\elements\Code::find()
-    ->anyStatus()
-    ->all();
-```
 :::
 
-
-
+::: reference
 ### `asArray`
-Causes the query to return matching codes as arrays of data, rather than [Code](docs:developers/code) objects.
+
+Causes the query to return matching codes as arrays of data, rather than [Code](docs:reference/code) objects.
 
 ::: code
 ```twig Twig
@@ -118,22 +96,21 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `before`
-Narrows the query results to only codes that were posted before a certain date.
 
-Possible values include:
+Narrows the query results to codes created before a date.
 
-| Value | Fetches codes…
-| - | -
-| `'2018-04-01'` | that were posted before 2018-04-01.
-| a [DateTime](http://php.net/class.datetime) object | that were posted before the date represented by the object.
+| Value | Fetches codes… |
+| --- | --- |
+| `'2026-04-01'` | created before 2026-04-01. |
+| a `DateTime` object | created before the date represented by the object. |
 
 ::: code
 ```twig Twig
-{# Fetch codes posted before this month #}
+{# Fetch codes created before this month #}
 {% set firstDayOfMonth = date('first day of this month') %}
 
 {% set codes = craft.giftVoucher.codes()
@@ -142,7 +119,7 @@ Possible values include:
 ```
 
 ```php PHP
-// Fetch codes posted before this month
+// Fetch codes created before this month
 $firstDayOfMonth = new \DateTime('first day of this month');
 
 $codes = \verbb\giftvoucher\elements\Code::find()
@@ -150,46 +127,50 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `codeKey`
-Narrows the query results based on the codes’ code key.
+
+Narrows the query results to the code with this code key, which is the code a customer enters at checkout. The key must match exactly, so wildcards such as `*` aren’t supported.
 
 ::: code
 ```twig Twig
-{# Fetch the code by its code key #}
+{# Fetch the code a customer entered #}
+{% set enteredCode = craft.app.request.getParam('voucherCode') %}
+
 {% set code = craft.giftVoucher.codes()
-    .codeKey('xxxxxxxx')
+    .codeKey(enteredCode)
     .one() %}
 ```
 
 ```php PHP
-// Fetch the code by its code key
+// Fetch the code a customer entered
+$enteredCode = \Craft::$app->getRequest()->getParam('voucherCode');
+
 $code = \verbb\giftvoucher\elements\Code::find()
-    ->codeKey('xxxxxxxx')
+    ->codeKey($enteredCode)
     ->one();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `dateCreated`
+
 Narrows the query results based on the codes’ creation dates.
 
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `'>= 2018-04-01'` | that were created on or after 2018-04-01.
-| `'< 2018-05-01'` | that were created before 2018-05-01
-| `['and', '>= 2018-04-04', '< 2018-05-01']` | that were created between 2018-04-01 and 2018-05-01.
+| Value | Fetches codes… |
+| --- | --- |
+| `'>= 2026-04-01'` | that were created on or after 2026-04-01. |
+| `'< 2026-05-01'` | that were created before 2026-05-01. |
+| `['and', '>= 2026-04-01', '< 2026-05-01']` | that were created between 2026-04-01 and 2026-05-01. |
 
 ::: code
 ```twig Twig
 {# Fetch codes created last month #}
-{% set start = date('first day of last month') | atom %}
-{% set end = date('first day of this month') | atom %}
+{% set start = date('first day of last month')|atom %}
+{% set end = date('first day of this month')|atom %}
 
 {% set codes = craft.giftVoucher.codes()
     .dateCreated(['and', ">= #{start}", "< #{end}"])
@@ -198,27 +179,26 @@ Possible values include:
 
 ```php PHP
 // Fetch codes created last month
-$start = new \DateTime('first day of next month')->format(\DateTime::ATOM);
-$end = new \DateTime('first day of this month')->format(\DateTime::ATOM);
+$start = (new \DateTime('first day of last month'))->format(\DateTime::ATOM);
+$end = (new \DateTime('first day of this month'))->format(\DateTime::ATOM);
 
 $codes = \verbb\giftvoucher\elements\Code::find()
     ->dateCreated(['and', ">= {$start}", "< {$end}"])
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `dateUpdated`
+
 Narrows the query results based on the codes’ last-updated dates.
 
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `'>= 2018-04-01'` | that were updated on or after 2018-04-01.
-| `'< 2018-05-01'` | that were updated before 2018-05-01
-| `['and', '>= 2018-04-04', '< 2018-05-01']` | that were updated between 2018-04-01 and 2018-05-01.
+| Value | Fetches codes… |
+| --- | --- |
+| `'>= 2026-04-01'` | that were updated on or after 2026-04-01. |
+| `'< 2026-05-01'` | that were updated before 2026-05-01. |
+| `['and', '>= 2026-04-01', '< 2026-05-01']` | that were updated between 2026-04-01 and 2026-05-01. |
 
 ::: code
 ```twig Twig
@@ -232,17 +212,50 @@ Possible values include:
 
 ```php PHP
 // Fetch codes updated in the last week
-$lastWeek = new \DateTime('1 week ago')->format(\DateTime::ATOM);
+$lastWeek = (new \DateTime('1 week ago'))->format(\DateTime::ATOM);
 
 $codes = \verbb\giftvoucher\elements\Code::find()
     ->dateUpdated(">= {$lastWeek}")
     ->all();
 ```
 :::
+:::
 
+::: reference
+### `expiryDate`
 
+Narrows the query results based on the codes’ expiry dates.
 
+| Value | Fetches codes… |
+| --- | --- |
+| `'>= 2026-04-01'` | that expire on or after 2026-04-01. |
+| `'< 2026-05-01'` | that expire before 2026-05-01. |
+| `['and', '>= 2026-04-01', '< 2026-05-01']` | that expire between 2026-04-01 and 2026-05-01. |
+
+::: code
+```twig Twig
+{# Fetch codes expiring this month #}
+{% set nextMonth = date('first day of next month')|atom %}
+
+{% set codes = craft.giftVoucher.codes()
+    .expiryDate("< #{nextMonth}")
+    .all() %}
+```
+
+```php PHP
+// Fetch codes expiring this month
+$nextMonth = (new \DateTime('first day of next month'))->format(\DateTime::ATOM);
+
+$codes = \verbb\giftvoucher\elements\Code::find()
+    ->expiryDate("< {$nextMonth}")
+    ->all();
+```
+:::
+:::
+
+::: reference
 ### `fixedOrder`
+
 Causes the query results to be returned in the order specified by [id](#id).
 
 ::: code
@@ -262,20 +275,19 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `id`
+
 Narrows the query results based on the codes’ IDs.
 
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `1` | with an ID of 1.
-| `'not 1'` | not with an ID of 1.
-| `[1, 2]` | with an ID of 1 or 2.
-| `['not', 1, 2]` | not with an ID of 1 or 2.
+| Value | Fetches codes… |
+| --- | --- |
+| `1` | with an ID of 1. |
+| `'not 1'` | not with an ID of 1. |
+| `[1, 2]` | with an ID of 1 or 2. |
+| `['not', 1, 2]` | not with an ID of 1 or 2. |
 
 ::: code
 ```twig Twig
@@ -296,10 +308,11 @@ $code = \verbb\giftvoucher\elements\Code::find()
 ::: tip
 This can be combined with [fixedOrder](#fixedorder) if you want the results to be returned in a specific order.
 :::
+:::
 
-
-
+::: reference
 ### `inReverse`
+
 Causes the query results to be returned in reverse order.
 
 ::: code
@@ -317,15 +330,16 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `limit`
+
 Determines the number of codes that should be returned.
 
 ::: code
 ```twig Twig
-{# Fetch up to 10 codes  #}
+{# Fetch up to 10 codes #}
 {% set codes = craft.giftVoucher.codes()
     .limit(10)
     .all() %}
@@ -338,40 +352,40 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `lineItemId`
-Narrows the query results based on the codes’ Line Item ID.
 
-Possible values include:
+Narrows the query results based on the Commerce line items the codes were bought in, per the line items’ IDs.
 
-| Value | Fetches codes…
-| - | -
-| `1` | of a line item with an ID of 1.
-| `'not 1'` | not of a line item with an ID of 1.
-| `[1, 2]` | of a line item with an ID of 1 or 2.
-| `['not', 1, 2]` | not of a line item with an ID of 1 or 2.
+| Value | Fetches codes… |
+| --- | --- |
+| `1` | bought in a line item with an ID of 1. |
+| `'not 1'` | not bought in a line item with an ID of 1. |
+| `[1, 2]` | bought in a line item with an ID of 1 or 2. |
+| `['not', 1, 2]` | not bought in a line item with an ID of 1 or 2. |
 
 ::: code
 ```twig Twig
-{# Fetch codes for an line item with an ID of 1 #}
+{# Fetch codes for a line item #}
 {% set codes = craft.giftVoucher.codes()
-    .lineItemId(1)
+    .lineItemId(lineItem.id)
     .all() %}
 ```
 
 ```php PHP
-// Fetch codes for a line item with an ID of 1
+// Fetch codes for a line item
 $codes = \verbb\giftvoucher\elements\Code::find()
-    ->lineItemId(1)
+    ->lineItemId($lineItem->id)
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `offset`
+
 Determines how many codes should be skipped in the results.
 
 ::: code
@@ -389,11 +403,12 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `orderBy`
-Determines the order that the codes should be returned in.
+
+Determines the order that the codes should be returned in. Codes are ordered by their creation date, newest first, by default.
 
 ::: code
 ```twig Twig
@@ -410,56 +425,41 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `orderId`
-Narrows the query results based on the codes’ Order ID.
 
-Possible values include:
+Narrows the query results based on the Commerce orders the codes were bought in, per the orders’ IDs.
 
-| Value | Fetches codes…
-| - | -
-| `1` | of a order with an ID of 1.
-| `'not 1'` | not of an order with an ID of 1.
-| `[1, 2]` | of an order with an ID of 1 or 2.
-| `['not', 1, 2]` | not of an order with an ID of 1 or 2.
+| Value | Fetches codes… |
+| --- | --- |
+| `1` | bought in an order with an ID of 1. |
+| `'not 1'` | not bought in an order with an ID of 1. |
+| `[1, 2]` | bought in an order with an ID of 1 or 2. |
+| `['not', 1, 2]` | not bought in an order with an ID of 1 or 2. |
 
 ::: code
 ```twig Twig
-{# Fetch codes for an order with an ID of 1 #}
+{# Fetch codes for an order #}
 {% set codes = craft.giftVoucher.codes()
-    .orderId(1)
+    .orderId(order.id)
     .all() %}
 ```
 
 ```php PHP
-// Fetch codes for an order with an ID of 1
+// Fetch codes for an order
 $codes = \verbb\giftvoucher\elements\Code::find()
-    ->orderId(1)
+    ->orderId($order->id)
     ->all();
 ```
 :::
+:::
 
-
-
-### `price`
-Narrows the query results based on the codes’ price.
-
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `100` | with a price of 100.
-| `'>= 100'` | with a price of at least 100.
-| `'< 100'` | with a price of less than 100.
-
-
-
+::: reference
 ### `relatedTo`
-Narrows the query results to only codes that are related to certain other elements.
 
-See [Relations](https://craftcms.com/docs/4.x/relations.html) for a full explanation of how to work with this parameter.
+Narrows the query results to only codes that are related to certain other elements. See [Relations](https://craftcms.com/docs/5.x/system/relations.html) in the Craft docs for a full explanation of how to work with this parameter.
 
 ::: code
 ```twig Twig
@@ -470,131 +470,51 @@ See [Relations](https://craftcms.com/docs/4.x/relations.html) for a full explana
 ```
 
 ```php PHP
-// Fetch all codes that are related to $myCategory
+// Fetch all codes that are related to myCategory
 $codes = \verbb\giftvoucher\elements\Code::find()
     ->relatedTo($myCategory)
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `search`
-Narrows the query results to only codes that match a search query.
 
-See [Searching](https://craftcms.com/docs/4.x/searching.html) for a full explanation of how to work with this parameter.
+Narrows the query results to only codes that match a search query. See [Searching](https://craftcms.com/docs/5.x/system/searching.html) in the Craft docs for a full explanation of how to work with this parameter.
 
 ::: code
 ```twig Twig
-{# Get the search query from the 'q' query string param #}
+{# Fetch all codes that match the search query #}
 {% set searchQuery = craft.app.request.getQueryParam('q') %}
 
-{# Fetch all codes that match the search query #}
 {% set codes = craft.giftVoucher.codes()
     .search(searchQuery)
     .all() %}
 ```
 
 ```php PHP
-// Get the search query from the 'q' query string param
+// Fetch all codes that match the search query
 $searchQuery = \Craft::$app->getRequest()->getQueryParam('q');
 
-// Fetch all codes that match the search query
 $codes = \verbb\giftvoucher\elements\Code::find()
     ->search($searchQuery)
     ->all();
 ```
 :::
-
-
-
-### `sku`
-Narrows the query results based on the codes’ SKUs.
-
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `'foo'` | with a SKU of `foo`.
-| `'foo*'` | with a SKU that begins with `foo`.
-| `'*foo'` | with a SKU that ends with `foo`.
-| `'*foo*'` | with a SKU that contains `foo`.
-| `'not *foo*'` | with a SKU that doesn’t contain `foo`.
-| `['*foo*', '*bar*'` | with a SKU that contains `foo` or `bar`.
-| `['not', '*foo*', '*bar*']` | with a SKU that doesn’t contain `foo` or `bar`.
-
-::: code
-```twig Twig
-{# Get the requested code SKU from the URL #}
-{% set requestedSlug = craft.app.request.getSegment(3) %}
-
-{# Fetch the code with that slug #}
-{% set code = craft.giftVoucher.codes()
-    .sku(requestedSlug|literal)
-    .one() %}
-```
-
-```php PHP
-// Get the requested code SKU from the URL
-$requestedSlug = \Craft::$app->getRequest()->getSegment(3);
-
-// Fetch the code with that slug
-$code = \verbb\giftvoucher\elements\Code::find()
-    ->sku(\craft\helpers\Db::escapeParam($requestedSlug))
-    ->one();
-```
 :::
 
-
-
-### `slug`
-Narrows the query results based on the codes’ slugs.
-
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `'foo'` | with a slug of `foo`.
-| `'foo*'` | with a slug that begins with `foo`.
-| `'*foo'` | with a slug that ends with `foo`.
-| `'*foo*'` | with a slug that contains `foo`.
-| `'not *foo*'` | with a slug that doesn’t contain `foo`.
-| `['*foo*', '*bar*'` | with a slug that contains `foo` or `bar`.
-| `['not', '*foo*', '*bar*']` | with a slug that doesn’t contain `foo` or `bar`.
-
-::: code
-```twig Twig
-{# Get the requested code slug from the URL #}
-{% set requestedSlug = craft.app.request.getSegment(3) %}
-
-{# Fetch the code with that slug #}
-{% set code = craft.giftVoucher.codes()
-    .slug(requestedSlug|literal)
-    .one() %}
-```
-
-```php PHP
-// Get the requested code slug from the URL
-$requestedSlug = \Craft::$app->getRequest()->getSegment(3);
-
-// Fetch the code with that slug
-$code = \verbb\giftvoucher\elements\Code::find()
-    ->slug(\craft\helpers\Db::escapeParam($requestedSlug))
-    ->one();
-```
-:::
-
-
-
+::: reference
 ### `status`
-Narrows the query results based on the codes’ statuses.
 
-Possible values include:
+Narrows the query results based on the codes’ statuses. Pass `null` to fetch codes regardless of their status.
 
-| Value | Fetches codes…
-| - | -
-| `'enabled'` _(default)_ | that are enabled.
-| `'disabled'` | that are disabled.
+| Value | Fetches codes… |
+| --- | --- |
+| `'enabled'` _(default)_ | that are enabled. |
+| `'disabled'` | that are disabled. |
+| `['enabled', 'disabled']` | that are enabled or disabled. |
+| `null` | regardless of status. |
 
 ::: code
 ```twig Twig
@@ -611,104 +531,68 @@ $codes = \verbb\giftvoucher\elements\Code::find()
     ->all();
 ```
 :::
-
-
-
-### `title`
-Narrows the query results based on the codes’ titles.
-
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `'Foo'` | with a title of `Foo`.
-| `'Foo*'` | with a title that begins with `Foo`.
-| `'*Foo'` | with a title that ends with `Foo`.
-| `'*Foo*'` | with a title that contains `Foo`.
-| `'not *Foo*'` | with a title that doesn’t contain `Foo`.
-| `['*Foo*', '*Bar*'` | with a title that contains `Foo` or `Bar`.
-| `['not', '*Foo*', '*Bar*']` | with a title that doesn’t contain `Foo` or `Bar`.
-
-::: code
-```twig Twig
-{# Fetch codes with a title that contains "Foo" #}
-{% set codes = craft.giftVoucher.codes()
-    .title('*Foo*')
-    .all() %}
-```
-
-```php PHP
-// Fetch codes with a title that contains "Foo"
-$codes = \verbb\giftvoucher\elements\Code::find()
-    ->title('*Foo*')
-    ->all();
-```
 :::
 
-
-
+::: reference
 ### `type`
-Narrows the query results based on the codes’ types.
 
-Possible values include:
+Narrows the query results based on the voucher types of the codes’ vouchers, per the voucher types’ handles.
 
-| Value | Fetches codes…
-| - | -
-| `'foo'` | of a type with a handle of `foo`.
-| `'not foo'` | not of a type with a handle of `foo`.
-| `['foo', 'bar']` | of a type with a handle of `foo` or `bar`.
-| `['not', 'foo', 'bar']` | not of a type with a handle of `foo` or `bar`.
-| a Code Type object | of a type represented by the object.
+| Value | Fetches codes… |
+| --- | --- |
+| `'foo'` | for a voucher type with a handle of `foo`. |
+| `['foo', 'bar']` | for a voucher type with a handle of `foo` or `bar`. |
+| a `VoucherType` object | for the voucher type represented by the object. |
 
 ::: code
 ```twig Twig
-{# Fetch codes with a Foo code type #}
+{# Fetch codes for vouchers with a Gift Cards voucher type #}
 {% set codes = craft.giftVoucher.codes()
-    .type('foo')
+    .type('giftCards')
     .all() %}
 ```
 
 ```php PHP
-// Fetch codes with a Foo code type
+// Fetch codes for vouchers with a Gift Cards voucher type
 $codes = \verbb\giftvoucher\elements\Code::find()
-    ->type('foo')
+    ->type('giftCards')
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `typeId`
-Narrows the query results based on the codes’ types, per the types’ IDs.
 
-Possible values include:
+Narrows the query results based on the voucher types of the codes’ vouchers, per the voucher types’ IDs.
 
-| Value | Fetches codes…
-| - | -
-| `1` | of a type with an ID of 1.
-| `'not 1'` | not of a type with an ID of 1.
-| `[1, 2]` | of a type with an ID of 1 or 2.
-| `['not', 1, 2]` | not of a type with an ID of 1 or 2.
+| Value | Fetches codes… |
+| --- | --- |
+| `1` | for a voucher type with an ID of 1. |
+| `'not 1'` | not for a voucher type with an ID of 1. |
+| `[1, 2]` | for a voucher type with an ID of 1 or 2. |
+| `['not', 1, 2]` | not for a voucher type with an ID of 1 or 2. |
 
 ::: code
 ```twig Twig
-{# Fetch codes of the code type with an ID of 1 #}
+{# Fetch codes for the voucher type with an ID of 1 #}
 {% set codes = craft.giftVoucher.codes()
     .typeId(1)
     .all() %}
 ```
 
 ```php PHP
-// Fetch codes of the code type with an ID of 1
+// Fetch codes for the voucher type with an ID of 1
 $codes = \verbb\giftvoucher\elements\Code::find()
     ->typeId(1)
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `uid`
+
 Narrows the query results based on the codes’ UIDs.
 
 ::: code
@@ -726,98 +610,82 @@ $code = \verbb\giftvoucher\elements\Code::find()
     ->one();
 ```
 :::
-
-
-
-### `uri`
-Narrows the query results based on the codes’ URIs.
-
-Possible values include:
-
-| Value | Fetches codes…
-| - | -
-| `'foo'` | with a URI of `foo`.
-| `'foo*'` | with a URI that begins with `foo`.
-| `'*foo'` | with a URI that ends with `foo`.
-| `'*foo*'` | with a URI that contains `foo`.
-| `'not *foo*'` | with a URI that doesn’t contain `foo`.
-| `['*foo*', '*bar*'` | with a URI that contains `foo` or `bar`.
-| `['not', '*foo*', '*bar*']` | with a URI that doesn’t contain `foo` or `bar`.
-
-::: code
-```twig Twig
-{# Get the requested URI #}
-{% set requestedUri = craft.app.request.getPathInfo() %}
-
-{# Fetch the code with that URI #}
-{% set code = craft.giftVoucher.codes()
-    .uri(requestedUri|literal)
-    .one() %}
-```
-
-```php PHP
-// Get the requested URI
-$requestedUri = \Craft::$app->getRequest()->getPathInfo();
-
-// Fetch the code with that URI
-$code = \verbb\giftvoucher\elements\Code::find()
-    ->uri(\craft\helpers\Db::escapeParam($requestedUri))
-    ->one();
-```
 :::
 
+::: reference
+### `voucher`
 
+Narrows the query results to codes for a voucher, per the voucher or its SKU.
 
-### `with`
-Causes the query to return matching codes eager-loaded with related elements.
-
-See [Eager-Loading Elements](https://craftcms.com/docs/4.x/eager-loading-elements.html) for a full explanation of how to work with this parameter.
+| Value | Fetches codes… |
+| --- | --- |
+| `'GIFT-50'` | for a voucher with a SKU of `GIFT-50`. |
+| a `Voucher` object | for the voucher represented by the object. |
 
 ::: code
 ```twig Twig
-{# Fetch codes eager-loaded with the "Related" field’s relations #}
+{# Fetch codes for the voucher with a SKU of GIFT-50 #}
 {% set codes = craft.giftVoucher.codes()
-    .with(['related'])
+    .voucher('GIFT-50')
     .all() %}
 ```
 
 ```php PHP
-// Fetch codes eager-loaded with the "Related" field’s relations
+// Fetch codes for the voucher with a SKU of GIFT-50
 $codes = \verbb\giftvoucher\elements\Code::find()
-    ->with(['related'])
+    ->voucher('GIFT-50')
     ->all();
 ```
 :::
+:::
 
-
-
+::: reference
 ### `voucherId`
-Narrows the query results based on the codes’ voucher types, per the voucher types’ IDs.
 
-Possible values include:
+Narrows the query results based on the codes’ vouchers, per the vouchers’ IDs.
 
-| Value | Fetches codes…
-| - | -
-| `1` | of a voucher type with an ID of 1.
-| `'not 1'` | not of a voucher type with an ID of 1.
-| `[1, 2]` | of a voucher type with an ID of 1 or 2.
-| `['not', 1, 2]` | not of a voucher type with an ID of 1 or 2.
+| Value | Fetches codes… |
+| --- | --- |
+| `1` | for a voucher with an ID of 1. |
+| `'not 1'` | not for a voucher with an ID of 1. |
+| `[1, 2]` | for a voucher with an ID of 1 or 2. |
+| `['not', 1, 2]` | not for a voucher with an ID of 1 or 2. |
 
 ::: code
 ```twig Twig
-{# Fetch codes of the voucher type with an ID of 1 #}
+{# Fetch codes for the voucher with an ID of 1 #}
 {% set codes = craft.giftVoucher.codes()
     .voucherId(1)
     .all() %}
 ```
 
 ```php PHP
-// Fetch codes of the voucher type with an ID of 1
+// Fetch codes for the voucher with an ID of 1
 $codes = \verbb\giftvoucher\elements\Code::find()
     ->voucherId(1)
     ->all();
 ```
 :::
+:::
 
+::: reference
+### `with`
 
-<!-- END PARAMS -->
+Causes the query to return matching codes eager-loaded with related elements. See [Eager-Loading Elements](https://craftcms.com/docs/5.x/development/eager-loading.html) in the Craft docs for a full explanation of how to work with this parameter.
+
+::: code
+```twig Twig
+{# Fetch codes eager-loaded with the “Related” field’s relations #}
+{% set codes = craft.giftVoucher.codes()
+    .with(['related'])
+    .all() %}
+```
+
+```php PHP
+// Fetch codes eager-loaded with the “Related” field’s relations
+$codes = \verbb\giftvoucher\elements\Code::find()
+    ->with(['related'])
+    ->all();
+```
+:::
+:::

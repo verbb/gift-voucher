@@ -52,9 +52,15 @@
         "title": "Developers",
         "collapsable": false,
         "children": [
-            "developers/voucher",
-            "developers/code",
             "developers/events"
+        ]
+    },
+    {
+        "title": "Reference",
+        "collapsable": false,
+        "children": [
+            "reference/voucher",
+            "reference/code"
         ]
     }
 ]

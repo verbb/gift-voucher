@@ -80,7 +80,7 @@ You can also set additional data through [line item options](https://docs.craftc
 </form>
 ```
 
-If you have any custom fields' setup in your Gift Voucher settings for Codes, you can also set content on those fields through your line item options, and they'll be automatically 'pushed' to the resulting [Code](docs:developers/code) generated at the end of checkout.
+If you have any custom fields' setup in your Gift Voucher settings for Codes, you can also set content on those fields through your line item options, and they'll be automatically 'pushed' to the resulting [Code](docs:reference/code) generated at the end of checkout.
 
 For example, let's say you have a 'Message' plain text field in your Code Field Layout, with the handle `message`. In this instance, you want to include additional information such as a personal message to be show on the PDF voucher to send to the voucher recipient. You include this field in your add-to-cart form:
 
@@ -119,5 +119,5 @@ You can also automate this to show _all_ the custom fields assigned to the Code 
 </form>
 ```
 
-After checkout has been completed, any line item option that matches a custom field on your Code field type settings will be copied across to the resulting [Code](docs:developers/code). You'll be able to easily see the values as provided in the control panel, when viewing your Voucher Codes.
+After checkout has been completed, any line item option that matches a custom field on your Code field type settings will be copied across to the resulting [Code](docs:reference/code). You'll be able to easily see the values as provided in the control panel, when viewing your Voucher Codes.
 
