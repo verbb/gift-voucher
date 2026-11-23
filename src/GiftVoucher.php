@@ -109,7 +109,7 @@ class GiftVoucher extends Plugin
             return;
         }
 
-        Craft::$app->controller->redirect(UrlHelper::cpUrl('gift-voucher/welcome'))->send();
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('gift-voucher/vouchers'))->send();
     }
 
     public function getSettingsUrl(): bool
@@ -286,7 +286,7 @@ class GiftVoucher extends Plugin
                 }
 
                 $event->types = $types;
-            } else if ($settings->registerAdjuster === 'afterTax') {
+            } elseif ($settings->registerAdjuster === 'afterTax') {
                 $event->types[] = GiftVoucherAdjuster::class;
             }
         });
@@ -378,7 +378,7 @@ class GiftVoucher extends Plugin
             $event->actions['gift-voucher-vouchers'] = [
                 'action' => function(): int {
                     $controller = Craft::$app->controller;
-                    
+
                     return $controller->resaveElements(Voucher::class);
                 },
                 'options' => [],
