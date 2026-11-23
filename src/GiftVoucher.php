@@ -125,7 +125,7 @@ class GiftVoucher extends Plugin
             return;
         }
 
-        Craft::$app->controller->redirect(UrlHelper::cpUrl('gift-voucher/welcome'))->send();
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('gift-voucher/vouchers'))->send();
     }
 
     public function getSettingsUrl(): bool
