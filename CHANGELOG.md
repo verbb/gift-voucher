@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Removed
+- Removed install tracking from the welcome page.
+
 ## 4.0.27 - 2026-11-01
 
 ### Fixed
