@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Removed
+- Removed install tracking from the welcome page.
+
 ## 3.0.23 - 2026-09-23
 
 ### Changed
