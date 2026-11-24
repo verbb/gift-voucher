@@ -3,7 +3,6 @@ namespace verbb\giftvoucher\services;
 
 use craft\commerce\enums\LineItemType;
 use verbb\giftvoucher\GiftVoucher;
-use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 
 use Craft;
@@ -17,6 +16,8 @@ use craft\commerce\events\MailEvent;
 
 use yii\base\Component;
 
+use DateTime;
+use DateTimeZone;
 use Throwable;
 
 class Vouchers extends Component
@@ -37,18 +38,24 @@ class Vouchers extends Component
     }
 
     /**
-     * The first-run checklist's done steps, or null once the first code exists and the landing page shows the Vouchers index.
+     * The first-run checklist's done steps, or null when the landing page shows the Vouchers index: on installs from before the checklist, and once the first voucher exists.
      */
     public function getSetupSteps(): ?array
     {
-        // Trashed codes and vouchers count, so deleting a test one doesn't bring setup back.
-        if (Code::find()->site('*')->status(null)->trashed(null)->exists()) {
+        // Craft records the install date per environment, so this needs no storage of its own. A missing date is an existing install.
+        $installDate = Craft::$app->getPlugins()->getStoredPluginInfo(GiftVoucher::$plugin->id)['installDate'] ?? null;
+
+        if (!$installDate instanceof DateTime || $installDate < new DateTime(GiftVoucher::SETUP_CHECKLIST_SINCE, new DateTimeZone('UTC'))) {
+            return null;
+        }
+
+        // Trashed vouchers count, so deleting a test one doesn't bring setup back.
+        if (Voucher::find()->site('*')->status(null)->trashed(null)->exists()) {
             return null;
         }
 
         return [
             'voucherType' => (bool)GiftVoucher::$plugin->getVoucherTypes()->getAllVoucherTypes(),
-            'voucher' => Voucher::find()->site('*')->status(null)->trashed(null)->exists(),
         ];
     }
 

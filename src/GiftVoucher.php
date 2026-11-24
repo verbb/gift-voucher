@@ -66,6 +66,13 @@ use verbb\giftvoucher\web\twig\CpExtensions;
 
 class GiftVoucher extends Plugin
 {
+    // Constants
+    // =========================================================================
+
+    // Installs from before the setup checklist was added never see it, so updating sites keep their Vouchers index.
+    public const SETUP_CHECKLIST_SINCE = '2026-11-23';
+
+
     // Properties
     // =========================================================================
 

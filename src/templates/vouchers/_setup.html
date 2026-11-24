@@ -1,4 +1,4 @@
-{# Gift Voucher's landing page until the first code is issued, in place of the Vouchers index. #}
+{# Gift Voucher's landing page on new installs until the first voucher is created, in place of the Vouchers index. #}
 {% extends 'gift-voucher/_layouts/index' %}
 
 {% set title = 'Vouchers' | t('gift-voucher') %}
@@ -20,7 +20,6 @@
 {% set allowAdminChanges = craft.app.config.general.allowAdminChanges %}
 {% set canManageTypes = currentUser.admin and allowAdminChanges %}
 {% set voucherType = craft.giftVoucher.getEditableVoucherTypes() | first %}
-{% set canManageCodes = currentUser.can('giftVoucher-manageCodes') %}
 
 <pk-setup-checklist
     heading="{{ 'Start Selling Gift Vouchers' | t('gift-voucher') }}"
@@ -28,7 +27,7 @@
     done-label="{{ '(done)' | t('gift-voucher') }}"
 >
     <span slot="intro">
-        {{ 'Vouchers will show here once the first code is issued. Each step ticks itself off when Gift Voucher sees it done.' | t('gift-voucher') }}
+        {{ 'Vouchers will show here once the first one is created. Each step ticks itself off when Gift Voucher sees it done.' | t('gift-voucher') }}
         {% if not setup.voucherType and not canManageTypes %}
             {{ allowAdminChanges
                 ? 'An admin can create voucher types.' | t('gift-voucher')
@@ -43,20 +42,17 @@
         {% endif %}
     </pk-setup-step>
 
-    {# The Vouchers index stays hidden until the first code, so a done step links to it through the voucher type's source. #}
-    <pk-setup-step heading="{{ 'Create a voucher' | t('gift-voucher') }}"{{ setup.voucher ? ' done' }}>
+    {# The checklist leaves at the first voucher, so this step is never shown done. #}
+    <pk-setup-step heading="{{ 'Create a voucher' | t('gift-voucher') }}">
         {{ 'A voucher is the product customers buy, at a set price or an amount they choose.' | t('gift-voucher') }}
         {% if voucherType %}
             <a slot="action" class="btn" href="{{ cpUrl('gift-voucher/vouchers/' ~ voucherType.handle ~ '/new') }}">{{ 'Create voucher' | t('gift-voucher') }}</a>
-            <a slot="change" href="{{ cpUrl('gift-voucher/vouchers/' ~ voucherType.handle) }}">{{ 'View vouchers' | t('gift-voucher') }}</a>
         {% endif %}
     </pk-setup-step>
 
+    {# The outcome, shown for what comes next. Codes need a voucher, so it has no button here. #}
     <pk-setup-step heading="{{ 'Issue the first code' | t('gift-voucher') }}">
         {{ 'A code is issued when someone buys a voucher, or you can create one by hand.' | t('gift-voucher') }}
-        {% if canManageCodes and setup.voucher %}
-            <a slot="action" class="btn" href="{{ cpUrl('gift-voucher/codes/new') }}">{{ 'Create code' | t('gift-voucher') }}</a>
-        {% endif %}
     </pk-setup-step>
 </pk-setup-checklist>
 {% endblock %}
