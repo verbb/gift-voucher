@@ -1,0 +1,62 @@
+{# Gift Voucher's landing page until the first code is issued, in place of the Vouchers index. #}
+{% extends 'gift-voucher/_layouts/index' %}
+
+{% set title = 'Vouchers' | t('gift-voucher') %}
+{% set docTitle = title ~ ' - Gift Voucher' %}
+{% set selectedSubnavItem = 'vouchers' %}
+
+{% set crumbs = [
+    { label: 'Gift Voucher' | t('gift-voucher'), url: url('gift-voucher') },
+    { label: 'Vouchers' | t('gift-voucher'), url: url('gift-voucher/vouchers') },
+] %}
+
+{# The checklist is its own card, so it sits on the page background without Craft's content pane. #}
+{% set bodyClass = (bodyClass ?? []) | explodeClass | push('gift-voucher-bare-content') %}
+
+{% do view.registerAssetBundle('verbb\\giftvoucher\\web\\assets\\cp\\PluginKitAsset') %}
+
+{# The checklist stands alone on the page, without the plugin footer. #}
+{% block content %}
+{% set allowAdminChanges = craft.app.config.general.allowAdminChanges %}
+{% set canManageTypes = currentUser.admin and allowAdminChanges %}
+{% set voucherType = craft.giftVoucher.getEditableVoucherTypes() | first %}
+{% set canManageCodes = currentUser.can('giftVoucher-manageCodes') %}
+
+<pk-setup-checklist
+    heading="{{ 'Start Selling Gift Vouchers' | t('gift-voucher') }}"
+    count-label="{{ '{done} of {total} done' | t('gift-voucher') }}"
+    done-label="{{ '(done)' | t('gift-voucher') }}"
+>
+    <span slot="intro">
+        {{ 'Vouchers will show here once the first code is issued. Each step ticks itself off when Gift Voucher sees it done.' | t('gift-voucher') }}
+        {% if not setup.voucherType and not canManageTypes %}
+            {{ allowAdminChanges
+                ? 'An admin can create voucher types.' | t('gift-voucher')
+                : 'Voucher types are created where admin changes are allowed, then deployed.' | t('gift-voucher') }}
+        {% endif %}
+    </span>
+
+    <pk-setup-step heading="{{ 'Create a voucher type' | t('gift-voucher') }}"{{ setup.voucherType ? ' done' }}>
+        {{ 'A voucher type sets the fields, page template and SKU format for one kind of voucher.' | t('gift-voucher') }}
+        {% if canManageTypes %}
+            <a slot="action" class="btn" href="{{ cpUrl('gift-voucher/voucher-types/new') }}">{{ 'Create voucher type' | t('gift-voucher') }}</a>
+        {% endif %}
+    </pk-setup-step>
+
+    {# The Vouchers index stays hidden until the first code, so a done step links to it through the voucher type's source. #}
+    <pk-setup-step heading="{{ 'Create a voucher' | t('gift-voucher') }}"{{ setup.voucher ? ' done' }}>
+        {{ 'A voucher is the product customers buy, at a set price or an amount they choose.' | t('gift-voucher') }}
+        {% if voucherType %}
+            <a slot="action" class="btn" href="{{ cpUrl('gift-voucher/vouchers/' ~ voucherType.handle ~ '/new') }}">{{ 'Create voucher' | t('gift-voucher') }}</a>
+            <a slot="change" href="{{ cpUrl('gift-voucher/vouchers/' ~ voucherType.handle) }}">{{ 'View vouchers' | t('gift-voucher') }}</a>
+        {% endif %}
+    </pk-setup-step>
+
+    <pk-setup-step heading="{{ 'Issue the first code' | t('gift-voucher') }}">
+        {{ 'A code is issued when someone buys a voucher, or you can create one by hand.' | t('gift-voucher') }}
+        {% if canManageCodes and setup.voucher %}
+            <a slot="action" class="btn" href="{{ cpUrl('gift-voucher/codes/new') }}">{{ 'Create code' | t('gift-voucher') }}</a>
+        {% endif %}
+    </pk-setup-step>
+</pk-setup-checklist>
+{% endblock %}

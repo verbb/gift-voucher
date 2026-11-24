@@ -1,4 +1,6 @@
-{% extends '_layouts/elementindex' %}
+{# Until the first code, the landing page is a setup checklist. A voucher type's own index always shows. #}
+{% set setup = voucherTypeHandle is not defined ? craft.giftVoucher.getSetupSteps() : null %}
+{% extends setup is not null ? 'gift-voucher/vouchers/_setup' : '_layouts/elementindex' %}
 
 {% set title = 'Vouchers' | t('gift-voucher') %}
 {% set docTitle = title ~ ' - Gift Voucher' %}

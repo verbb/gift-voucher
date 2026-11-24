@@ -38,9 +38,12 @@ class VouchersController extends Controller
         parent::init();
     }
 
-    public function actionIndex(): Response
+    public function actionIndex(?string $voucherTypeHandle = null): Response
     {
-        return $this->renderTemplate('gift-voucher/vouchers/index');
+        // A voucher type's own URL always shows the index, even while the landing page shows the setup checklist.
+        $variables = $voucherTypeHandle !== null ? compact('voucherTypeHandle') : [];
+
+        return $this->renderTemplate('gift-voucher/vouchers/index', $variables);
     }
 
     public function actionEdit(string $voucherTypeHandle, int $voucherId = null, string $siteHandle = null, Voucher $voucher = null): Response
@@ -233,6 +236,7 @@ class VouchersController extends Controller
             $transaction->commit();
         } catch (Throwable $e) {
             $transaction->rollBack();
+
             throw $e;
         }
 

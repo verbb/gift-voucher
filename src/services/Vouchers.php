@@ -3,6 +3,7 @@ namespace verbb\giftvoucher\services;
 
 use craft\commerce\enums\LineItemType;
 use verbb\giftvoucher\GiftVoucher;
+use verbb\giftvoucher\elements\Code;
 use verbb\giftvoucher\elements\Voucher;
 
 use Craft;
@@ -33,6 +34,22 @@ class Vouchers extends Component
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::$app->getElements()->getElementById($id, Voucher::class, $siteId);
+    }
+
+    /**
+     * The first-run checklist's done steps, or null once the first code exists and the landing page shows the Vouchers index.
+     */
+    public function getSetupSteps(): ?array
+    {
+        // Trashed codes and vouchers count, so deleting a test one doesn't bring setup back.
+        if (Code::find()->site('*')->status(null)->trashed(null)->exists()) {
+            return null;
+        }
+
+        return [
+            'voucherType' => (bool)GiftVoucher::$plugin->getVoucherTypes()->getAllVoucherTypes(),
+            'voucher' => Voucher::find()->site('*')->status(null)->trashed(null)->exists(),
+        ];
     }
 
     public function afterSaveSiteHandler(SiteEvent $event): void

@@ -3,7 +3,8 @@
 
 {% set emails = craft.commerce.getEmails.getAllEmails() %}
 
-{% if emails %}
+{# Commerce returns a collection, which is truthy even when empty. #}
+{% if emails | length %}
     <p>{{ 'Use the below options to select which emails (if any) you‘d like to attach PDF gift vouchers to. This will be in addition to any PDF‘s already setup for your email.' | t('gift-voucher') }}</p>
 
     <table class="data fullwidth">
@@ -42,5 +43,12 @@
         </p>
     {% endif %}
 {% else %}
-    <div class="zilch">{{ 'No Commerce emails yet.' | t('gift-voucher') }}</div>
+    {% do view.registerAssetBundle('verbb\\giftvoucher\\web\\assets\\cp\\PluginKitAsset') %}
+
+    <pk-state-panel heading="{{ 'No Commerce emails yet' | t('gift-voucher') }}">
+        {{ 'Add an email in Commerce, then choose here whether it attaches the voucher PDF.' | t('gift-voucher') }}
+        {% if craft.app.config.general.allowAdminChanges %}
+            <a slot="actions" class="btn" href="{{ url('commerce/settings/emails/' ~ craft.commerce.stores.currentStore.handle ~ '/new') }}">{{ 'New email' | t('gift-voucher') }}</a>
+        {% endif %}
+    </pk-state-panel>
 {% endif %}

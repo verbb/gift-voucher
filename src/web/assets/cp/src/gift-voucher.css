@@ -33,3 +33,10 @@
 .verbb-welcome .btn .fa {
     margin-left: 5px;
 }
+
+/* The Vouchers setup checklist is its own card, so it sits on the page background without Craft's content pane. */
+.gift-voucher-bare-content #content.content-pane {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}

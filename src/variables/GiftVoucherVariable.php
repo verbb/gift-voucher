@@ -36,6 +36,11 @@ class GiftVoucherVariable
         return GiftVoucher::$plugin->getVoucherTypes()->getEditableVoucherTypes();
     }
 
+    public function getSetupSteps(): ?array
+    {
+        return GiftVoucher::$plugin->getVouchers()->getSetupSteps();
+    }
+
     public function vouchers($criteria = null): VoucherQuery
     {
         $query = Voucher::find();
@@ -61,6 +66,7 @@ class GiftVoucherVariable
     public function getVoucherCodes(): array
     {
         $cart = Commerce::getInstance()->getCarts()->getCart();
+
         return GiftVoucher::$plugin->getCodeStorage()->getCodeKeys($cart);
     }
 

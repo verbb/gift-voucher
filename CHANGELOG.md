@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Added
+- Added a setup checklist to the Vouchers landing page, which walks through creating a voucher type, a voucher and the first code, ticking each step off from your data. The usual Vouchers index returns once the first code is issued, and each voucher type's own URL still shows it.
+
+### Changed
+- Settings › Emails now shows a “No Commerce emails yet” empty state when there isn't a Commerce email yet, explaining how to add one, with a button to create it.
+
+### Fixed
+- Fixed Settings › Emails showing an empty table instead of its empty message when Commerce had no emails.
+
 ### Removed
 - Removed the welcome page shown after installing the plugin, along with its install tracking. New installs now go to the Vouchers index.
 
