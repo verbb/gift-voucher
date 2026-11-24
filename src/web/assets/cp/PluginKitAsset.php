@@ -20,6 +20,11 @@ class PluginKitAsset extends AssetBundle
             CpAsset::class,
         ];
 
+        // Plugin Kit's stylesheet, in <head> so its FOUCE rules hide pk-* elements until their components load.
+        $this->css = [
+            'plugin-kit.css',
+        ];
+
         $this->js = [
             'plugin-kit.js',
         ];

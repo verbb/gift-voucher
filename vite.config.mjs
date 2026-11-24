@@ -25,7 +25,8 @@ export default defineConfig(({ mode }) => {
                         format: 'es',
                         entryFileNames: '[name].js',
                         chunkFileNames: '[name]-[hash].js',
-                        assetFileNames: '[name]-[hash][extname]',
+                        // The entry's stylesheet keeps a fixed name, so the asset bundle can register it in <head>.
+                        assetFileNames: '[name][extname]',
                     },
                 },
             },
