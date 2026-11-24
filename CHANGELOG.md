@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.1.0 - 2026-11-24
 
 ### Added
 - Added a setup checklist to the Vouchers landing page on new installs, which walks through creating a voucher type, a voucher and the first code, ticking each step off from your data. The usual Vouchers index returns once the first voucher is created, and sites that update the plugin keep their Vouchers index.
