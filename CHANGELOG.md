@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.24 - 2026-11-24
 
 ### Removed
 - Removed the welcome page shown after installing the plugin, along with its install tracking. New installs now go to the Vouchers index.
